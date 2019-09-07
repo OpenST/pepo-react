@@ -150,7 +150,10 @@ const ProfilePushStack = createStackNavigator(
     UserVideoHistory: UserVideoHistory,
     SupportingListScreen: SupportingListScreen,
     SupportersListScreen: SupportersListScreen,
-    UsersProfileScreen: UsersProfileScreen,
+    UsersProfileScreen: {
+        screen: UsersProfileScreen,
+        path: 'profile/:userId'
+    },
     ProfileEdit: ProfileEdit,
     BioScreen: BioScreen
   },
@@ -275,9 +278,12 @@ const AppContainer = createAppContainer(
   )
 );
 
+const uriPrefix = 'pepo://';
+
 const RootNavigationContainer = () => (
   <Root>
     <AppContainer
+      uriPrefix={uriPrefix}
       onNavigationStateChange={(prevState, currentState, action) => StatusBarManager(action)}
       ref={(navigatorRef) => {
         NavigationService.setTopLevelNavigator(navigatorRef);
