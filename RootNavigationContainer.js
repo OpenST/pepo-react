@@ -152,7 +152,7 @@ const ProfilePushStack = createStackNavigator(
     SupportersListScreen: SupportersListScreen,
     UsersProfileScreen: {
         screen: UsersProfileScreen,
-        path: 'profile/:userId'
+        path: ':userId'
     },
     ProfileEdit: ProfileEdit,
     BioScreen: BioScreen
@@ -164,7 +164,10 @@ const ProfilePushStack = createStackNavigator(
 
 const ProfileStack = createStackNavigator(
   {
-    ProfilePushStack: ProfilePushStack,
+    ProfilePushStack: {
+        screen: ProfilePushStack,
+        path: 'profile/'
+    },
     CaptureImageScreen: CaptureImage,
     ImageGalleryScreen: ImageGallery,
     TransactionScreen: TransactionScreen,
@@ -211,7 +214,10 @@ const CustomTabStack = createBottomTabNavigator(
     Home: HomeStack,
     Search: SearchStack,
     Notification: NotificationStack,
-    Profile: ProfileStack
+    Profile: {
+        screen: ProfileStack,
+        path: ''
+    }
   },
   {
     tabBarComponent: CustomTab,
@@ -251,7 +257,10 @@ const PinStack = createStackNavigator(
 
 const DrawerNavigator = createDrawerNavigator(
   {
-    CustomTabStack: CustomTabStack
+    CustomTabStack: {
+        screen: CustomTabStack,
+        path: ''
+    }
   },
   {
     drawerPosition: 'right',
