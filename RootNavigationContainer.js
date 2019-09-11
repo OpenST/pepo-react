@@ -165,9 +165,23 @@ const ProfilePushStack = createStackNavigator(
   }
 );
 
+const ProfileDrawerNavigator = createDrawerNavigator(
+  {
+    ProfilePushStack: ProfilePushStack
+  },
+  {
+    drawerPosition: 'right',
+    drawerBackgroundColor: '#fff',
+    overlayColor: 'rgba(0, 0, 0, 0.8)',
+    drawerWidth: Dimensions.get('window').width - Dimensions.get('window').width / 5,
+    contentComponent: CustomDrawerContent,
+    drawerLockMode: 'locked-closed'
+  }
+);
+
 const ProfileStack = createStackNavigator(
   {
-    ProfilePushStack: ProfilePushStack,
+    ProfileDrawerNavigator: ProfileDrawerNavigator,
     CaptureImageScreen: CaptureImage,
     ImageGalleryScreen: ImageGallery,
     TransactionScreen: TransactionScreen,
@@ -253,20 +267,6 @@ const PinStack = createStackNavigator(
   }
 );
 
-const DrawerNavigator = createDrawerNavigator(
-  {
-    CustomTabStack: CustomTabStack
-  },
-  {
-    drawerPosition: 'right',
-    drawerBackgroundColor: '#fff',
-    overlayColor: 'rgba(0, 0, 0, 0.8)',
-    drawerWidth: Dimensions.get('window').width - Dimensions.get('window').width / 5,
-    contentComponent: CustomDrawerContent,
-    drawerLockMode: 'locked-closed'
-  }
-);
-
 const AppContainer = createAppContainer(
   createSwitchNavigator(
     {
@@ -274,7 +274,7 @@ const AppContainer = createAppContainer(
       AuthScreen,
       PinStack,
       UserActivatingScreen,
-      DrawerNavigator
+      CustomTabStack
     },
     {
       initialRouteName: 'AuthLoading'
