@@ -46,6 +46,7 @@ import SocketManager from './src/components/SocketManager';
 import SearchScreen from './src/components/Search';
 import FanVideoDetails from './src/components/FanVideoDetails';
 import PushNotificationManager from './src/services/PushNotificationManager';
+import ReferAndEarn from './src/components/ReferAndEarn';
 
 const customTabHiddenRoutes = ['CaptureVideo', 'FanVideoDetails'];
 
@@ -158,7 +159,8 @@ const ProfilePushStack = createStackNavigator(
     SupportersListScreen: SupportersListScreen,
     UsersProfileScreen: UsersProfileScreen,
     ProfileEdit: ProfileEdit,
-    BioScreen: BioScreen
+    BioScreen: BioScreen,
+    ReferAndEarn: ReferAndEarn
   },
   {
     headerLayoutPreset: 'center'
