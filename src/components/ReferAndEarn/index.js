@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Image, Text, TouchableOpacity, View } from 'react-native';
+import { Image, Text, TouchableOpacity, View, Clipboard } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 
 import styles from './styles';
@@ -53,11 +53,15 @@ class ReferAndEarn extends Component {
     this.state = {
       inviteHeader: '',
       inviteText: '',
-      inviteCoide: ''
+      inviteCode: 'PE0AY'
     };
   }
 
   onShare = () => {};
+
+  _setContent() {
+    Clipboard.setString(this.state.inviteCode);
+  }
 
   render() {
     return (
@@ -71,10 +75,15 @@ class ReferAndEarn extends Component {
           </Text>
         </View>
         <View style={[styles.middleWrapper, { flex: 0.3 }]}>
-          <View style={{ backgroundColor: '#fbfbfb', padding: 15 }}>
+          <TouchableOpacity
+            onPress={multipleClickHandler(() => {
+              this._setContent();
+            })}
+            style={{ backgroundColor: '#fbfbfb', padding: 15 }}
+          >
             <Text style={[styles.content, { marginBottom: 10 }]}>Your Invite Code, Tap to Copy</Text>
-            <Text style={styles.inviteCode}>PE0AY</Text>
-          </View>
+            <Text style={styles.inviteCode}>{this.state.inviteCode}</Text>
+          </TouchableOpacity>
           <LinearGradient
             colors={['#ff7499', '#ff5566']}
             locations={[0, 1]}
