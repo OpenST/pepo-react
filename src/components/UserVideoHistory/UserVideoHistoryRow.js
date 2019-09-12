@@ -5,14 +5,14 @@ import VideoWrapper from '../Home/VideoWrapper';
 import PepoApi from '../../services/PepoApi';
 import TransactionPepoButton from '../Home/TransactionPepoButton';
 import tx_icon from '../../assets/tx_icon.png';
+import share_icon from '../../assets/share_icon.png'
 import CurrentUser from '../../models/CurrentUser';
 
 import BottomStatus from '../Home/BottomStatus';
 import VideoAmountStat from '../CommonComponents/VideoAmoutStat';
-
+import ShareVideo from '../../services/shareVideo';
 import inlineStyles from './styles';
 import multipleClickHandler from '../../services/MultipleClickHandler';
-
 import utilities from '../../services/Utilities';
 
 class UserVideoHistoryRow extends PureComponent {
@@ -42,6 +42,12 @@ class UserVideoHistoryRow extends PureComponent {
     return this.props.userId == CurrentUser.getUserId();
   }
 
+  shareVideo = () => {
+    console.log('shareVideo=======+++++++=======++++++++++=');
+    let shareVideo = new ShareVideo(this.videoId);
+    shareVideo.perform();
+  }
+
   render() {
     return (
       <View style={inlineStyles.fullScreen}>
@@ -68,6 +74,14 @@ class UserVideoHistoryRow extends PureComponent {
                       onPress={multipleClickHandler(() => this.navigateToTransactionScreen())}
                     >
                       <Image style={{ height: 57, width: 57 }} source={tx_icon} />
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                      pointerEvents={'auto'}
+                      style={inlineStyles.txElem}
+                      onPress={this.shareVideo}
+                    >
+                      <Image style={{ height: 57, width: 57 }} source={share_icon} />
                     </TouchableOpacity>
                   </View>
                 )}

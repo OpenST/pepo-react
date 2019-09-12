@@ -95,6 +95,7 @@ class ProfileScreen extends PureComponent {
             <Image style={{ width: 13, height: 13 }} source={profileEditIcon}></Image>
           </TouchableOpacity>
         }
+        isOwnProfile={true}
       />
     );
   }
