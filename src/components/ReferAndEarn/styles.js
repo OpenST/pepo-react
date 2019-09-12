@@ -7,7 +7,7 @@ let stylesMap = {
   },
   heading: {
     color: Colors.valhalla,
-    fontSize: 20,
+    fontSize: 18,
     marginBottom: 10
   },
   content: {
@@ -31,27 +31,28 @@ let stylesMap = {
     shadowRadius: 3,
     backgroundColor: Colors.white,
     borderRadius: 7,
-    marginBottom: 0
+    marginBottom: 0,
+    position: 'relative',
+    padding: 0
   },
   inviteCode: {
-    fontSize: 20,
-    fontWeight: 'bold',
+    fontSize: 18,
+    fontWeight: '600',
     textAlign: 'center'
   },
   bottomWrapper: {
-    margin: 25
+    margin: 25,
+    marginTop: 0
   },
   middleWrapper: {
     margin: 25
   },
-  imageWrapper: {
+  arrowImageSkipFont: {
+    width: 25,
+    height: 22,
     position: 'absolute',
-    top: -5,
-    right: -5,
-    width: 60,
-    height: 60,
-    alignItems: 'center',
-    justifyContent: 'center'
+    top: 10,
+    right: 10
   }
 };
 

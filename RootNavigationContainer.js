@@ -47,6 +47,9 @@ import SearchScreen from './src/components/Search';
 import FanVideoDetails from './src/components/FanVideoDetails';
 import PushNotificationManager from './src/services/PushNotificationManager';
 import ReferAndEarn from './src/components/ReferAndEarn';
+import Invites from './src/components/Invites';
+import InviteCodeScreen from './src/components/InviteCode';
+import AddEmailScreen from './src/components/AddEmail';
 
 const customTabHiddenRoutes = ['CaptureVideo', 'FanVideoDetails'];
 
@@ -119,7 +122,9 @@ const HomeStack = createStackNavigator(
   {
     HomePushStack: HomePushStack,
     TransactionScreen: TransactionScreen,
-    CaptureVideo: CaptureVideoStack
+    CaptureVideo: CaptureVideoStack,
+    InviteCodeScreen: InviteCodeScreen,
+    AddEmailScreen: AddEmailScreen
   },
   {
     ...modalStackConfig,
@@ -160,7 +165,8 @@ const ProfilePushStack = createStackNavigator(
     UsersProfileScreen: UsersProfileScreen,
     ProfileEdit: ProfileEdit,
     BioScreen: BioScreen,
-    ReferAndEarn: ReferAndEarn
+    ReferAndEarn: ReferAndEarn,
+    Invites: Invites
   },
   {
     headerLayoutPreset: 'center'

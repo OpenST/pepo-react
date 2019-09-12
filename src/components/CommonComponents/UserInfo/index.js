@@ -123,7 +123,7 @@ class UserInfo extends React.PureComponent {
           <Text
             style={[{ color: Colors.summerSky, textAlign: 'center', marginTop: 10 }]}
             onPress={() => {
-              InAppBrowser.openBrowser(Utilities.sanitizeLink(this.props.link));
+              InAppBrowser.openBrowser(this.props.link);
             }}
           >
             {this.props.link}
