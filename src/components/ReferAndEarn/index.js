@@ -12,8 +12,6 @@ import confittie from '../../assets/confittie.png';
 import InAppBrowser from '../../services/InAppBrowser';
 import BackArrow from '../CommonComponents/BackArrow';
 import { ScrollView } from 'react-native-gesture-handler';
-import PepoApi from '../../services/PepoApi';
-import CurrentUser from '../../models/CurrentUser';
 
 class ReferAndEarn extends Component {
   static navigationOptions = (options) => {

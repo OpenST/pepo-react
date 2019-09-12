@@ -1,14 +1,9 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, FlatList } from 'react-native';
+import { Text, SafeAreaView } from 'react-native';
 
 import styles from './styles';
 import Colors from '../../theme/styles/Colors';
 import BackArrow from '../CommonComponents/BackArrow';
-import PepoApi from '../../services/PepoApi';
-import CurrentUser from '../../models/CurrentUser';
-import Pagination from '../../services/Pagination';
-import User from './User';
-import flatlistHOC from '../CommonComponents/flatlistHOC';
 import InvitesList from './InvitesList';
 
 class Invites extends Component {
@@ -59,4 +54,4 @@ class Invites extends Component {
   }
 }
 
-export default flatlistHOC(Invites);
+export default Invites;
