@@ -43,7 +43,6 @@ class UserVideoHistoryRow extends PureComponent {
   }
 
   shareVideo = () => {
-    console.log('shareVideo=======+++++++=======++++++++++=');
     let shareVideo = new ShareVideo(this.videoId);
     shareVideo.perform();
   }
