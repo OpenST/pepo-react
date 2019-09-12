@@ -1,11 +1,15 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, SafeAreaView, FlatList } from 'react-native';
 
 import styles from './styles';
 import Colors from '../../theme/styles/Colors';
 import BackArrow from '../CommonComponents/BackArrow';
 import PepoApi from '../../services/PepoApi';
 import CurrentUser from '../../models/CurrentUser';
+import Pagination from '../../services/Pagination';
+import User from './User';
+import flatlistHOC from '../CommonComponents/flatlistHOC';
+import InvitesList from './InvitesList';
 
 class Invites extends Component {
   static navigationOptions = (options) => {
@@ -26,30 +30,33 @@ class Invites extends Component {
       headerBackImage: <BackArrow />
     };
   };
+
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      noResultsFound: false
+    };
   }
 
-  componentDidMount() {
-    // new PepoApi(`/${CurrentUser.getUserId()}/invites`)
-    //   .get()
-    //   .then((res) => {
-    //     this.onInit(res);
-    //   })
-    //   .catch((error) => {});
-    this.onInit(res);
-  }
-
-  onInit(res) {}
+  onRefresh = (result) => {
+    let noResultsFound = result && result.length === 0;
+    this.setState({
+      noResultsFound
+    });
+  };
 
   render() {
     return (
-      <View style={styles.container}>
-        <Text style={styles.header}>Accepted Invites & Pepos You’ve Earned</Text>
-      </View>
+      <SafeAreaView forceInset={{ top: 'never' }} style={{ flex: 1 }}>
+        <Text style={styles.header}>Accepted Invites</Text>
+        <InvitesList
+          fetchUrl={`/users/search?q=test`}
+          onRefresh={this.onRefresh}
+          noResultsFound={this.state.noResultsFound}
+        />
+      </SafeAreaView>
     );
   }
 }
 
-export default Invites;
+export default flatlistHOC(Invites);
