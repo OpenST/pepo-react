@@ -7,12 +7,12 @@ let stylesMap = {
   },
   heading: {
     color: Colors.valhalla,
-    fontSize: 18,
+    fontSize: 20,
     marginBottom: 10
   },
   content: {
-    color: Colors.valhalla,
-    opacity: 0.7,
+    color: 'rgba(42, 41, 59, 0.7)',
+    lineHeight: 20,
     textAlign: 'center'
   },
   wrapper: {
@@ -29,6 +29,7 @@ let stylesMap = {
     },
     shadowOpacity: 0.1,
     shadowRadius: 3,
+    elevation: 2,
     backgroundColor: Colors.white,
     borderRadius: 7,
     marginBottom: 0,
@@ -36,9 +37,12 @@ let stylesMap = {
     padding: 0
   },
   inviteCode: {
-    fontSize: 18,
+    fontSize: 22,
     fontWeight: '600',
-    textAlign: 'center'
+    textAlign: 'center',
+    letterSpacing: 3,
+    color: Colors.valhalla,
+    fontFamily: 'AvenirNext-DemiBold'
   },
   bottomWrapper: {
     margin: 25,

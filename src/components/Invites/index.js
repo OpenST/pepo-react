@@ -10,7 +10,7 @@ class Invites extends Component {
   static navigationOptions = (options) => {
     return {
       headerBackTitle: null,
-      headerTitle: 'Invites',
+      headerTitle: 'Invites and Earnings',
       headerStyle: {
         backgroundColor: Colors.white,
         borderBottomWidth: 0,

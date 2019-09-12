@@ -8,7 +8,7 @@ import multipleClickHandler from '../../services/MultipleClickHandler';
 import Colors from '../../theme/styles/Colors';
 import Theme from '../../theme/styles';
 import arrowRight from '../../assets/arrowRight.png';
-import confittie from '../../assets/confittie.png';
+import confetti from '../../assets/confetti.png';
 import InAppBrowser from '../../services/InAppBrowser';
 import BackArrow from '../CommonComponents/BackArrow';
 import { ScrollView } from 'react-native-gesture-handler';
@@ -122,7 +122,7 @@ class ReferAndEarn extends Component {
         {this.state.pendingInvites != 0 ? (
           <React.Fragment>
             <View style={[styles.wrapper, styles.topWrapper, { flex: 0.3 }]}>
-              <ImageBackground source={confittie} style={{ width: '100%', height: '100%' }}>
+              <ImageBackground source={confetti} resizeMode='contain' style={{ width: '100%', height: '100%' }}>
                 <View style={{ padding: 25 }}>
                   <Text
                     style={[styles.heading, { textAlign: 'center' }]}
@@ -165,7 +165,7 @@ class ReferAndEarn extends Component {
           </React.Fragment>
         ) : (
           <View style={[styles.wrapper, styles.topWrapper, { flex: 0.3, marginBottom: 25 }]}>
-            <ImageBackground source={confittie} style={{ width: '100%', height: '100%' }}>
+            <ImageBackground source={confetti} resizeMode='contain' style={{ width: '100%', height: '100%' }}>
               <View style={{ padding: 25 }}>
                 <Text style={[styles.heading, { textAlign: 'center' }]}>
                   Amazing 50 People Joined Pepo Via Your Link
