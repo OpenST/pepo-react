@@ -19,6 +19,8 @@ const mapStateToProps = ({ login_popover }) => ({
 const btnPreText = 'Connect with Twitter';
 const btnPostText = 'Connecting...';
 
+//TODO @preshita While isTwitterConnecting, Check if android hardware back close the modal if not do nothing, if yes block android hardware back .
+
 class loginPopover extends React.Component {
   constructor(props) {
     super(props);
@@ -47,11 +49,12 @@ class loginPopover extends React.Component {
     TwitterAuthService.signUp();
   };
 
+  //Use this function if needed to handle hardware back handling for android.
   closeModal = () => {
-    if( this.isTwitterConnecting ){
-      return;
+    if( !this.isTwitterConnecting ){
+      Store.dispatch(hideLoginPopover());
     }
-    Store.dispatch(hideLoginPopover());
+    return true;
   }
 
   render() {

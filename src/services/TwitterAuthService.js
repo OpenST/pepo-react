@@ -74,8 +74,11 @@ class TwitterAuthService {
   }
 
   handleGoTo(res){
-      //TODO @preshita 
-      //IS goto 
+      //On success goto can ge hanled by the generic utility
+      if(Utilities.handleGoTo(res)){
+        return;
+      } 
+      //TODO @preshita   
       //Is error and error for invite code 
       //Goto invite screen 
       //DOnt forget to return true or false ,if handleGoTo has taken a decission return true or false  

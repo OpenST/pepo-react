@@ -7,15 +7,57 @@ import Theme from '../../theme/styles';
 import FormInput from "../../theme/components/FormInput";
 import LinearGradient from "react-native-linear-gradient";
 import confirmEmail from "../../assets/confirm-your-email-icon.png";
+import PepoApi from '../../services/PepoApi';
+import Utilities from '../../services/Utilities';
 
+//TODO @preshita block android hardware back and close modal if submitting invite code in process.
 
 class AddEmailScreen extends React.Component {
 
   constructor(props) {
     super(props);
     this.state = {
-
+      email : null ,
+      isSubmitting: false
     };
+  }
+
+  onEmail(){
+    if( !this.state.email ){
+       //TODO @preshita the validation should happen by FormInput itself but if not do it manually 
+      return ;
+    }
+
+    new PepoApi()
+    .post({email: this.state.email})
+    .then((res)=> {
+      if(res && res.success){
+        this.onSuccess(res);
+      }else{
+        this.onError(res);
+      }
+    })
+    .catch((error)=> {
+      this.onError(error);
+    })
+
+  }  
+
+  onSuccess(res){
+    //TODO show success screen 
+  }
+
+  onError(error){
+     //TODO show error, honor backend error. You should pass the response to  FormInput it will manage the display error , Check AuthScreen for refrences how to manage feild specific error and general error
+  }
+
+  //@TODO @preshita use this function on close modal and android hardware back
+  closeModal(){
+    if(!this.state.isSubmitting){
+      this.props.navigation.goBack(null);
+      Utilities.navigationDecision();
+    }
+    return true;
   }
 
   emailSignUp = () => {
