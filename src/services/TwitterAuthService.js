@@ -1,32 +1,29 @@
-import { NativeModules } from 'react-native';
 import { LoadingModal } from '../theme/components/LoadingModalCover';
 import deepGet from 'lodash/get';
 import { ostErrors } from './OstErrors';
 import InitWalletSdk from './InitWalletSdk';
 import NavigationService from './NavigationService';
 import Toast from '../theme/components/NotificationToast';
-import { TWITTER_CONSUMER_KEY, TWITTER_CONSUMER_SECRET } from '../constants';
 
 let LoginPopoverActions = null;
 import('../components/LoginPopover').then((pack) => {
   LoginPopoverActions = pack.LoginPopoverActions;
 });
 
-const { RNTwitterSignIn } = NativeModules;
-
 let CurrentUser;
 import('../models/CurrentUser').then((imports) => {
   CurrentUser = imports.default;
 });
 
+import TwitterAuth from './ExternalLogin/TwitterAuth';
+
 class TwitterAuthService {
   signUp() {
     const oThis = this;
-    this._signIn()
-      .then((loginData) => {
-        console.log(loginData);
-        if (loginData) {
-          let params = this.getParams(loginData);
+    TwitterAuth.signIn()
+      .then((params) => {
+        console.log(params);
+        if (params) {
           LoadingModal.show('Connecting...');
           CurrentUser.twitterConnect(params)
             .then((res) => {
@@ -54,7 +51,6 @@ class TwitterAuthService {
         }
       })
       .catch((error) => {
-        console.log(error);
         this.onServerError(error);
       })
       .finally(() => {
@@ -62,17 +58,8 @@ class TwitterAuthService {
       });
   }
 
-  getParams(loginData) {
-    return {
-      token: loginData.authToken,
-      secret: loginData.authTokenSecret,
-      twitter_id: loginData.userID,
-      handle: loginData.userName
-    };
-  }
-
   logout() {
-    this._signout();
+    TwitterAuth.signout();
   }
 
   setupDeviceComplete() {
@@ -94,15 +81,6 @@ class TwitterAuthService {
       text: 'Failed to login via Twitter.',
       icon: 'error'
     });
-  }
-
-  _signIn() {
-    RNTwitterSignIn.init(TWITTER_CONSUMER_KEY, TWITTER_CONSUMER_SECRET);
-    return RNTwitterSignIn.logIn();
-  }
-
-  _signout() {
-    RNTwitterSignIn.logOut();
   }
 }
 

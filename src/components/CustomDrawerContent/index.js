@@ -11,6 +11,7 @@ import loggedOutIcon from '../../assets/drawer-logout-icon.png';
 import twitterDisconnectIcon from '../../assets/drawer-twitter-icon.png';
 import referAndEarn from '../../assets/refer-and-earn.png';
 import Toast from '../../theme/components/NotificationToast';
+import multipleClickHandler from '../../services/MultipleClickHandler';
 
 import BackArrow from '../../assets/back-arrow.png';
 
@@ -95,7 +96,12 @@ export default class CustomDrawerContent extends Component {
               <Text style={styles.item}>Twitter Disconnect</Text>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity onPress={this.referAndEarn} disabled={this.state.disableButtons}>
+          <TouchableOpacity
+            onPress={multipleClickHandler(() => {
+              this.referAndEarn();
+            })}
+            disabled={this.state.disableButtons}
+          >
             <View style={styles.itemParent}>
               <Image style={{ height: 24, width: 29 }} source={referAndEarn} />
               <Text style={styles.item}>Refer and Earn</Text>
