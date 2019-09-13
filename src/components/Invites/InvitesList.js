@@ -3,6 +3,7 @@ import { View, Keyboard, FlatList } from 'react-native';
 
 import User from './User';
 import flatlistHOC from '../CommonComponents/flatlistHOC';
+import styles from './styles';
 
 class InvitesList extends Component {
   constructor(props) {
@@ -28,7 +29,7 @@ class InvitesList extends Component {
 
   render() {
     return (
-      <View style={{ paddingHorizontal: 25 }}>
+      <View style={styles.listWrapper}>
         <FlatList
           data={this.props.list}
           onScrollBeginDrag={() => Keyboard.dismiss()}

@@ -1,5 +1,6 @@
 import DefaultStyleGenerator from '../../theme/styles/DefaultStyleGenerator';
 import Colors from '../../theme/styles/Colors';
+import { getBottomSpace, ifIphoneX } from 'react-native-iphone-x-helper';
 
 let stylesMap = {
   container: {
@@ -34,6 +35,17 @@ let stylesMap = {
     color: 'rgba(42, 41, 59, 0.6);',
     fontFamily: 'AvenirNext-Medium',
     fontSize: 15
+  },
+  listWrapper: {
+    paddingHorizontal: 25,
+    ...ifIphoneX(
+      {
+        marginBottom: 50 + getBottomSpace([true])
+      },
+      {
+        marginBottom: 50
+      }
+    )
   }
 };
 
