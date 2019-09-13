@@ -2,31 +2,31 @@ import { NativeModules } from 'react-native';
 import { TWITTER_CONSUMER_KEY, TWITTER_CONSUMER_SECRET } from '../../constants';
 const { RNTwitterSignIn } = NativeModules;
 
-let twitterResponse = null;
+let twitterLoginParams = null;
 
 class TwitterAuth {
   signIn() {
     RNTwitterSignIn.init(TWITTER_CONSUMER_KEY, TWITTER_CONSUMER_SECRET);
     return RNTwitterSignIn.logIn()
       .then((res) => {
-        twitterResponse = res;
-        return this.getLoginParamsFromTwitterResponse(twitterResponse);
+        return this.__getLoginParamsFromTwitterResponse(res);
       })
       .catch((error) => {});
   }
 
   getCachedTwitterResponse() {
-    return twitterResponse;
+    return twitterLoginParams;
   }
 
-  getLoginParamsFromTwitterResponse(twitterResponse) {
-    twitterResponse = twitterResponse || {};
-    return {
+  __getLoginParamsFromTwitterResponse(twitterResponse) {
+    if (!twitterResponse) return null;
+    twitterLoginParams = {
       token: twitterResponse.authToken,
       secret: twitterResponse.authTokenSecret,
       twitter_id: twitterResponse.userID,
       handle: twitterResponse.userName
     };
+    return twitterLoginParams;
   }
 
   signout() {
