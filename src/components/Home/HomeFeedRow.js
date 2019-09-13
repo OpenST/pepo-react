@@ -99,7 +99,7 @@ class HomeFeedRow extends PureComponent {
                   onPress={this.shareVideo}
                   style={inlineStyles.txElem}
                 >
-                  <Image style={{ height: 57, width: 57 }} source={share_icon} />
+                  <Image style={{ height: 48, width: 48 }} source={share_icon} />
                 </TouchableOpacity>
               </View>
             )}
