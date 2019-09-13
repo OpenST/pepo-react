@@ -26,6 +26,13 @@ class loginPopover extends React.Component {
       disableLoginBtn: false,
       btnText: btnPreText
     };
+    this.isTwitterConnecting =  false;
+  }
+
+  componentWillUnmount(){
+    this.state.disableLoginBtn =  false ;
+    this.state.btnText =  btnPreText; 
+    this.isTwitterConnecting =  false;
   }
 
   componentDidUpdate(prevProps) {
@@ -36,12 +43,18 @@ class loginPopover extends React.Component {
 
   onSignUp = () => {
     this.setState({ disableLoginBtn: true, btnText: btnPostText });
+    this.isTwitterConnecting =  true ;
     TwitterAuthService.signUp();
-    //cannot hide popover here
   };
 
+  closeModal = () => {
+    if( this.isTwitterConnecting ){
+      return;
+    }
+    Store.dispatch(hideLoginPopover());
+  }
+
   render() {
-    console.log('disableLoginBtn', this.state.disableLoginBtn);
     return (
       <React.Fragment>
         {this.props.show && (
@@ -54,17 +67,13 @@ class loginPopover extends React.Component {
             onRequestClose={() => console.log('onRequestClose')}
           >
             <TouchableWithoutFeedback
-              onPressIn={() => {
-                Store.dispatch(hideLoginPopover());
-              }}
+              onPressIn={this.closeModal}
             >
               <View style={inlineStyles.parent}>
                 <TouchableWithoutFeedback>
                   <View style={inlineStyles.container}>
                     <TouchableOpacity
-                      onPress={() => {
-                        Store.dispatch(hideLoginPopover());
-                      }}
+                      onPress={this.closeModal}
                       style={{
                         position: 'absolute',
                         top: 15,

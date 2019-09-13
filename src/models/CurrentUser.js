@@ -103,7 +103,15 @@ class CurrentUser {
       .then(() => {
         Store.dispatch(updateCurrentUser(user));
         this.userId = userId;
-        setupDevice && InitWalletSdk.initializeDevice(this);
+        if(setupDevice){
+          return InitWalletSdk.promisifiedSetupDevice()
+                  .then((res)=> {
+                    return user;
+                  }).catch((error)=> {
+                    console.log("setup device failed", error);
+                    //DO NOTHING Unexpected error. 
+                  })
+        }
         return user;
       });
   }
@@ -131,14 +139,6 @@ class CurrentUser {
     } catch (e) {
       console.log('clearCurrentUser gaved error!', e);
     }
-  }
-
-  login(params) {
-    return this._signin('/auth/login', params);
-  }
-
-  signUp(params) {
-    return this._signin('/auth/sign-up', params);
   }
 
   twitterConnect(params) {
@@ -173,7 +173,7 @@ class CurrentUser {
   _signin(apiUrl, params) {
     let authApi = new PepoApi(apiUrl);
     return authApi.post(JSON.stringify(params)).then((apiResponse) => {
-      return this._saveCurrentUser(apiResponse)
+      return this._saveCurrentUser(apiResponse ,  null , true )
         .catch()
         .then(() => {
           return apiResponse;
@@ -255,11 +255,6 @@ class CurrentUser {
   }
   // End Move this to utilities once all branches are merged.
 
-  setupDeviceFailed(ostWorkflowContext, error) {
-    console.log('----- IMPORTANT :: SETUP DEVICE FAILED -----');
-  }
-
-  setupDeviceComplete() {}
 }
 
 const _getPassphrase = (currentUserModel, workflowDelegate, passphrasePrefixAccept) => {

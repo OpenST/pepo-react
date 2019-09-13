@@ -6,15 +6,66 @@ import inlineStyles from './styles';
 import Theme from '../../theme/styles';
 import FormInput from "../../theme/components/FormInput";
 import LinearGradient from "react-native-linear-gradient";
+import TwitterAuth from "../../services/ExternalLogin/TwitterAuth";
+import CurrentUser from '../../models/CurrentUser';
+import Utilities from '../../services/Utilities';
 
+
+//TODO @preshita block android hardware back and close modal if submitting invite code in process.
 
 class InviteCodeScreen extends React.Component {
 
   constructor(props) {
     super(props);
     this.state = {
+      inviteCode : null ,
 
     };
+    this.payload  = this.props.navigation.getParam('payload');
+  }
+
+  onInviteCodeSumit = ( ) => {
+
+    if(!this.state.inviteCode){
+      //TODO @preshita the validation should happen by FormInput itself but if not do it manually 
+      return;
+    }
+
+    let twitterAccessToken =  TwitterAuth.getCachedTwitterResponse();
+    twitterAccessToken["invite_code"] = this.state.inviteCode;
+
+    CurrentUser.twitterConnect( twitterAccessToken )
+      .then((res)=> {
+        if(res && res.success){
+          this.onSuccess(res);
+        }else{
+          this.onError( res );
+        }
+      }).catch((error)=> {
+        this.onError(error);
+      });
+
+  }
+
+  onSuccess( res ){
+   if(this.handleGoTo( res )){
+     return ;
+   }
+   Utilities.navigationDecision();
+  }
+
+  onError(error){
+    if( this.handleGoTo(error)){
+      return ;
+    }
+  }
+  
+  handleGoTo( res ){
+      //TODO @preshita 
+      //IS goto 
+      //Is error and error for invite code , show inline errors 
+      //If access token error , show error below send button. Auto close after 2 second.
+      //DOnt forget to return true or false ,if handleGoTo has taken a decission return true or false  
   }
 
   render() {

@@ -1,40 +1,57 @@
 import CurrentUser from '../models/CurrentUser';
+import NavigationService from '../services/NavigationService';
+import Utilities from '../services/Utilities';
 
 export default class NavigateTo {
   constructor(navigation) {
     this.navigation = navigation;
   }
 
-  navigate(goToObject) {
+  navigate(goToObject , payload ) {
+    goToObject =  goToObject || {}
     if (goToObject && goToObject.pn == 'p') {
-      this.goToProfilePage(goToObject.v.puid);
+      this.goToProfilePage(goToObject.v.puid , payload );
     } else if (goToObject && goToObject.pn == 'cb') {
-      this.goToSupporters(goToObject.v.puid);
+      this.goToSupporters(goToObject.v.puid , payload);
     } else if (goToObject && goToObject.pn == 'v') {
-      this.goToVideo(goToObject.v.vid);
+      this.goToVideo(goToObject.v.vid , payload);
     } else if (goToObject && goToObject.pn == 'f') {
-      this.navigation.navigate('Home');
+      this.navigation.navigate('Home' , {payload: payload});
     } else if (goToObject && goToObject.pn == 'nc') {
-      this.navigation.navigate('Notification');
+      this.navigation.navigate('Notification' , {payload : payload }) ;
+    } else if( goToObject.pn == "i"){
+      const inviteCodeScreen = "InviteCodeScreen"; 
+      if( this.navigation ){
+          this.navigation.navigate(inviteCodeScreen , {payload : payload }) ;
+      }else{
+        NavigationService.navigate(inviteCodeScreen , {payload : payload }) ;
+      }
+    } else if( goToObject.pn == "e" ){
+      if( this.navigation ){
+        this.navigation.navigate('AddEmailScreen' , {payload : payload }) ;
+      }else{
+        NavigationService.navigate('AddEmailScreen' , {payload : payload }) ;
+      }
     }
   }
 
-  goToVideo = (vId) => {
+  goToVideo = (vId , payload ) => {
     this.navigation.push('VideoPlayer', {
-      videoId: vId
+      videoId: vId,
+      payload : payload
     });
   };
 
-  goToSupporters = (profileId) => {
+  goToSupporters = (profileId , payload ) => {
     console.log('goToSupporters', profileId);
-    this.navigation.push('SupportersListScreen', { userId: profileId });
+    this.navigation.push('SupportersListScreen', { userId: profileId , payload : payload });
   };
 
-  goToProfilePage = (id) => {
+  goToProfilePage = (id , payload) => {
     if (id == CurrentUser.getUserId()) {
-      this.navigation.navigate('ProfileScreen');
+      this.navigation.navigate('ProfileScreen' , {payload :payload});
     } else {
-      this.navigation.push('UsersProfileScreen', { userId: id });
+      this.navigation.push('UsersProfileScreen', { userId: id  , payload : payload });
     }
   };
 }
