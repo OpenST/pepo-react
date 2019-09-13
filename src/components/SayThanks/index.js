@@ -8,18 +8,23 @@ import {
   BackHandler,
   Dimensions,
   ActivityIndicator,
-  TouchableWithoutFeedback
+  TouchableWithoutFeedback,
+  Switch
 } from 'react-native';
+import { connect } from 'react-redux';
 import { getBottomSpace, isIphoneX } from 'react-native-iphone-x-helper';
 import reduxGetter from '../../services/ReduxGetters';
+import CurrentUser from '../../models/CurrentUser';
 import deepGet from 'lodash/get';
 import inlineStyles from './Style';
-import modalCross from '../../assets/modal-cross-icon.png';
 import sendMessageIcon from '../../assets/send-message-icon.png';
 import ProfilePicture from '../ProfilePicture';
 import FormInput from '../../theme/components/FormInput';
 import PepoApi from '../../services/PepoApi';
 import Theme from '../../theme/styles';
+import utilities from '../../services/Utilities';
+import Colors from '../../theme/styles/Colors';
+import TwitterAuth from '../../services/ExternalLogin/TwitterAuth';
 
 const bottomSpace = getBottomSpace([true]),
   extraPadding = 10,
@@ -35,21 +40,24 @@ class SayThanks extends Component {
       thanksError: '',
       posting: false,
       bottomPadding: safeAreaBottomSpace,
-      focus: false
+      focus: false,
+      tweetValue: false
     };
   }
 
   componentDidMount() {
-    console.log('componentDidMount');
-    this.setState({
-      focus: true
+    utilities.getItem(`${this.props.current_user.id}-tweet-preferance`).then((preferance) => {
+      if (this.props.current_user.twitter_auth_expired === 0 && preferance === 'true') {
+        this.setState({
+          tweetValue: true
+        });
+      }
     });
   }
 
   componentWillMount() {
     this.keyboardWillShowListener = Keyboard.addListener('keyboardWillShow', this._keyboardShown.bind(this));
     this.keyboardWillHideListener = Keyboard.addListener('keyboardWillHide', this._keyboardHidden.bind(this));
-
     this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardShown.bind(this));
     this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardHidden.bind(this));
     BackHandler.addEventListener('hardwareBackPress', this.handleBackButtonClick);
@@ -100,6 +108,7 @@ class SayThanks extends Component {
   };
 
   sendMessage = () => {
+    let tweetNeeded = this.state.tweetValue === true ? 1 : 0;
     this.setState({ server_errors: {}, thanksError: '' });
     if (this.state.thanksMessage.trim().length == 0) {
       this.setState({ thanksError: 'Message can not be empty' });
@@ -107,12 +116,19 @@ class SayThanks extends Component {
     }
     this.setState({ posting: true });
     return new PepoApi(`/users/thank-you`)
-      .post({ notification_id: this.props.navigation.getParam('notificationId'), text: this.state.thanksMessage })
+      .post({
+        notification_id: this.props.navigation.getParam('notificationId'),
+        text: this.state.thanksMessage,
+        tweet_needed: tweetNeeded
+      })
       .then((res) => {
         this.setState({ posting: false });
         if (res && res.success) {
           this.closeModal();
           this.props.navigation.getParam('sendMessageSuccess')();
+          if (res.data.refresh_current_user) {
+            CurrentUser.sync();
+          }
         } else {
           this.setState({ server_errors: res });
         }
@@ -120,6 +136,32 @@ class SayThanks extends Component {
       .catch((error) => {
         this.setState({ posting: false });
       });
+  };
+
+  syncCurrentUser = () => {};
+
+  tweetSwitchChange = (value) => {    
+    if (this.props.current_user.twitter_auth_expired === 1) {
+      // call twitter
+
+      TwitterAuth.signIn()
+        .then((res) => {
+          if (res) {
+            return new PepoApi(`/auth/refresh-twitter-connect`)
+              .post({ token: res.token, secret: res.secret, twitter_id: res.twitter_id })
+              .then((res) => {})
+              .catch((error) => {});
+          }
+        })
+        .catch((err) => {
+          console.log('TwitterAuth.catch', err);
+        });
+    } else {
+      utilities.saveItem(`${this.props.current_user.id}-tweet-preferance`, value);
+      this.setState({
+        tweetValue: value
+      });
+    }
   };
 
   render() {
@@ -141,20 +183,13 @@ class SayThanks extends Component {
                     {reduxGetter.getName(this.props.navigation.getParam('userId'))}
                   </Text>
                 </View>
-                <TouchableOpacity
-                  onPress={() => {
-                    this.closeModal();
-                  }}
-                  style={{
-                    width: 30,
-                    height: 30,
-                    alignItems: 'center',
-                    justifyContent: 'center'
-                  }}
-                  disabled={this.state.closeDisabled}
-                >
-                  <Image source={modalCross} style={{ width: 17.5, height: 17 }} />
-                </TouchableOpacity>
+                <Text style={{ marginLeft: 'auto', marginRight: 5 }}>Tweet</Text>
+                <Switch
+                  value={this.state.tweetValue}
+                  trackColor={{ true: Colors.primary }}
+                  ios_backgroundColor="#c9cdd2"
+                  onValueChange={this.tweetSwitchChange}
+                />
               </View>
               <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 12 }}>
                 <View style={{ flex: 1 }}>
@@ -188,4 +223,5 @@ class SayThanks extends Component {
   }
 }
 
-export default SayThanks;
+const mapStateToProps = ({ current_user }) => ({ current_user });
+export default connect(mapStateToProps)(SayThanks);
