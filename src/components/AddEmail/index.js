@@ -10,6 +10,8 @@ import confirmEmail from '../../assets/confirm-your-email-icon.png';
 import PepoApi from '../../services/PepoApi';
 import Utilities from '../../services/Utilities';
 import { ostErrors } from '../../services/OstErrors';
+import Colors from '../../theme/styles/Colors';
+import CurrentUser from '../../models/CurrentUser';
 
 //TODO @preshita block android hardware back and close modal if submitting invite code in process.
 
@@ -24,7 +26,15 @@ class AddEmailScreen extends React.Component {
     };
   }
 
-  onEmail() {
+  isValidEmail = () => {
+    let validPattern = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+    if (validPattern.test(this.state.email)) {
+      return true;
+    }
+    return false;
+  };
+
+  onEmailSubmit = () => {
     if (!this.isValidEmail()) {
       //TODO @preshita the validation should happen by FormInput itself but if not do it manually
       this.setState({
@@ -33,7 +43,7 @@ class AddEmailScreen extends React.Component {
       return;
     }
 
-    new PepoApi()
+    new PepoApi(`/users/${CurrentUser.getUserId()}/save-email`)
       .post({ email: this.state.email })
       .then((res) => {
         if (res && res.success) {
@@ -45,15 +55,7 @@ class AddEmailScreen extends React.Component {
       .catch((error) => {
         this.onError(error);
       });
-  }
-
-  isValidEmail() {
-    let validPattern = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-    if (validPattern.test(this.state.email)) {
-      return true;
-    }
-    return false;
-  }
+  };
 
   onSuccess(res) {
     //TODO show success screen
@@ -67,13 +69,19 @@ class AddEmailScreen extends React.Component {
   }
 
   //@TODO @preshita use this function on close modal and android hardware back
-  closeModal() {
+  closeModal = () => {
     if (!this.state.isSubmitting) {
       this.props.navigation.goBack(null);
       Utilities.navigationDecision();
     }
     return true;
-  }
+  };
+
+  onChangeText = (email) => {
+    this.setState({
+      email
+    });
+  };
 
   emailSignUp = () => {
     return (
@@ -85,13 +93,14 @@ class AddEmailScreen extends React.Component {
           We will only send you important email related to you account activity and transaction.
         </Text>
         <FormInput
-          onChangeText={{}}
+          onChangeText={this.onChangeText}
           value={this.state.email}
           errorMsg={this.state.email_error}
           placeholder="email@gmail.com"
           fieldName="email"
           style={[Theme.TextInput.textInputStyle, { width: '100%', marginTop: 20, marginBottom: 10 }]}
-          placeholderTextColor="#ababab"
+          placeholderTextColor={Colors.darkGray}
+          autoCapitalize={'none'}
         />
         <LinearGradient
           colors={['#ff7499', '#ff7499', '#ff5566']}
@@ -104,6 +113,7 @@ class AddEmailScreen extends React.Component {
             TouchableStyles={[{ minWidth: '100%', borderColor: 'none', borderWidth: 0 }]}
             TextStyles={[Theme.Button.btnPinkText, { fontSize: 18 }]}
             text={'Sign Up'}
+            onPress={this.onEmailSubmit}
           />
         </LinearGradient>
         <Text style={Theme.Errors.errorText}>{this.state.general_error}</Text>
@@ -130,6 +140,7 @@ class AddEmailScreen extends React.Component {
             TouchableStyles={[{ minWidth: '100%', borderColor: 'none', borderWidth: 0 }]}
             TextStyles={[Theme.Button.btnPinkText, { fontSize: 18 }]}
             text={'OK'}
+            onPress={this.closeModal}
           />
         </LinearGradient>
       </React.Fragment>
@@ -138,7 +149,7 @@ class AddEmailScreen extends React.Component {
 
   render() {
     return (
-      <TouchableWithoutFeedback>
+      <TouchableWithoutFeedback onPress={this.closeModal}>
         <View style={inlineStyles.parent}>
           <TouchableWithoutFeedback>
             <View style={[inlineStyles.container]}>

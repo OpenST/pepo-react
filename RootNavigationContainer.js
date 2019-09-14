@@ -53,7 +53,7 @@ import InviteCodeScreen from './src/components/InviteCode';
 import AddEmailScreen from './src/components/AddEmail';
 import InviteCodeWorker from './src/services/InviteCodeWorker';
 
-const customTabHiddenRoutes = ['CaptureVideo', 'FanVideoDetails'];
+const customTabHiddenRoutes = ['CaptureVideo', 'FanVideoDetails', 'InviteCodeScreen', 'AddEmailScreen'];
 
 const modalStackConfig = {
   headerLayoutPreset: 'center',

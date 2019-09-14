@@ -20,10 +20,10 @@ import NavigationService from './NavigationService';
 class TwitterAuthService {
   signUp() {
     TwitterAuth.signIn()
-      .then((params) => {
+      .then(async (params) => {
         if (params) {
           //TODO @preshita Create worker as well
-          let inviteCode = Utilities.getItem(AppConfig.appInstallInviteCodeASKey);
+          let inviteCode = await Utilities.getItem(AppConfig.appInstallInviteCodeASKey);
           if (inviteCode) {
             params['invite_code'] = inviteCode;
           }
@@ -46,10 +46,7 @@ class TwitterAuthService {
         this.onServerError(error);
       })
       .finally(() => {
-        //Close After delay to avoid flickers
-        setTimeout(() => {
-          LoginPopoverActions.hide();
-        }, 300);
+        LoginPopoverActions.hide();
       });
   }
 
@@ -81,13 +78,23 @@ class TwitterAuthService {
     }
     //TODO @preshita
     //Is error and error for invite code
-    if (res && deepGet(res, 'err.error_data.invite_code')) {
+    let errorData = deepGet(res, 'err.error_data');
+    if (res && this.isInviteCodeError(errorData)) {
       //Goto invite screen
-      NavigationService.navigate('InviteCode');
+      NavigationService.navigate('InviteCodeScreen');
       return true;
     }
     return false;
     //DOnt forget to return true or false ,if handleGoTo has taken a decission return true or false
+  }
+
+  isInviteCodeError(errorObj) {
+    for (i in errorObj) {
+      if (errorObj[i].parameter === 'invite_code') {
+        return true;
+      }
+    }
+    return false;
   }
 }
 
