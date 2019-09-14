@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { StyleSheet, ScrollView, TouchableOpacity, Text, View, Image } from 'react-native';
 import { SafeAreaView } from 'react-navigation';
 import DeviceInfo from 'react-native-device-info';
+import { OstWalletSdk } from '@ostdotcom/ost-wallet-sdk-react-native';
 
 import CurrentUser from '../../models/CurrentUser';
 import reduxGetter from '../../services/ReduxGetters';
@@ -15,13 +16,13 @@ import Toast from '../../theme/components/NotificationToast';
 import multipleClickHandler from '../../services/MultipleClickHandler';
 
 import BackArrow from '../../assets/back-arrow.png';
-import {connect} from "react-redux";
-import OstWalletSdkHelper from "../../helpers/OstWalletSdkHelper";
+import { connect } from 'react-redux';
+import OstWalletSdkHelper from '../../helpers/OstWalletSdkHelper';
 
 class CustomDrawerContent extends Component {
   constructor() {
     super();
-    this.userName = "";
+    this.userName = '';
     this.state = {
       disableButtons: false,
       showWalletSettings: false
@@ -39,24 +40,23 @@ class CustomDrawerContent extends Component {
   updateMenuSettings = () => {
     this.updateUserName();
     this.updateWalletSettings();
-  }
+  };
 
   updateUserName = () => {
-    this.userName = reduxGetter.getName(CurrentUser.getUserId()) || "";
-  }
+    this.userName = reduxGetter.getName(CurrentUser.getUserId()) || '';
+  };
 
   updateWalletSettings = () => {
     if (CurrentUser.getOstUserId()) {
       OstWalletSdk.getCurrentDeviceForUserId(CurrentUser.getOstUserId(), (localDevice) => {
-
-        if (localDevice && OstWalletSdkHelper.canDeviceMakeApiCall( localDevice ) ) {
+        if (localDevice && OstWalletSdkHelper.canDeviceMakeApiCall(localDevice)) {
           this.setState({
             showWalletSettings: true
-          })
+          });
         } else {
           this.setState({
             showWalletSettings: false
-          })
+          });
         }
       });
     }
@@ -90,7 +90,7 @@ class CustomDrawerContent extends Component {
           });
       }
     );
-  };
+  }
 
   CurrentUserLogout = () => {
     let params = {
@@ -109,67 +109,71 @@ class CustomDrawerContent extends Component {
         }, 300);
       }
     );
-  }
-  
-  
+  };
+
   initWallet = () => {
     //TODO: Navigation should push instead of navigate
-    this.props.navigation.navigate("WalletSettingScreen") ;
+    this.props.navigation.navigate('WalletSettingScreen');
   };
-  
+
   renderWalletSetting = () => {
-    if ( !this.state.showWalletSettings ) {
+    if (!this.state.showWalletSettings) {
       return null;
     }
     return (
-      <TouchableOpacity onPress={this.initWallet} >
+      <TouchableOpacity onPress={this.initWallet}>
         <View style={[styles.itemParent]}>
           <Image style={{ height: 24, width: 25.3 }} source={pepoAmountWallet} />
           <Text style={styles.item}>Wallet settings</Text>
         </View>
-      </TouchableOpacity>);
-  }
-  
+      </TouchableOpacity>
+    );
+  };
+
   referAndEarn = () => {
     this.props.navigation.push('ReferAndEarn');
   };
-  
+
   render() {
     return (
-        <ScrollView style={styles.container}>
-          <SafeAreaView forceInset={{ top: 'always' }}>
-            <View style={styles.header}>
-              <TouchableOpacity
-                  onPress={this.props.navigation.closeDrawer}
-                  style={{ height: 30, width: 30, alignItems: 'center', justifyContent: 'center' }}
-              >
-                <Image style={{ width: 10, height: 18 }} source={BackArrow} />
-              </TouchableOpacity>
-              <Text style={styles.headerText}>{this.userName}</Text>
-            </View>
-            <TouchableOpacity onPress={this.twitterDisconnect} disabled={this.state.disableButtons}>
-              <View style={styles.itemParent}>
-                <Image style={{ height: 24, width: 25.3 }} source={twitterDisconnectIcon} />
-                <Text style={styles.item}>Twitter Disconnect</Text>
-              </View>
-            </TouchableOpacity>
+      <ScrollView style={styles.container}>
+        <SafeAreaView forceInset={{ top: 'always' }}>
+          <View style={styles.header}>
             <TouchableOpacity
-              onPress={multipleClickHandler(() => {
-                this.referAndEarn();
-              })}
-              disabled={this.state.disableButtons}
+              onPress={this.props.navigation.closeDrawer}
+              style={{ height: 30, width: 30, alignItems: 'center', justifyContent: 'center' }}
             >
-
-            {this.renderWalletSetting()}
-
-            <TouchableOpacity onPress={this.CurrentUserLogout} disabled={this.state.disableButtons}>
-              <View style={styles.itemParent}>
-                <Image style={{ height: 24, width: 25.3 }} source={loggedOutIcon} />
-                <Text style={styles.item}>Log out</Text>
-              </View>
+              <Image style={{ width: 10, height: 18 }} source={BackArrow} />
             </TouchableOpacity>
-          </SafeAreaView>
-        </ScrollView>
+            <Text style={styles.headerText}>{this.userName}</Text>
+          </View>
+          <TouchableOpacity onPress={this.twitterDisconnect} disabled={this.state.disableButtons}>
+            <View style={styles.itemParent}>
+              <Image style={{ height: 24, width: 25.3 }} source={twitterDisconnectIcon} />
+              <Text style={styles.item}>Twitter Disconnect</Text>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={multipleClickHandler(() => {
+              this.referAndEarn();
+            })}
+            disabled={this.state.disableButtons}
+          >
+            <View style={styles.itemParent}>
+              <Image style={{ height: 24, width: 29 }} source={referAndEarn} />
+              <Text style={styles.item}>Refer and Earn</Text>
+            </View>
+          </TouchableOpacity>
+          {this.renderWalletSetting()}
+
+          <TouchableOpacity onPress={this.CurrentUserLogout} disabled={this.state.disableButtons}>
+            <View style={styles.itemParent}>
+              <Image style={{ height: 24, width: 25.3 }} source={loggedOutIcon} />
+              <Text style={styles.item}>Log out</Text>
+            </View>
+          </TouchableOpacity>
+        </SafeAreaView>
+      </ScrollView>
     );
   }
 }

@@ -13,8 +13,7 @@ import Toast from '../theme/components/NotificationToast';
 import CameraPermissionsApi from '../services/CameraPermissionsApi';
 import { allowAcessModalEventEmitter } from '../components/AllowAccessModalScreen';
 import NavigationService from '../services/NavigationService';
-import NavigateTo from "../helpers/navigateTo";
-
+import NavigateTo from '../helpers/navigateTo';
 
 let recursiveMaxCount = 0;
 
@@ -156,21 +155,20 @@ export default {
       .join('/');
   },
 
-  navigationDecision(){
-    if (!CurrentUser.isActiveUser()) {
+  navigationDecision() {
+    if (CurrentUser.getUser() && !CurrentUser.isActiveUser()) {
       NavigationService.navigate('UserActivatingScreen');
     } else {
       NavigationService.navigate('HomeScreen');
     }
-  }, 
+  },
 
-  handleGoTo( res , navigation ){
-    let isGoto = !!deepGet(res, "go_to.pn"); 
-    if( isGoto ){
-      new NavigateTo( navigation ).navigate( res.go_to ) 
-      return true ;
+  handleGoTo(res, navigation) {
+    let isGoto = !!deepGet(res, 'go_to.pn');
+    if (isGoto) {
+      new NavigateTo(navigation).navigate(res.go_to);
+      return true;
     }
     return false;
   }
-
 };

@@ -1,3 +1,5 @@
+import deepGet from 'lodash/get';
+
 import Toast from '../theme/components/NotificationToast';
 
 let LoginPopoverActions = null;
@@ -13,17 +15,17 @@ import('../models/CurrentUser').then((imports) => {
 import TwitterAuth from './ExternalLogin/TwitterAuth';
 import Utilities from './Utilities';
 import AppConfig from '../constants/AppConfig';
+import NavigationService from './NavigationService';
 
 class TwitterAuthService {
-  
   signUp() {
     TwitterAuth.signIn()
       .then((params) => {
         if (params) {
-          //TODO @preshita Create worker as well 
-          let inviteCode = Utilities.getItem(AppConfig.appInstallInviteCodeASKey) ;
-          if( inviteCode ){
-            params['invite_code'] =  inviteCode; 
+          //TODO @preshita Create worker as well
+          let inviteCode = Utilities.getItem(AppConfig.appInstallInviteCodeASKey);
+          if (inviteCode) {
+            params['invite_code'] = inviteCode;
           }
           CurrentUser.twitterConnect(params)
             .then((res) => {
@@ -45,27 +47,26 @@ class TwitterAuthService {
       })
       .finally(() => {
         //Close After delay to avoid flickers
-        setTimeout(()=> {
+        setTimeout(() => {
           LoginPopoverActions.hide();
-        },  300 )
+        }, 300);
       });
   }
 
-
   onSuccess(res) {
-    if( this.handleGoTo( res )){
-      return ;
+    if (this.handleGoTo(res)) {
+      return;
     }
     Utilities.navigationDecision();
   }
 
   logout() {
-    TwitterAuth.signout();
+    TwitterAuth.signOut();
   }
 
   onServerError(error) {
-    if( this.handleGoTo(error)){
-      return ;
+    if (this.handleGoTo(error)) {
+      return;
     }
     Toast.show({
       text: 'Failed to login via Twitter.',
@@ -73,17 +74,21 @@ class TwitterAuthService {
     });
   }
 
-  handleGoTo(res){
-      //On success goto can ge hanled by the generic utility
-      if(Utilities.handleGoTo(res)){
-        return;
-      } 
-      //TODO @preshita   
-      //Is error and error for invite code 
-      //Goto invite screen 
-      //DOnt forget to return true or false ,if handleGoTo has taken a decission return true or false  
+  handleGoTo(res) {
+    //On success goto can be handled by the generic utility
+    if (Utilities.handleGoTo(res)) {
+      return true;
+    }
+    //TODO @preshita
+    //Is error and error for invite code
+    if (res && deepGet(res, 'err.error_data.invite_code')) {
+      //Goto invite screen
+      NavigationService.navigate('InviteCode');
+      return true;
+    }
+    return false;
+    //DOnt forget to return true or false ,if handleGoTo has taken a decission return true or false
   }
-
 }
 
 export default new TwitterAuthService();

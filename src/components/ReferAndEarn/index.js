@@ -43,7 +43,7 @@ class ReferAndEarn extends Component {
   }
 
   componentDidMount() {
-    // new PepoApi(`/${CurrentUser.getUserId()}/invite-code`)
+    // new PepoApi(`/get-invite-code`)
     //   .get()
     //   .then((res) => {
     //     this.onInit(res);
@@ -122,7 +122,7 @@ class ReferAndEarn extends Component {
         {this.state.pendingInvites != 0 ? (
           <React.Fragment>
             <View style={[styles.wrapper, styles.topWrapper, { flex: 0.3 }]}>
-              <ImageBackground source={confetti} resizeMode='contain' style={{ width: '100%', height: '100%' }}>
+              <ImageBackground source={confetti} resizeMode="contain" style={{ width: '100%', height: '100%' }}>
                 <View style={{ padding: 25 }}>
                   <Text
                     style={[styles.heading, { textAlign: 'center' }]}
@@ -165,7 +165,7 @@ class ReferAndEarn extends Component {
           </React.Fragment>
         ) : (
           <View style={[styles.wrapper, styles.topWrapper, { flex: 0.3, marginBottom: 25 }]}>
-            <ImageBackground source={confetti} resizeMode='contain' style={{ width: '100%', height: '100%' }}>
+            <ImageBackground source={confetti} resizeMode="contain" style={{ width: '100%', height: '100%' }}>
               <View style={{ padding: 25 }}>
                 <Text style={[styles.heading, { textAlign: 'center' }]}>
                   Amazing 50 People Joined Pepo Via Your Link
