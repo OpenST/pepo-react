@@ -17,12 +17,10 @@ import reduxGetter from '../../services/ReduxGetters';
 import CurrentUser from '../../models/CurrentUser';
 import deepGet from 'lodash/get';
 import inlineStyles from './Style';
-import sendMessageIcon from '../../assets/send-message-icon.png';
 import ProfilePicture from '../ProfilePicture';
 import FormInput from '../../theme/components/FormInput';
 import PepoApi from '../../services/PepoApi';
 import Theme from '../../theme/styles';
-import utilities from '../../services/Utilities';
 import Colors from '../../theme/styles/Colors';
 import TwitterAuth from '../../services/ExternalLogin/TwitterAuth';
 
@@ -32,6 +30,7 @@ const bottomSpace = getBottomSpace([true]),
 
 class SayThanks extends Component {
   constructor(props) {
+    console.log('SayThanks:Component');
     super(props);
     this.state = {
       closeDisabled: false,
@@ -41,19 +40,13 @@ class SayThanks extends Component {
       posting: false,
       bottomPadding: safeAreaBottomSpace,
       focus: false,
-      tweetValue: false
+      tweetOn: false,
+      gettingTweetInfo: false
     };
+    this.tweeterHandle = '';
   }
 
-  componentDidMount() {
-    utilities.getItem(`${this.props.current_user.id}-tweet-preferance`).then((preferance) => {
-      if (this.props.current_user.twitter_auth_expired === 0 && preferance === 'true') {
-        this.setState({
-          tweetValue: true
-        });
-      }
-    });
-  }
+  componentDidMount() {}
 
   componentWillMount() {
     this.keyboardWillShowListener = Keyboard.addListener('keyboardWillShow', this._keyboardShown.bind(this));
@@ -108,17 +101,21 @@ class SayThanks extends Component {
   };
 
   sendMessage = () => {
-    let tweetNeeded = this.state.tweetValue === true ? 1 : 0;
+    let tweetNeeded = this.state.tweetOn === true ? 1 : 0;
+    let tweetText = this.tweeterHandle
+      ? `@${this.tweeterHandle} ${this.state.thanksMessage}`
+      : this.state.thanksMessage;
     this.setState({ server_errors: {}, thanksError: '' });
     if (this.state.thanksMessage.trim().length == 0) {
       this.setState({ thanksError: 'Message can not be empty' });
       return;
     }
     this.setState({ posting: true });
+
     return new PepoApi(`/users/thank-you`)
       .post({
         notification_id: this.props.navigation.getParam('notificationId'),
-        text: this.state.thanksMessage,
+        text: tweetText,
         tweet_needed: tweetNeeded
       })
       .then((res) => {
@@ -126,9 +123,6 @@ class SayThanks extends Component {
         if (res && res.success) {
           this.closeModal();
           this.props.navigation.getParam('sendMessageSuccess')();
-          if (res.data.refresh_current_user) {
-            CurrentUser.sync();
-          }
         } else {
           this.setState({ server_errors: res });
         }
@@ -140,26 +134,57 @@ class SayThanks extends Component {
 
   syncCurrentUser = () => {};
 
-  tweetSwitchChange = (value) => {    
-    if (this.props.current_user.twitter_auth_expired === 1) {
-      // call twitter
+  tweetSwitchChange = (value) => {
+    if (value === true && !this.tweeterHandle) {      
+      this.setState({ gettingTweetInfo: true });
+      return new PepoApi(`/users/tweet-info`)
+        .post({ receiver_user_id: this.props.navigation.getParam('userId') })
+        .then((response) => {
+          this.setState({ gettingTweetInfo: false });
+          if (response && response.success) {
+            let twitterInfo =
+              response.data.twitter_users && response.data.twitter_users[this.props.navigation.getParam('userId')];
+            this.tweeterHandle = twitterInfo && twitterInfo.handle;
+            if (response.data.current_user.tweeter_auth_expired === 1) {
+              console.log('tweeter auth expired');
+              TwitterAuth.signIn().then((res) => {
+                if (res) {
+                  return new PepoApi(`/auth/refresh-twitter-connect`)
+                    .post(res)
+                    .then((resp) => {
+                      if (resp && resp.success) {
+                        this.setState({
+                          tweetOn: value
+                        });
+                      } else {
+                        //TODO: show error
+                      }
+                    })
+                    .catch((error) => {});
+                }
+              });
+            } else {
+              console.log('tweeter auth not expired');
+              this.setState({
+                tweetOn: value
+              });
+            }
+          }
 
-      TwitterAuth.signIn()
-        .then((res) => {
-          if (res) {
-            return new PepoApi(`/auth/refresh-twitter-connect`)
-              .post({ token: res.token, secret: res.secret, twitter_id: res.twitter_id })
-              .then((res) => {})
-              .catch((error) => {});
+          if (resp && resp.success) {
+            this.setState({
+              tweetOn: value
+            });
+          } else {
+            //TODO: show error
           }
         })
-        .catch((err) => {
-          console.log('TwitterAuth.catch', err);
+        .catch((error) => {
+          this.setState({ gettingTweetInfo: false });
         });
     } else {
-      utilities.saveItem(`${this.props.current_user.id}-tweet-preferance`, value);
       this.setState({
-        tweetValue: value
+        tweetOn: value
       });
     }
   };
@@ -176,6 +201,14 @@ class SayThanks extends Component {
         <View style={{ flex: 1, backgroundColor: 'transparent' }}>
           <TouchableWithoutFeedback>
             <View style={[inlineStyles.container, { paddingBottom: this.state.bottomPadding }]}>
+              {this.state.gettingTweetInfo && (
+                <View style={[inlineStyles.backgroundStyle]}>
+                  <View style={{ padding: 26 }}>
+                    <ActivityIndicator />
+                  </View>
+                </View>
+              )}
+
               <View style={inlineStyles.headerWrapper}>
                 <View style={{ flexDirection: 'row' }}>
                   <ProfilePicture userId={this.props.navigation.getParam('userId')} />
@@ -185,13 +218,13 @@ class SayThanks extends Component {
                 </View>
                 <Text style={{ marginLeft: 'auto', marginRight: 5 }}>Tweet</Text>
                 <Switch
-                  value={this.state.tweetValue}
+                  value={this.state.tweetOn}
                   trackColor={{ true: Colors.primary }}
                   ios_backgroundColor="#c9cdd2"
                   onValueChange={this.tweetSwitchChange}
                 />
               </View>
-              <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 12 }}>
+              <View style={{ marginTop: 14, width: '100%' }}>
                 <View style={{ flex: 1 }}>
                   <FormInput
                     onChangeText={this.changeMessage}
@@ -205,12 +238,20 @@ class SayThanks extends Component {
                     placeholderTextColor="#ababab"
                   />
                 </View>
-                <TouchableOpacity onPress={this.sendMessage} style={{ alignSelf: 'flex-start' }}>
-                  <Image
-                    style={{ height: 40, width: 40, marginLeft: 8, marginTop: 5, transform: [{ rotate: '-45deg' }] }}
-                    source={sendMessageIcon}
-                  />
-                </TouchableOpacity>
+                <TouchableWithoutFeedback onPress={this.sendMessage}>
+                  <View
+                    style={{
+                      backgroundColor: Colors.primary,
+                      height: 40,
+                      borderRadius: 4,
+                      width: '100%',
+                      justifyContent: 'center',
+                      marginTop: 8
+                    }}
+                  >
+                    <Text style={{ textAlign: 'center', color: Colors.white }}>Send</Text>
+                  </View>
+                </TouchableWithoutFeedback>
               </View>
               <View style={{ height: 15 }}>
                 {this.state.posting && <ActivityIndicator size="small" color="#168dc1" />}
