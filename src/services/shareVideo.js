@@ -22,13 +22,6 @@ class ShareVideo {
     shareObject['message'] = shareData.message ? shareData.message : '';
     shareObject['title'] = shareData.title ? shareData.title : '';
     shareObject['subject'] = shareData.subject ? shareData.subject : '';
-    if (shareData.url) {
-      if (Platform.OS == 'ios') {
-        shareObject['url'] = shareData.url;
-      } else {
-        shareObject['message'] += ` ${shareData.url}`;
-      }
-    }
     return shareObject;
   }
 
