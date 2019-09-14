@@ -28,11 +28,12 @@ class PushNotificationManager extends PureComponent {
       .then((notificationData) => notificationData && this.handleGoto(notificationData.notification.data));
     this.removeNotificationOpenedListener = firebase.notifications().onNotificationOpened((notificationData) => {
       this.handleGoto(notificationData.notification.data);
+      this.clearNotifications();
     });
 
     this.removeNotificationListener = firebase
       .notifications()
-      .onNotification((notification) => {
+      .onNotification((notification) => {        
         if (this.props.currentUserId) {          
           new PepoApi(`/users/${this.props.currentUserId}/reset-badge`)
             .post()
