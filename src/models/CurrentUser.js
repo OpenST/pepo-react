@@ -7,8 +7,9 @@ import NavigationService from '../services/NavigationService';
 import appConfig from '../constants/AppConfig';
 import reduxGetter from '../services/ReduxGetters';
 import InitWalletSdk from '../services/InitWalletSdk';
-import Toast from "../theme/components/NotificationToast";
+import Toast from '../theme/components/NotificationToast';
 import { PushNotificationMethods } from '../services/PushNotificationManager';
+import OstWorkflowDelegate from '../helpers/OstWorkflowDelegate';
 
 // Used require to support all platforms
 const RCTNetworking = require('RCTNetworking');
@@ -102,7 +103,16 @@ class CurrentUser {
       .then(() => {
         Store.dispatch(updateCurrentUser(user));
         this.userId = userId;
-        setupDevice && InitWalletSdk.initializeDevice(this);
+        if (setupDevice) {
+          return InitWalletSdk.promisifiedSetupDevice()
+            .then((res) => {
+              return user;
+            })
+            .catch((error) => {
+              console.log('setup device failed', error);
+              //DO NOTHING Unexpected error.
+            });
+        }
         return user;
       });
   }
@@ -132,47 +142,39 @@ class CurrentUser {
     }
   }
 
-  login(params) {
-    return this._signin('/auth/login', params);
-  }
-
-  signUp(params) {
-    return this._signin('/auth/sign-up', params);
-  }
-
   twitterConnect(params) {
     return this._signin('/auth/twitter-login', params);
   }
 
-    async logout(params) {
-        await new PepoApi('/auth/logout')
-            .post(params)
-            .then((res) => {
-                RCTNetworking.clearCookies(async () => {
-                    await this.clearCurrentUser();
-                    PushNotificationMethods.deleteToken();
-                    NavigationService.navigate('HomeScreen', params)
-                });
-            })
-            .catch((error) => {
-                Toast.show({
-                    text: 'Logout failed please try again.',
-                    icon: 'error'
-                });
-            });
-    }
-
-    async logoutLocal(params) {
-        await RCTNetworking.clearCookies(async () => {
-            await this.clearCurrentUser();
-            NavigationService.navigate('HomeScreen', params)
+  async logout(params) {
+    await new PepoApi('/auth/logout')
+      .post(params)
+      .then((res) => {
+        RCTNetworking.clearCookies(async () => {
+          await this.clearCurrentUser();
+          PushNotificationMethods.deleteToken();
+          NavigationService.navigate('HomeScreen', params);
         });
-    }
+      })
+      .catch((error) => {
+        Toast.show({
+          text: 'Logout failed please try again.',
+          icon: 'error'
+        });
+      });
+  }
+
+  async logoutLocal(params) {
+    await RCTNetworking.clearCookies(async () => {
+      await this.clearCurrentUser();
+      NavigationService.navigate('HomeScreen', params);
+    });
+  }
 
   _signin(apiUrl, params) {
     let authApi = new PepoApi(apiUrl);
     return authApi.post(JSON.stringify(params)).then((apiResponse) => {
-      return this._saveCurrentUser(apiResponse)
+      return this._saveCurrentUser(apiResponse, null, true)
         .catch()
         .then(() => {
           return apiResponse;
@@ -182,10 +184,17 @@ class CurrentUser {
 
   getUserSalt() {
     return new PepoApi('/users/recovery-info').get();
+
+    //TODO: Someday, in far future, uncomment below code.
+    // if ( _canFetchSalt ) {
+    //   _canFetchSalt = false;
+    //   return new PepoApi('/users/recovery-info').get();
+    // }
+    // return Promise.reject("illegalaccesserror tried to access method.");
   }
 
   newPassphraseDelegate() {
-    let delegate = new OstWalletUIWorkflowCallback();
+    let delegate = new OstWorkflowDelegate(this.getOstUserId(), this);
     this.bindSetPassphrase(delegate);
     return delegate;
   }
@@ -193,31 +202,7 @@ class CurrentUser {
   bindSetPassphrase(uiWorkflowCallback) {
     Object.assign(uiWorkflowCallback, {
       getPassphrase: (userId, ostWorkflowContext, passphrasePrefixAccept) => {
-        if (!userId || this.getOstUserId() != userId) {
-          //TODO: Figure out what to do here.
-          passphrasePrefixAccept.cancelFlow();
-          return;
-        }
-
-        this.getUserSalt()
-          .then((res) => {
-            if (res.success && res.data) {
-              let resultType = deepGet(res, 'data.result_type'),
-                userSalt = deepGet(res, `data.${resultType}.scrypt_salt`);
-
-              if (!userSalt) {
-                //TODO: Figure out what to do here.
-                passphrasePrefixAccept.cancelFlow();
-              }
-
-              // provide the passphrase to sdk.
-              passphrasePrefixAccept.setPassphrase(userSalt);
-            }
-          })
-          .catch(() => {
-            //TODO: Figure out what to do here.
-            passphrasePrefixAccept.cancelFlow();
-          });
+        return _getPassphrase(this, uiWorkflowCallback, passphrasePrefixAccept);
       }
     });
   }
@@ -269,12 +254,60 @@ class CurrentUser {
     return returnVal;
   }
   // End Move this to utilities once all branches are merged.
+}
 
-  setupDeviceFailed(ostWorkflowContext, error) {
-    console.log('----- IMPORTANT :: SETUP DEVICE FAILED -----');
+const _getPassphrase = (currentUserModel, workflowDelegate, passphrasePrefixAccept) => {
+  if (!_ensureValidUserId(currentUserModel, workflowDelegate, passphrasePrefixAccept)) {
+    passphrasePrefixAccept.cancelFlow();
+    return Promise.resolve();
   }
 
-  setupDeviceComplete() {}
-}
+  _canFetchSalt = true;
+  const getSaltPromise = currentUserModel
+    .getUserSalt()
+    .then((res) => {
+      if (!_ensureValidUserId(currentUserModel, workflowDelegate, passphrasePrefixAccept)) {
+        return;
+      }
+
+      if (res.success && res.data) {
+        let resultType = deepGet(res, 'data.result_type'),
+          passphrasePrefixString = deepGet(res, `data.${resultType}.scrypt_salt`);
+
+        if (!passphrasePrefixString) {
+          passphrasePrefixAccept.cancelFlow();
+          workflowDelegate.saltFetchFailed();
+          return;
+        }
+
+        passphrasePrefixAccept.setPassphrase(passphrasePrefixString, currentUserModel.getOstUserId(), () => {
+          passphrasePrefixAccept.cancelFlow();
+          workflowDelegate.saltFetchFailed();
+        });
+      }
+    })
+    .catch((err) => {
+      if (_ensureValidUserId(currentUserModel, workflowDelegate, passphrasePrefixAccept)) {
+        passphrasePrefixAccept.cancelFlow();
+        workflowDelegate.saltFetchFailed(err);
+      }
+    });
+  _canFetchSalt = false;
+
+  return getSaltPromise;
+};
+
+const _ensureValidUserId = (currentUserModel, workflowDelegate, passphrasePrefixAccept) => {
+  if (currentUserModel.getOstUserId() === workflowDelegate.userId) {
+    return true;
+  }
+
+  // Inconsistent UserId.
+  passphrasePrefixAccept.cancelFlow();
+  workflowDelegate.inconsistentUserId(workflowDelegate.userId, currentUserModel.getOstUserId());
+  return false;
+};
+
+let _canFetchSalt = false;
 
 export default new CurrentUser();

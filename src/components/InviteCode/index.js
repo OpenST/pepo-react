@@ -4,36 +4,134 @@ import TouchableButton from '../../theme/components/TouchableButton';
 
 import inlineStyles from './styles';
 import Theme from '../../theme/styles';
-import FormInput from "../../theme/components/FormInput";
-import LinearGradient from "react-native-linear-gradient";
+import FormInput from '../../theme/components/FormInput';
+import LinearGradient from 'react-native-linear-gradient';
+import TwitterAuth from '../../services/ExternalLogin/TwitterAuth';
+import CurrentUser from '../../models/CurrentUser';
+import Utilities from '../../services/Utilities';
+import { ostErrors } from '../../services/OstErrors';
+import Colors from '../../theme/styles/Colors';
 
+//TODO @preshita this.state.isSubmitting block android hardware back and close modal if submitting invite code in process.
 
 class InviteCodeScreen extends React.Component {
-
   constructor(props) {
     super(props);
     this.state = {
-
+      inviteCode: null,
+      isSubmitting: false,
+      general_error: null,
+      server_errors: {},
+      errorMsg: '',
+      invite_code_error: ''
     };
+    this.payload = this.props.navigation.getParam('payload');
   }
+
+  componentDidMount() {
+    BackHandler.addEventListener('hardwareBackPress', this.handleBackButtonClick);
+  }
+
+  componentWillMount() {
+    BackHandler.removeEventListener('hardwareBackPress', this.handleBackButtonClick);
+  }
+
+  handleBackButtonClick = () => {
+    if (this.isSubmitting) {
+      return true;
+    }
+  };
+
+  onInviteCodeSumit = () => {
+    if (!this.state.inviteCode) {
+      //TODO @preshita the validation should happen by FormInput itself but if not do it manually
+      this.setState({
+        invite_code_error: ostErrors.getUIErrorMessage('invite_code_error')
+      });
+      return;
+    }
+
+    this.setState({ isSubmitting: true });
+
+    let twitterAccessToken = TwitterAuth.getCachedTwitterResponse();
+    twitterAccessToken['invite_code'] = this.state.inviteCode;
+
+    CurrentUser.twitterConnect(twitterAccessToken)
+      .then((res) => {
+        if (res && res.success) {
+          this.onSuccess(res);
+        } else {
+          this.onError(res);
+        }
+      })
+      .catch((error) => {
+        this.onError(error);
+      })
+      .finally(() => {
+        this.setState({ isSubmitting: false });
+      });
+  };
+
+  onSuccess(res) {
+    if (this.handleGoTo(res)) {
+      return;
+    }
+    this.props.navigation.goBack();
+    Utilities.navigationDecision();
+  }
+
+  onError(error) {
+    if (this.handleGoTo(error)) {
+      return;
+    }
+  }
+
+  handleGoTo(res) {
+    //On success goto can ge hanled by the generic utility
+    if (Utilities.handleGoTo(res, this.props.navigation)) {
+      return true;
+    }
+    //TODO @preshita
+    //Is error and error for invite code , show inline errors, honor backend error. You should pass the response to  FormInput it will manage the display error. Check AuthScreen for refrences , how to manage feild specific error and general error
+    if (res && deepGet(res, 'err.error_data')) {
+      this.setState({
+        server_errors: res,
+        general_error: ostErrors.getErrorMessage(res)
+      });
+      return false;
+    }
+    //If access token error , show error below send button. Auto close after 2 second.
+
+    //DOnt forget to return true or false ,if handleGoTo has taken a decission return true or false
+  }
+
+  //@TODO @preshita use this function on close modal and android hardware back
+  closeModal = () => {
+    if (!this.state.isSubmitting) {
+      this.props.navigation.goBack();
+    }
+  };
 
   render() {
     return (
-      <TouchableWithoutFeedback >
-        <View style={ inlineStyles.parent }>
+      <TouchableWithoutFeedback onPressIn={this.closeModal}>
+        <View style={inlineStyles.parent}>
           <TouchableWithoutFeedback>
-            <View style={[inlineStyles.container ]}>
-              <Text style={[inlineStyles.desc, {marginBottom: 10, fontSize: 18}]}>Looks like your account is not whitelisted</Text>
-              <Text style={[inlineStyles.desc, {fontFamily: 'AvenirNext-Regular'}]}>To activite your account you can either join via a invite link enter a referal code below.</Text>
+            <View style={[inlineStyles.container]}>
+              <Text style={[inlineStyles.desc, { marginBottom: 10, fontSize: 18 }]}>
+                Looks like your account is not whitelisted
+              </Text>
+              <Text style={[inlineStyles.desc, { fontFamily: 'AvenirNext-Regular' }]}>
+                To activite your account you can either join via a invite link enter a referal code below.
+              </Text>
               <FormInput
                 onChangeText={{}}
-                value={{}}
-                placeholder="1-2-2-1-2-1"
-                fieldName=""
-                style={[Theme.TextInput.textInputStyle, {width: '100%', marginTop: 20, marginBottom: 10}]}
-                placeholderTextColor="#ababab"
-                keyboardType="numeric"
-                isFocus={{}}
+                value={this.state.inviteCode}
+                fieldName="inviteCode"
+                style={[Theme.TextInput.textInputStyle, { width: '100%', marginTop: 20, marginBottom: 10 }]}
+                placeholderTextColor={Colors.darkGray}
+                errorMsg={this.state.invite_code_error}
+                serverErrors={this.state.server_errors}
               />
               <LinearGradient
                 colors={['#ff7499', '#ff7499', '#ff5566']}
@@ -45,9 +143,10 @@ class InviteCodeScreen extends React.Component {
                 <TouchableButton
                   TouchableStyles={[{ minWidth: '100%', borderColor: 'none', borderWidth: 0 }]}
                   TextStyles={[Theme.Button.btnPinkText, { fontSize: 18 }]}
-                  text={"Enter"}
+                  text={'Enter'}
                 />
               </LinearGradient>
+              <Text style={Theme.Errors.errorText}>{this.state.general_error}</Text>
             </View>
           </TouchableWithoutFeedback>
         </View>

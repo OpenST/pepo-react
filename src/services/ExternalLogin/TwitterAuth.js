@@ -29,7 +29,7 @@ class TwitterAuth {
     return twitterLoginParams;
   }
 
-  signout() {
+  signOut() {
     RNTwitterSignIn.logOut();
   }
 }

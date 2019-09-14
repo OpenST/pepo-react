@@ -20,6 +20,15 @@ export default {
     activating: 'activating'
   },
 
+  deviceStatusMap: {
+    registered: 'registered',
+    authorizing: 'authorizing',
+    authorized: 'authorized',
+    revoking: 'revoking',
+    recovering: 'recovering',
+    revoked: 'revoked'
+  },
+
   ruleTypeMap: {
     directTransfer: 'direct transfer',
     pricer: 'pricer'
@@ -180,6 +189,8 @@ export default {
       // TWITTER: 'twitter.com'
     }
   },
+
+  appInstallInviteCodeASKey : "app_install_invite_code",
 
   searchConfig: {
     MIN_SEARCH_CHAR: 2

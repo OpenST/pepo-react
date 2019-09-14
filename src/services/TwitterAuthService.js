@@ -1,8 +1,5 @@
-import { LoadingModal } from '../theme/components/LoadingModalCover';
 import deepGet from 'lodash/get';
-import { ostErrors } from './OstErrors';
-import InitWalletSdk from './InitWalletSdk';
-import NavigationService from './NavigationService';
+
 import Toast from '../theme/components/NotificationToast';
 
 let LoginPopoverActions = null;
@@ -16,29 +13,24 @@ import('../models/CurrentUser').then((imports) => {
 });
 
 import TwitterAuth from './ExternalLogin/TwitterAuth';
+import Utilities from './Utilities';
+import AppConfig from '../constants/AppConfig';
+import NavigationService from './NavigationService';
 
 class TwitterAuthService {
   signUp() {
-    const oThis = this;
     TwitterAuth.signIn()
       .then((params) => {
-        console.log(params);
         if (params) {
-          LoadingModal.show('Connecting...');
+          //TODO @preshita Create worker as well
+          let inviteCode = Utilities.getItem(AppConfig.appInstallInviteCodeASKey);
+          if (inviteCode) {
+            params['invite_code'] = inviteCode;
+          }
           CurrentUser.twitterConnect(params)
             .then((res) => {
-              if (res.success && res.data) {
-                let resultType = deepGet(res, 'data.result_type'),
-                  userData = deepGet(res, 'data.' + resultType);
-                if (!userData) {
-                  LoadingModal.hide();
-                  Toast.show({
-                    text: ostErrors.getErrorMessage(res),
-                    icon: 'error'
-                  });
-                  return;
-                }
-                InitWalletSdk.initializeDevice(oThis);
+              if (res && res.success) {
+                this.onSuccess(res);
               } else {
                 this.onServerError(res);
               }
@@ -54,33 +46,48 @@ class TwitterAuthService {
         this.onServerError(error);
       })
       .finally(() => {
-        LoginPopoverActions.hide();
+        //Close After delay to avoid flickers
+        setTimeout(() => {
+          LoginPopoverActions.hide();
+        }, 300);
       });
   }
 
-  logout() {
-    TwitterAuth.signout();
-  }
-
-  setupDeviceComplete() {
-    LoadingModal.hide();
-    if (!CurrentUser.isActiveUser()) {
-      NavigationService.navigate('UserActivatingScreen');
-    } else {
-      NavigationService.navigate('HomeScreen');
+  onSuccess(res) {
+    if (this.handleGoTo(res)) {
+      return;
     }
+    Utilities.navigationDecision();
   }
 
-  setupDeviceFailed(ostWorkflowContext, error) {
-    // this.onServerError(error);
+  logout() {
+    TwitterAuth.signOut();
   }
 
-  onServerError(res) {
-    LoadingModal.hide();
+  onServerError(error) {
+    if (this.handleGoTo(error)) {
+      return;
+    }
     Toast.show({
       text: 'Failed to login via Twitter.',
       icon: 'error'
     });
+  }
+
+  handleGoTo(res) {
+    //On success goto can be handled by the generic utility
+    if (Utilities.handleGoTo(res)) {
+      return true;
+    }
+    //TODO @preshita
+    //Is error and error for invite code
+    if (res && deepGet(res, 'err.error_data.invite_code')) {
+      //Goto invite screen
+      NavigationService.navigate('InviteCode');
+      return true;
+    }
+    return false;
+    //DOnt forget to return true or false ,if handleGoTo has taken a decission return true or false
   }
 }
 
