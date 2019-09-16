@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import { View, Keyboard, FlatList } from 'react-native';
+import { View, Keyboard, FlatList, Text } from 'react-native';
 
 import User from './User';
 import flatlistHOC from '../CommonComponents/flatlistHOC';
 import styles from './styles';
+import Colors from '../../theme/styles/Colors';
 
 class InvitesList extends Component {
   constructor(props) {
@@ -18,13 +19,17 @@ class InvitesList extends Component {
 
   getEmptyComponent = () => {
     if (this.props.noResultsFound) {
-      this.renderNoResults();
+      return this.renderNoResults();
     }
     return null;
   };
 
   renderNoResults() {
-    return <View>No Invitees!</View>;
+    return (
+      <View>
+        <Text style={{ textAlign: 'center', color: Colors.darkGray }}>No Invitees!</Text>
+      </View>
+    );
   }
 
   render() {
