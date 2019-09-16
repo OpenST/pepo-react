@@ -48,7 +48,8 @@ class AddEmailScreen extends React.Component {
 
     this.setState({
       isSubmitting: true,
-      btnSubmitText: 'Processing...'
+      btnSubmitText: 'Processing...',
+      email_error: null
     });
 
     new PepoApi(`/users/${CurrentUser.getUserId()}/save-email`)
@@ -97,7 +98,8 @@ class AddEmailScreen extends React.Component {
 
   onChangeText = (email) => {
     this.setState({
-      email
+      email,
+      email_error: null
     });
   };
 

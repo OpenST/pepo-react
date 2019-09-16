@@ -12,7 +12,7 @@ import CurrentUser from '../../models/CurrentUser';
 import Utilities from '../../services/Utilities';
 import { ostErrors } from '../../services/OstErrors';
 import Colors from '../../theme/styles/Colors';
-import {navigateTo} from "../../helpers/navigateTo";
+import { navigateTo } from '../../helpers/navigateTo';
 
 //TODO @preshita this.state.isSubmitting block android hardware back and close modal if submitting invite code in process.
 
@@ -53,7 +53,7 @@ class InviteCodeScreen extends React.Component {
       return;
     }
 
-    this.setState({ isSubmitting: true, submitText: 'Processing...' });
+    this.setState({ isSubmitting: true, submitText: 'Processing...', invite_code_error: null });
 
     let twitterAccessToken = TwitterAuth.getCachedTwitterResponse();
     twitterAccessToken['invite_code'] = this.state.inviteCode;
@@ -117,7 +117,8 @@ class InviteCodeScreen extends React.Component {
 
   onChangeText = (inviteCode) => {
     this.setState({
-      inviteCode
+      inviteCode,
+      invite_code_error: null
     });
   };
 
