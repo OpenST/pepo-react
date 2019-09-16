@@ -79,7 +79,7 @@ class PushNotificationManager extends PureComponent {
     if (Object.keys(gotoObject).length < 0) return;
     navigateTo.setGoTo(gotoObject);
     if(CurrentUser.isActiveUser()){
-      navigateTo.navigationDecision(false);
+      navigateTo.navigationDecision(true);
     }
   }
 
