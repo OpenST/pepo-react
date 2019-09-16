@@ -12,6 +12,7 @@ import CurrentUser from '../../models/CurrentUser';
 import Utilities from '../../services/Utilities';
 import { ostErrors } from '../../services/OstErrors';
 import Colors from '../../theme/styles/Colors';
+import {navigateTo} from "../../helpers/navigateTo";
 
 //TODO @preshita this.state.isSubmitting block android hardware back and close modal if submitting invite code in process.
 
@@ -79,7 +80,7 @@ class InviteCodeScreen extends React.Component {
       return;
     }
     this.props.navigation.goBack();
-    Utilities.navigationDecision();
+    navigateTo.navigationDecision();
   }
 
   onError(error) {
@@ -90,7 +91,7 @@ class InviteCodeScreen extends React.Component {
 
   handleGoTo(res) {
     //On success goto can ge hanled by the generic utility
-    if (Utilities.handleGoTo(res, this.props.navigation)) {
+    if (navigateTo.handleGoTo(res, this.props.navigation)) {
       this.props.navigation.goBack();
       return true;
     }

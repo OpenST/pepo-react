@@ -8,10 +8,10 @@ import FormInput from '../../theme/components/FormInput';
 import LinearGradient from 'react-native-linear-gradient';
 import confirmEmail from '../../assets/confirm-your-email-icon.png';
 import PepoApi from '../../services/PepoApi';
-import Utilities from '../../services/Utilities';
 import { ostErrors } from '../../services/OstErrors';
 import Colors from '../../theme/styles/Colors';
 import CurrentUser from '../../models/CurrentUser';
+import { navigateTo } from '../../helpers/navigateTo';
 
 //TODO @preshita block android hardware back and close modal if submitting invite code in process.
 
@@ -72,7 +72,7 @@ class AddEmailScreen extends React.Component {
   closeModal = () => {
     if (!this.state.isSubmitting) {
       this.props.navigation.goBack(null);
-      Utilities.navigationDecision();
+      navigateTo.navigationDecision();
     }
     return true;
   };
