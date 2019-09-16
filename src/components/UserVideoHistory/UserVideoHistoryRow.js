@@ -5,7 +5,7 @@ import VideoWrapper from '../Home/VideoWrapper';
 import PepoApi from '../../services/PepoApi';
 import TransactionPepoButton from '../Home/TransactionPepoButton';
 import tx_icon from '../../assets/tx_icon.png';
-import share_icon from '../../assets/share_icon.png'
+import share_icon from '../../assets/share_icon.png';
 import CurrentUser from '../../models/CurrentUser';
 
 import BottomStatus from '../Home/BottomStatus';
@@ -43,9 +43,9 @@ class UserVideoHistoryRow extends PureComponent {
   }
 
   shareVideo = () => {
-    let shareVideo = new ShareVideo(this.videoId);
+    let shareVideo = new ShareVideo(this.props.videoId);
     shareVideo.perform();
-  }
+  };
 
   render() {
     return (
@@ -57,40 +57,44 @@ class UserVideoHistoryRow extends PureComponent {
           isActive={this.props.isActive}
         />
 
-        {!!this.props.videoId && !!this.props.userId &&
-           (<View style={inlineStyles.bottomContainer} pointerEvents={'box-none'}>
-              <View style={inlineStyles.touchablesBtns}>
-                {!this.isCurrentUser() && (
-                  <View style={{ minWidth: '20%', alignItems: 'center', alignSelf: 'flex-end' }}>
-                    <TransactionPepoButton
-                      resyncDataDelegate={this.refetchVideo}
-                      userId={this.props.userId}
-                      videoId={this.props.videoId}
-                    />
-                    <TouchableOpacity
-                      pointerEvents={'auto'}
-                      style={inlineStyles.txElem}
-                      onPress={multipleClickHandler(() => this.navigateToTransactionScreen())}
-                    >
-                      <Image style={{ height: 57, width: 57 }} source={tx_icon} />
-                    </TouchableOpacity>
+        {!!this.props.videoId && !!this.props.userId && (
+          <View style={inlineStyles.bottomContainer} pointerEvents={'box-none'}>
+            <View style={inlineStyles.touchablesBtns}>
+              {!this.isCurrentUser() && (
+                <View style={{ minWidth: '20%', alignItems: 'center', alignSelf: 'flex-end' }}>
+                  <TransactionPepoButton
+                    resyncDataDelegate={this.refetchVideo}
+                    userId={this.props.userId}
+                    videoId={this.props.videoId}
+                  />
+                  <TouchableOpacity
+                    pointerEvents={'auto'}
+                    style={inlineStyles.txElem}
+                    onPress={multipleClickHandler(() => this.navigateToTransactionScreen())}
+                  >
+                    <Image style={{ height: 57, width: 57 }} source={tx_icon} />
+                  </TouchableOpacity>
 
-                    <TouchableOpacity
-                      pointerEvents={'auto'}
-                      style={inlineStyles.txElem}
-                      onPress={this.shareVideo}
-                    >
-                      <Image style={{ height: 48, width: 48 }} source={share_icon} />
-                    </TouchableOpacity>
-                  </View>
-                )}
+                  <TouchableOpacity pointerEvents={'auto'} style={inlineStyles.txElem} onPress={this.shareVideo}>
+                    <Image style={{ height: 48, width: 48 }} source={share_icon} />
+                  </TouchableOpacity>
+                </View>
+              )}
 
-                <VideoAmountStat videoId={this.props.videoId} pageName='profile' />
-              </View>
+              {this.isCurrentUser() && (
+                <View style={{ minWidth: '20%', alignItems: 'center', alignSelf: 'flex-end' }}>                 
+                  <TouchableOpacity pointerEvents={'auto'} style={inlineStyles.txElem} onPress={this.shareVideo}>
+                    <Image style={{ height: 48, width: 48 }} source={share_icon} />
+                  </TouchableOpacity>
+                </View>
+              )}
 
-              <BottomStatus userId={this.props.userId} videoId={this.props.videoId} />
-        </View>)}
+              <VideoAmountStat videoId={this.props.videoId} pageName="profile" />
+            </View>
 
+            <BottomStatus userId={this.props.userId} videoId={this.props.videoId} />
+          </View>
+        )}
       </View>
     );
   }
