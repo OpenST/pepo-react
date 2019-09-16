@@ -12,6 +12,7 @@ import confetti from '../../assets/confetti.png';
 import InAppBrowser from '../../services/InAppBrowser';
 import BackArrow from '../CommonComponents/BackArrow';
 import { ScrollView } from 'react-native-gesture-handler';
+import PepoApi from '../../services/PepoApi';
 
 class ReferAndEarn extends Component {
   static navigationOptions = (options) => {
@@ -38,43 +39,32 @@ class ReferAndEarn extends Component {
     this.state = {
       inviteText: '',
       inviteCode: 'PE0AY',
-      inviteCodeText: 'Your Invite Code, Tap to Copy'
+      inviteCodeText: 'Your Invite Code, Tap to Copy',
+      pendingInvites: '50',
+      message: '',
+      url: '',
+      title: ''
     };
   }
 
   componentDidMount() {
-    // new PepoApi(`/get-invite-code`)
-    //   .get()
-    //   .then((res) => {
-    //     this.onInit(res);
-    //   })
-    //   .catch((error) => {});
-    this.onInit(res);
+    new PepoApi(`/users/get-invite-code`)
+      .get()
+      .then((res) => {
+        this.onInit(res);
+      })
+      .catch((error) => {});
   }
 
-  onInit() {
-    let res = {
-      data: {
-        result_type: 'invite_entity',
-        invite_entity: {
-          code: 'BVHJEBF',
-          pending_invites: -1
-        },
-        share_entity: {
-          message: ' test message',
-          title: 'title',
-          url: 'http://google.com'
-        }
-      }
-    };
+  onInit(res) {
     let resultType = deepGet(res, 'data.result_type');
     this.setState(
       {
         inviteCode: deepGet(res, `data.${resultType}.code`),
         pendingInvites: deepGet(res, `data.${resultType}.pending_invites`),
-        message: deepGet(res, `data.share_entity.message`),
-        title: deepGet(res, `data.share_entity.title`),
-        url: deepGet(res, `data.share_entity.url`)
+        message: deepGet(res, `data.share.message`),
+        title: deepGet(res, `data.share.title`),
+        url: deepGet(res, `data.share.url`)
       },
       () => {
         this.setInviteText();
