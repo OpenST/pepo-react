@@ -5,6 +5,7 @@ import styles from './styles';
 import Colors from '../../theme/styles/Colors';
 import BackArrow from '../CommonComponents/BackArrow';
 import InvitesList from './InvitesList';
+import CurrentUser from '../../models/CurrentUser';
 
 class Invites extends Component {
   static navigationOptions = (options) => {
@@ -45,7 +46,7 @@ class Invites extends Component {
       <SafeAreaView forceInset={{ top: 'never' }} style={{ flex: 1 }}>
         <Text style={styles.header}>Accepted Invites</Text>
         <InvitesList
-          fetchUrl={`/users/search?q=test`}
+          fetchUrl={`/users/invites`}
           onRefresh={this.onRefresh}
           noResultsFound={this.state.noResultsFound}
         />

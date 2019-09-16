@@ -1,6 +1,7 @@
 import React from 'react';
-import { View, Text, TouchableWithoutFeedback } from 'react-native';
+import { View, Text, TouchableWithoutFeedback, BackHandler } from 'react-native';
 import TouchableButton from '../../theme/components/TouchableButton';
+import deepGet from 'lodash/get';
 
 import inlineStyles from './styles';
 import Theme from '../../theme/styles';
@@ -23,7 +24,8 @@ class InviteCodeScreen extends React.Component {
       general_error: null,
       server_errors: {},
       errorMsg: '',
-      invite_code_error: ''
+      invite_code_error: '',
+      submitText: 'Enter'
     };
     this.payload = this.props.navigation.getParam('payload');
   }
@@ -42,7 +44,7 @@ class InviteCodeScreen extends React.Component {
     }
   };
 
-  onInviteCodeSumit = () => {
+  onInviteCodeSubmit = () => {
     if (!this.state.inviteCode) {
       //TODO @preshita the validation should happen by FormInput itself but if not do it manually
       this.setState({
@@ -51,7 +53,7 @@ class InviteCodeScreen extends React.Component {
       return;
     }
 
-    this.setState({ isSubmitting: true });
+    this.setState({ isSubmitting: true, submitText: 'Processing...' });
 
     let twitterAccessToken = TwitterAuth.getCachedTwitterResponse();
     twitterAccessToken['invite_code'] = this.state.inviteCode;
@@ -68,7 +70,7 @@ class InviteCodeScreen extends React.Component {
         this.onError(error);
       })
       .finally(() => {
-        this.setState({ isSubmitting: false });
+        this.setState({ isSubmitting: false, submitText: 'Enter' });
       });
   };
 
@@ -89,10 +91,12 @@ class InviteCodeScreen extends React.Component {
   handleGoTo(res) {
     //On success goto can ge hanled by the generic utility
     if (Utilities.handleGoTo(res, this.props.navigation)) {
+      this.props.navigation.goBack();
       return true;
     }
     //TODO @preshita
     //Is error and error for invite code , show inline errors, honor backend error. You should pass the response to  FormInput it will manage the display error. Check AuthScreen for refrences , how to manage feild specific error and general error
+    //If access token error , show error below send button. Auto close after 2 second.--> ??
     if (res && deepGet(res, 'err.error_data')) {
       this.setState({
         server_errors: res,
@@ -100,9 +104,8 @@ class InviteCodeScreen extends React.Component {
       });
       return false;
     }
-    //If access token error , show error below send button. Auto close after 2 second.
-
-    //DOnt forget to return true or false ,if handleGoTo has taken a decission return true or false
+    return false;
+    //Dont forget to return true or false ,if handleGoTo has taken a decision return true or false
   }
 
   //@TODO @preshita use this function on close modal and android hardware back
@@ -110,6 +113,12 @@ class InviteCodeScreen extends React.Component {
     if (!this.state.isSubmitting) {
       this.props.navigation.goBack();
     }
+  };
+
+  onChangeText = (inviteCode) => {
+    this.setState({
+      inviteCode
+    });
   };
 
   render() {
@@ -125,25 +134,29 @@ class InviteCodeScreen extends React.Component {
                 To activite your account you can either join via a invite link enter a referal code below.
               </Text>
               <FormInput
-                onChangeText={{}}
+                onChangeText={this.onChangeText}
                 value={this.state.inviteCode}
-                fieldName="inviteCode"
+                fieldName="invite_code"
                 style={[Theme.TextInput.textInputStyle, { width: '100%', marginTop: 20, marginBottom: 10 }]}
                 placeholderTextColor={Colors.darkGray}
                 errorMsg={this.state.invite_code_error}
                 serverErrors={this.state.server_errors}
+                maxLength={6}
+                autoCapitalize={'none'}
               />
               <LinearGradient
                 colors={['#ff7499', '#ff7499', '#ff5566']}
                 locations={[0, 0.35, 1]}
-                style={{ borderRadius: 3, marginHorizontal: 20, borderWidth: 0, width: '100%' }}
+                style={{ borderRadius: 3, marginHorizontal: 20, borderWidth: 0, width: '100%', marginTop: 10 }}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 0 }}
               >
                 <TouchableButton
                   TouchableStyles={[{ minWidth: '100%', borderColor: 'none', borderWidth: 0 }]}
                   TextStyles={[Theme.Button.btnPinkText, { fontSize: 18 }]}
-                  text={'Enter'}
+                  text={this.state.submitText}
+                  onPress={this.onInviteCodeSubmit}
+                  disabled={this.isSubmitting}
                 />
               </LinearGradient>
               <Text style={Theme.Errors.errorText}>{this.state.general_error}</Text>

@@ -164,9 +164,12 @@ export default {
   },
 
   handleGoTo(res, navigation) {
-    let isGoto = !!deepGet(res, 'go_to.pn');
+    let isGoto = !!deepGet(res, 'data.go_to.pn');
     if (isGoto) {
-      new NavigateTo(navigation).navigate(res.go_to);
+      //Just to avoid goback conflict, excequte last.
+      setTimeout(() => {
+        new NavigateTo(navigation).navigate(res.data.go_to);
+      }, 0);
       return true;
     }
     return false;
