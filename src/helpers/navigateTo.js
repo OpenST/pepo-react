@@ -11,7 +11,7 @@ class NavigateTo {
   navigate(goToObject, navigation, payload ) {
     goToObject = goToObject || {};
     if( navigation ){
-      this.navigation = navigation; 
+      this.navigation = navigation;
     }
     if (goToObject && goToObject.pn == 'p') {
       this.goToProfilePage(goToObject.v.puid, payload);
@@ -62,13 +62,13 @@ class NavigateTo {
 
   navigationDecision(noFallBack) {
     if (CurrentUser.getUser() && !CurrentUser.isActiveUser()) {
-      this.__navigate("UserActivatingScreen"); 
+      this.__navigate("UserActivatingScreen");
     }else if(this.__isGoto()){
       this.navigate(this.getGoTo());
       this.clearGoTo();
     }
     else {
-      !noFallBack && this.__navigate("HomeScreen"); 
+      !noFallBack && this.__navigate("HomeScreen");
     }
   }
 
@@ -99,7 +99,7 @@ class NavigateTo {
   }
 
   clearGoTo(){
-    this.goTo = null; 
+    this.goTo = null;
   }
 
   __isGoto(){
@@ -108,6 +108,6 @@ class NavigateTo {
 
 }
 
-const navigateTo = new NavigateTo(); 
+const navigateTo = new NavigateTo();
 
-export {NavigationComponent , navigateTo }
+export { navigateTo }
