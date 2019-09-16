@@ -1,6 +1,7 @@
 import React from 'react';
-import { View, Text, TouchableWithoutFeedback, BackHandler } from 'react-native';
+import { View, Text, TouchableWithoutFeedback, BackHandler, Keyboard } from 'react-native';
 import TouchableButton from '../../theme/components/TouchableButton';
+import { getBottomSpace, isIphoneX } from 'react-native-iphone-x-helper';
 import deepGet from 'lodash/get';
 
 import inlineStyles from './styles';
@@ -14,6 +15,10 @@ import { ostErrors } from '../../services/OstErrors';
 import Colors from '../../theme/styles/Colors';
 import { navigateTo } from '../../helpers/navigateTo';
 
+const bottomSpace = getBottomSpace([true]),
+  extraPadding = 10,
+  safeAreaBottomSpace = isIphoneX() ? bottomSpace : extraPadding;
+
 //TODO @preshita this.state.isSubmitting block android hardware back and close modal if submitting invite code in process.
 
 class InviteCodeScreen extends React.Component {
@@ -25,16 +30,47 @@ class InviteCodeScreen extends React.Component {
       general_error: null,
       server_errors: {},
       invite_code_error: '',
-      submitText: 'Enter'
+      submitText: 'Enter',
+      bottomPadding: safeAreaBottomSpace
     };
     this.payload = this.props.navigation.getParam('payload');
   }
 
+  _keyboardShown(e) {
+    let bottomPaddingValue = deepGet(e, 'endCoordinates.height') || 350;
+
+    if (this.state.bottomPadding == bottomPaddingValue) {
+      return;
+    }
+
+    this.setState({
+      bottomPadding: bottomPaddingValue
+    });
+  }
+
+  _keyboardHidden(e) {
+    if (this.state.bottomPadding == safeAreaBottomSpace) {
+      return;
+    }
+    this.setState({
+      bottomPadding: safeAreaBottomSpace
+    });
+  }
+
   componentDidMount() {
+    this.keyboardWillShowListener = Keyboard.addListener('keyboardWillShow', this._keyboardShown.bind(this));
+    this.keyboardWillHideListener = Keyboard.addListener('keyboardWillHide', this._keyboardHidden.bind(this));
+
+    this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardShown.bind(this));
+    this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardHidden.bind(this));
     BackHandler.addEventListener('hardwareBackPress', this.handleBackButtonClick);
   }
 
-  componentWillMount() {
+  componentWillUnMount() {
+    this.keyboardWillShowListener.remove();
+    this.keyboardWillHideListener.remove();
+    this.keyboardDidShowListener.remove();
+    this.keyboardDidHideListener.remove();
     BackHandler.removeEventListener('hardwareBackPress', this.handleBackButtonClick);
   }
 
@@ -127,7 +163,7 @@ class InviteCodeScreen extends React.Component {
       <TouchableWithoutFeedback onPressIn={this.closeModal}>
         <View style={inlineStyles.parent}>
           <TouchableWithoutFeedback>
-            <View style={[inlineStyles.container]}>
+            <View style={[inlineStyles.container, { paddingBottom: this.state.bottomPadding }]}>
               <Text style={[inlineStyles.desc, { marginBottom: 10, fontSize: 18 }]}>
                 Looks like your account is not whitelisted
               </Text>
