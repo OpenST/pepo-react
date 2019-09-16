@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Image, Text, TouchableOpacity, View } from 'react-native';
 import EventEmitter from 'eventemitter3';
 import BalanceHeader from '../Profile/BalanceHeader';
-import LogoutComponent from '../LogoutLink';
+import SideMenu from '../Menu';
 import UserInfo from '../CommonComponents/UserInfo';
 import CurrentUser from '../../models/CurrentUser';
 import reduxGetter from '../../services/ReduxGetters';
@@ -37,7 +37,7 @@ class ProfileScreen extends PureComponent {
         shadowOpacity: 0.1,
         shadowRadius: 3
       },
-      headerRight: <LogoutComponent {...options} />
+      headerRight: <SideMenu {...options} />
     };
   };
 

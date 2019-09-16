@@ -45,10 +45,15 @@ import { NotificationToastComponent } from './src/theme/components/NotificationT
 import SocketManager from './src/components/SocketManager';
 import SearchScreen from './src/components/Search';
 import FanVideoDetails from './src/components/FanVideoDetails';
-import  WalletSettingScreen from "./src/components/WalletSetting";
+import WalletSettingScreen from './src/components/WalletSetting';
 import PushNotificationManager from './src/services/PushNotificationManager';
+import ReferAndEarn from './src/components/ReferAndEarn';
+import Invites from './src/components/Invites';
+import InviteCodeScreen from './src/components/InviteCode';
+import AddEmailScreen from './src/components/AddEmail';
+import InviteCodeWorker from './src/services/InviteCodeWorker';
 
-const customTabHiddenRoutes = ['CaptureVideo', 'FanVideoDetails'];
+const customTabHiddenRoutes = ['CaptureVideo', 'FanVideoDetails', 'InviteCodeScreen', 'AddEmailScreen'];
 
 const modalStackConfig = {
   headerLayoutPreset: 'center',
@@ -119,7 +124,9 @@ const HomeStack = createStackNavigator(
   {
     HomePushStack: HomePushStack,
     TransactionScreen: TransactionScreen,
-    CaptureVideo: CaptureVideoStack
+    CaptureVideo: CaptureVideoStack,
+    InviteCodeScreen: InviteCodeScreen,
+    AddEmailScreen: AddEmailScreen
   },
   {
     ...modalStackConfig,
@@ -160,6 +167,8 @@ const ProfilePushStack = createStackNavigator(
     UsersProfileScreen: UsersProfileScreen,
     ProfileEdit: ProfileEdit,
     BioScreen: BioScreen,
+    ReferAndEarn: ReferAndEarn,
+    Invites: Invites,
     WalletSettingScreen: WalletSettingScreen
   },
   {
@@ -167,9 +176,23 @@ const ProfilePushStack = createStackNavigator(
   }
 );
 
+const ProfileDrawerNavigator = createDrawerNavigator(
+  {
+    ProfilePushStack: ProfilePushStack
+  },
+  {
+    drawerPosition: 'right',
+    drawerBackgroundColor: '#fff',
+    overlayColor: 'rgba(0, 0, 0, 0.8)',
+    drawerWidth: Dimensions.get('window').width - Dimensions.get('window').width / 5,
+    contentComponent: CustomDrawerContent,
+    drawerLockMode: 'locked-closed'
+  }
+);
+
 const ProfileStack = createStackNavigator(
   {
-    ProfilePushStack: ProfilePushStack,
+    ProfileDrawerNavigator: ProfileDrawerNavigator,
     CaptureImageScreen: CaptureImage,
     ImageGalleryScreen: ImageGallery,
     TransactionScreen: TransactionScreen,
@@ -255,20 +278,6 @@ const PinStack = createStackNavigator(
   }
 );
 
-const DrawerNavigator = createDrawerNavigator(
-  {
-    CustomTabStack: CustomTabStack
-  },
-  {
-    drawerPosition: 'right',
-    drawerBackgroundColor: '#fff',
-    overlayColor: 'rgba(0, 0, 0, 0.8)',
-    drawerWidth: Dimensions.get('window').width - Dimensions.get('window').width / 5,
-    contentComponent: CustomDrawerContent,
-    drawerLockMode: 'locked-closed'
-  }
-);
-
 const AppContainer = createAppContainer(
   createSwitchNavigator(
     {
@@ -276,7 +285,7 @@ const AppContainer = createAppContainer(
       AuthScreen,
       PinStack,
       UserActivatingScreen,
-      DrawerNavigator
+      CustomTabStack
     },
     {
       initialRouteName: 'AuthLoading'
@@ -300,6 +309,7 @@ const RootNavigationContainer = () => (
     <NotificationToastComponent />
     <SocketManager />
     <PushNotificationManager />
+    <InviteCodeWorker />
   </Root>
 );
 

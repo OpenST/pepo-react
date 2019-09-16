@@ -22,7 +22,9 @@ const UIErros = {
   user_not_active: 'Please wait for your user activation.',
   no_internet: 'No Internet, please try again later.',
   maxAllowedBt: `Max allowed Pepo coin transfer reached`,
-  name: 'Name is mandatory.'
+  name: 'Name is mandatory.',
+  invite_code_error: 'Enter a valid invite code.',
+  email_error: 'Enter a valid email.'
 };
 
 const UIWhitelistedErrorCode = {
