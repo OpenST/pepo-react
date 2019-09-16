@@ -100,9 +100,6 @@ class SayThanks extends Component {
 
   sendMessage = () => {
     let tweetNeeded = this.state.tweetOn === true ? 1 : 0;
-    let tweetText = this.tweeterHandle
-        ? `@${this.tweeterHandle} ${this.state.thanksMessage}`
-        : this.state.thanksMessage;
     this.setState({ server_errors: {}, thanksError: '' });
     if (this.state.thanksMessage.trim().length == 0) {
       this.setState({ thanksError: 'Message can not be empty' });
@@ -112,7 +109,7 @@ class SayThanks extends Component {
     return new PepoApi(`/users/thank-you`)
         .post({
           notification_id: this.props.navigation.getParam('notificationId'),
-          text: tweetText,
+          text: this.state.thanksMessage,
           tweet_needed: tweetNeeded
         })
         .then((res) => {
@@ -134,15 +131,17 @@ class SayThanks extends Component {
     if (value === true && !this.receivedTweetHandle) {
       this.setState({ gettingTweetInfo: true });
       return new PepoApi(`/users/tweet-info`)
-          .post({ receiver_user_id: this.props.navigation.getParam('userId') })
+          .get({ receiver_user_id: this.props.navigation.getParam('userId') })
           .then((response) => {
             this.setState({ gettingTweetInfo: false });
             if (response && response.success) {
               let twitterInfo =
                   response.data.twitter_users && response.data.twitter_users[this.props.navigation.getParam('userId')];
               this.tweeterHandle = twitterInfo && twitterInfo.handle;
-              this.receivedTweetHandle = true;
-              if (response.data.current_user.tweeter_auth_expired === 1) {
+              if (this.tweeterHandle){
+                this.setState({thanksMessage: `@${this.tweeterHandle} ${this.state.thanksMessage}`})
+              }              
+              if (response.data.logged_in_user.twitter_auth_expired === 1) {
                 console.log('tweeter auth expired');
                 TwitterAuth.signIn().then((res) => {
                   if (res) {
@@ -150,6 +149,7 @@ class SayThanks extends Component {
                         .post(res)
                         .then((resp) => {
                           if (resp && resp.success) {
+                            this.receivedTweetHandle = true;
                             this.setState({
                               tweetOn: value
                             });
