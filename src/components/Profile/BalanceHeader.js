@@ -9,6 +9,9 @@ import topUpIcon from '../../assets/top-up-icon.png'
 import redeemIcon from '../../assets/redeem-icon.png'
 import inlineStyle from "../CommonComponents/UserInfo/styles";
 import LinearGradient from "react-native-linear-gradient";
+import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
+import PepoApi from '../../services/PepoApi';
+import InAppBrowser from '../../services/InAppBrowser';
 
 const mapStateToProps = (state) => ({ balance: state.balance });
 
@@ -30,6 +33,19 @@ class BalanceHeader extends PureComponent {
     return pricer.toDisplayAmount( priceOracle.btToFiat( val ));
   }
 
+  openWebView = () => {
+    console.log('openWebView: open browser');
+    
+    new PepoApi(`/redemptions/info`)
+    .get()
+    .then((res) => { setTimeout(() => {
+      
+      res && res.data && InAppBrowser.openBrowser(res.data.redemption_info.url);
+    }, 0); })
+    .catch((error) => {});
+
+  }
+
   render() {
     return (
       <View style={inlineStyle.infoHeaderWrapper}>
@@ -46,8 +62,10 @@ class BalanceHeader extends PureComponent {
             style={{height: 20, width: 1, marginHorizontal: 8, marginTop: 16.5}}
           ></LinearGradient>
           <View style={{alignItems: 'center'}}>
+            <TouchableWithoutFeedback onPress={this.openWebView}>
             <Image style={{ width: 50, height: 50 }} source={redeemIcon}></Image>
             <Text style={inlineStyles.redeemBalance}>Redeem</Text>
+            </TouchableWithoutFeedback>
           </View>
         </View>
         <View style={{alignItems: 'flex-end'}}>
