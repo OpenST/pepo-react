@@ -24,7 +24,6 @@ class InviteCodeScreen extends React.Component {
       isSubmitting: false,
       general_error: null,
       server_errors: {},
-      errorMsg: '',
       invite_code_error: '',
       submitText: 'Enter'
     };
@@ -157,7 +156,7 @@ class InviteCodeScreen extends React.Component {
                   TextStyles={[Theme.Button.btnPinkText, { fontSize: 18 }]}
                   text={this.state.submitText}
                   onPress={this.onInviteCodeSubmit}
-                  disabled={this.isSubmitting}
+                  disabled={this.state.isSubmitting}
                 />
               </LinearGradient>
               <Text style={Theme.Errors.errorText}>{this.state.general_error}</Text>

@@ -48,11 +48,6 @@ class NotificationScreen extends Component {
         this.refresh(true, 300);
       }
     });
-    this.props.navigation.addListener('didFocus', () => {
-      if (this.props.unreadNotification) {
-        this.refresh(true, 300);
-      }
-    });
   }
 
   componentWillUpdate(nextProps) {

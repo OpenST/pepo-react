@@ -21,8 +21,11 @@ class AddEmailScreen extends React.Component {
     this.state = {
       email: null,
       isSubmitting: false,
+      btnSubmitText: 'Sign Up',
       emailSent: false,
-      email_error: ''
+      email_error: '',
+      general_error: null,
+      server_errors: {}
     };
   }
 
@@ -43,6 +46,11 @@ class AddEmailScreen extends React.Component {
       return;
     }
 
+    this.setState({
+      isSubmitting: true,
+      btnSubmitText: 'Processing...'
+    });
+
     new PepoApi(`/users/${CurrentUser.getUserId()}/save-email`)
       .post({ email: this.state.email })
       .then((res) => {
@@ -54,6 +62,12 @@ class AddEmailScreen extends React.Component {
       })
       .catch((error) => {
         this.onError(error);
+      })
+      .finally(() => {
+        this.setState({
+          isSubmitting: false,
+          btnSubmitText: 'Sign Up'
+        });
       });
   };
 
@@ -66,6 +80,10 @@ class AddEmailScreen extends React.Component {
 
   onError(error) {
     //TODO show error, honor backend error. You should pass the response to  FormInput it will manage the display error , Check AuthScreen for refrences how to manage feild specific error and general error
+    this.setState({
+      server_errors: error,
+      general_error: ostErrors.getErrorMessage(error)
+    });
   }
 
   //@TODO @preshita use this function on close modal and android hardware back
@@ -101,19 +119,21 @@ class AddEmailScreen extends React.Component {
           style={[Theme.TextInput.textInputStyle, { width: '100%', marginTop: 20, marginBottom: 10 }]}
           placeholderTextColor={Colors.darkGray}
           autoCapitalize={'none'}
+          serverErrors={this.state.server_errors}
         />
         <LinearGradient
           colors={['#ff7499', '#ff7499', '#ff5566']}
           locations={[0, 0.35, 1]}
-          style={{ borderRadius: 3, marginHorizontal: 20, borderWidth: 0, width: '100%' }}
+          style={{ borderRadius: 3, marginHorizontal: 20, borderWidth: 0, width: '100%', marginTop: 10 }}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 0 }}
         >
           <TouchableButton
             TouchableStyles={[{ minWidth: '100%', borderColor: 'none', borderWidth: 0 }]}
             TextStyles={[Theme.Button.btnPinkText, { fontSize: 18 }]}
-            text={'Sign Up'}
+            text={this.state.btnSubmitText}
             onPress={this.onEmailSubmit}
+            disabled={this.state.isSubmitting}
           />
         </LinearGradient>
         <Text style={Theme.Errors.errorText}>{this.state.general_error}</Text>
