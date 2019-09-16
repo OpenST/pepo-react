@@ -37,10 +37,11 @@ class ReferAndEarn extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      inviteText: '',
-      inviteCode: 'PE0AY',
+      inviteText: '50',
+      inviteCode: '',
       inviteCodeText: 'Your Invite Code, Tap to Copy',
       pendingInvites: '50',
+      inviteLimit: null,
       message: '',
       url: '',
       title: ''
@@ -62,6 +63,7 @@ class ReferAndEarn extends Component {
       {
         inviteCode: deepGet(res, `data.${resultType}.code`),
         pendingInvites: deepGet(res, `data.${resultType}.pending_invites`),
+        inviteLimit: deepGet(res, `data.${resultType}.invite_limit`),
         message: deepGet(res, `data.share.message`),
         title: deepGet(res, `data.share.title`),
         url: deepGet(res, `data.share.url`)
@@ -74,7 +76,7 @@ class ReferAndEarn extends Component {
 
   setInviteText() {
     let inviteText = '';
-    if (this.state.pendingInvites === -1) {
+    if (this.state.inviteLimit === -1) {
       inviteText = 'Unlimited';
     } else {
       inviteText = String(this.state.pendingInvites);

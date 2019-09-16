@@ -33,7 +33,7 @@ class SayThanks extends Component {
     super(props);
     this.state = {
       closeDisabled: false,
-      thanksMessage: '',
+      thanksMessage: 'Thanks for supporting me!',
       server_errors: {},
       thanksError: '',
       posting: false,
@@ -165,6 +165,7 @@ class SayThanks extends Component {
                 this.setState({
                   tweetOn: value
                 });
+                this.receivedTweetHandle = true;
               }
             }
 
@@ -226,7 +227,7 @@ class SayThanks extends Component {
                     <FormInput
                         onChangeText={this.changeMessage}
                         placeholder="Thanks for supporting me!"
-                        fieldName="sayThanksInput"
+                        fieldName="text"
                         style={[Theme.TextInput.textInputStyle, { height: 50, color: '#2a293b', marginTop: 0 }]}
                         value={`${this.state.thanksMessage}`}
                         isFocus={this.state.focus}
