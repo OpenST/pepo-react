@@ -11,6 +11,7 @@ import { LoadingModal } from '../../theme/components/LoadingModalCover';
 import ost_sdk_theme_config from '../../theme/ostsdk/ost-sdk-theme-config';
 import ost_sdk_content_config from '../../theme/ostsdk/ost-sdk-content-config';
 import Utilities from '../../services/Utilities';
+import { navigateTo } from '../../helpers/navigateTo';
 
 let t1, t2;
 
@@ -43,7 +44,7 @@ export default class AuthLoading extends Component {
     CurrentUser.initialize()
       .then((user) => {
         LoadingModal.hide();
-        Utilities.navigationDecision();
+        navigateTo.navigationDecision();
       })
       .catch(() => {
         Alert.alert('', ostErrors.getUIErrorMessage('general_error'));

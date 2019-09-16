@@ -8,6 +8,7 @@ import inlineStyles from './styles';
 import BackArrow from '../../assets/back-arrow.png';
 import { ostErrors } from '../../services/OstErrors';
 import { LoadingModal } from '../../theme/components/LoadingModalCover';
+import { navigateTo } from '../../helpers/navigateTo';
 
 export default class ConfirmPin extends Component {
   static navigationOptions = ({ navigation, navigationOptions }) => {
@@ -39,7 +40,7 @@ export default class ConfirmPin extends Component {
 
   onRequestAcknowledge() {
     LoadingModal.hide();
-    this.props.navigation.navigate('HomeScreen');
+    navigateTo.navigationDecision();
   }
 
   onFlowInterrupt(ostWorkflowContext, error) {

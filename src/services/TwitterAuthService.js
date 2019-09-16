@@ -16,6 +16,7 @@ import TwitterAuth from './ExternalLogin/TwitterAuth';
 import Utilities from './Utilities';
 import AppConfig from '../constants/AppConfig';
 import NavigationService from './NavigationService';
+import { navigateTo } from '../helpers/navigateTo';
 
 class TwitterAuthService {
   signUp() {
@@ -54,7 +55,7 @@ class TwitterAuthService {
     if (this.handleGoTo(res)) {
       return;
     }
-    Utilities.navigationDecision();
+    navigateTo.navigationDecision();
   }
 
   logout() {
@@ -73,7 +74,7 @@ class TwitterAuthService {
 
   handleGoTo(res) {
     //On success goto can be handled by the generic utility
-    if (Utilities.handleGoTo(res)) {
+    if (navigateTo.handleGoTo(res)) {
       return true;
     }
     //TODO @preshita
