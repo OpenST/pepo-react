@@ -33,7 +33,7 @@ class SayThanks extends Component {
     super(props);
     this.state = {
       closeDisabled: false,
-      thanksMessage: '',
+      thanksMessage: 'Thanks for supporting me!',
       server_errors: {},
       thanksError: '',
       posting: false,
@@ -165,6 +165,7 @@ class SayThanks extends Component {
                 this.setState({
                   tweetOn: value
                 });
+                this.receivedTweetHandle = true;
               }
             }
 
