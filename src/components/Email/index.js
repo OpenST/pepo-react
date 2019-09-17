@@ -143,7 +143,11 @@ class EmailScreen extends PureComponent {
               end={{ x: 1, y: 0 }}
               style={{ borderRadius: 3, borderTopRadius: 0 }}
             >
-              <TouchableOpacity style={[Theme.Button.btn, { borderWidth: 0 }]} onPress={this.onSubmitEditing}>
+              <TouchableOpacity
+                style={[Theme.Button.btn, { borderWidth: 0 }]}
+                disabled={this.state.isSubmitting}
+                onPress={this.onSubmitEditing}
+              >
                 <Text style={[Theme.Button.btnPinkText, { textAlign: 'center' }]}>{this.state.btnSubmitText}</Text>
               </TouchableOpacity>
             </LinearGradient>
@@ -156,7 +160,11 @@ class EmailScreen extends PureComponent {
             end={{ x: 1, y: 0 }}
             style={{ marginTop: 25, borderRadius: 3 }}
           >
-            <TouchableOpacity style={[Theme.Button.btn, { borderWidth: 0 }]} onPress={this.onSubmitEditing}>
+            <TouchableOpacity
+              style={[Theme.Button.btn, { borderWidth: 0 }]}
+              disabled={this.state.isSubmitting}
+              onPress={this.onSubmitEditing}
+            >
               <Text style={[Theme.Button.btnPinkText, { textAlign: 'center' }]}>{this.state.btnSubmitText}</Text>
             </TouchableOpacity>
           </LinearGradient>
