@@ -40,11 +40,10 @@ export class NotificationToastComponent extends Component {
   }
 
   showToast(config, delay) {
-    if (config) {
-      this.setState({
-        config: { ...this.defaultConfig, ...config }
-      });
-    }
+    if(!config || !config.text) return;
+    this.setState({
+      config: { ...this.defaultConfig, ...config }
+    });
     this.setState({ showToast: true }, () => {
       Animated.timing(this.animateOpacityValue, {
         toValue: 1,

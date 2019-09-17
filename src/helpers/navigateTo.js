@@ -8,11 +8,14 @@ class NavigateTo {
     this.goTo = null;
   }
 
+  setTopLevelNavigation(navigation){
+    if(!navigation) return //TODO check instance of navigation 
+    this.navigation = navigation ; 
+  }
+
   navigate(goToObject, navigation, payload) {
     goToObject = goToObject || {};
-    if (navigation) {
-      this.navigation = navigation;
-    }
+    this.setTopLevelNavigation( navigation );
     if (goToObject && goToObject.pn == 'p') {
       this.goToProfilePage(goToObject.v.puid, payload);
     } else if (goToObject && goToObject.pn == 'cb') {
@@ -63,20 +66,20 @@ class NavigateTo {
     return false;
   }
 
-  navigationDecision(noFallBack) {
+  navigationDecision() {
     if (CurrentUser.getUser() && !CurrentUser.isActiveUser()) {
       this.__navigate('UserActivatingScreen');
       return;
     }
-    this.goToNavigationDecision(noFallBack);
+    this.goToNavigationDecision();
   }
 
-  goToNavigationDecision(noFallBack) {
+  goToNavigationDecision(goToHome) {
     if (this.__isGoto()) {
       this.navigate(this.getGoTo());
       this.clearGoTo();
-    } else {
-      !noFallBack && this.__navigate('HomeScreen');
+    }else if( goToHome ){
+      this.__navigate('HomeScreen');
     }
   }
 
@@ -90,12 +93,8 @@ class NavigateTo {
   }
 
   __push(screenName, payload) {
-    if (!screenName) return;
-    if (this.navigation) {
-      this.navigation.navigate(screenName, payload );
-    } else {
-      NavigationService.push(screenName, payload );
-    }
+    if (!screenName || !this.navigation ) return;
+      this.navigation.push(screenName, payload );
   }
 
   setGoTo(goTo) {

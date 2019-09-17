@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, StatusBar, Platform } from 'react-native';
+import { View, StatusBar, Platform , AppState} from 'react-native';
 import { connect } from 'react-redux';
 import deepGet from 'lodash/get';
 
@@ -12,6 +12,7 @@ import videoUploaderComponent from '../../services/CameraWorkerEventEmitter';
 import NavigationEmitter from '../../helpers/TabNavigationEvent';
 import appConfig from '../../constants/AppConfig';
 import { ifIphoneX } from 'react-native-iphone-x-helper';
+import {navigateTo} from "../../helpers/navigateTo";
 
 const mapStateToProps = (state) => {
   return {
@@ -28,8 +29,8 @@ class HomeScreen extends Component {
   };
 
   constructor(props) {    
-    console.log('HomeScreen constructor');
     super(props);
+    navigateTo.setTopLevelNavigation(this.props.navigation);
     this.state = {
       videoUploaderVisible: false
     };
@@ -44,6 +45,19 @@ class HomeScreen extends Component {
         this.refresh(true, 0);
       }
     });
+    navigateTo.navigationDecision();
+
+    this._handleAppStateChange = (nextAppState) => {
+      clearTimeout(this.activeStateTimeout);
+      this.activeStateTimeout = setTimeout(() => {
+        let appState = nextAppState.toLowerCase();
+         if ('active' === appState) {
+            navigateTo.goToNavigationDecision();
+         }
+      }, 100);
+    };
+
+    AppState.addEventListener('change', this._handleAppStateChange);
   };
 
   componentWillUpdate(nextProps) {
@@ -56,6 +70,7 @@ class HomeScreen extends Component {
     videoUploaderComponent.removeListener('show');
     videoUploaderComponent.removeListener('hide');
     NavigationEmitter.removeListener('onRefresh');
+    AppState.removeListener('change', this._handleAppStateChange);
   };
 
   showVideoUploader = () => {
