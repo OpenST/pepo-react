@@ -31,15 +31,13 @@ class PushNotificationManager extends PureComponent {
       this.clearNotifications();
     });
 
-    this.removeNotificationListener = firebase
-      .notifications()
-      .onNotification((notification) => {        
-        if (this.props.currentUserId) {          
-          new PepoApi(`/users/${this.props.currentUserId}/reset-badge`)
-            .post()
-            .then((responseData) => console.log('reset-badge :: responseData', responseData));
-        }
-      });
+    this.removeNotificationListener = firebase.notifications().onNotification((notification) => {
+      if (this.props.currentUserId) {
+        new PepoApi(`/users/${this.props.currentUserId}/reset-badge`)
+          .post()
+          .then((responseData) => console.log('reset-badge :: responseData', responseData));
+      }
+    });
 
     firebase
       .messaging()
@@ -62,10 +60,9 @@ class PushNotificationManager extends PureComponent {
     this.onTokenRefreshListener();
     this.removeNotificationOpenedListener();
     this.removeNotificationListener();
-    if(this._handleAppStateChange){
+    if (this._handleAppStateChange) {
       AppState.removeEventListener('change', this._handleAppStateChange);
     }
-  
   }
 
   _handleAppStateChange = (nextAppState) => {
@@ -78,8 +75,8 @@ class PushNotificationManager extends PureComponent {
     let gotoObject = JSON.parse(notificationData.goto);
     if (Object.keys(gotoObject).length < 0) return;
     navigateTo.setGoTo(gotoObject);
-    if(CurrentUser.isActiveUser()){
-      navigateTo.navigationDecision(true);
+    if (CurrentUser.isActiveUser()) {
+      navigateTo.goToNavigationDecision(true);
     }
   }
 
@@ -107,15 +104,15 @@ class PushNotificationManager extends PureComponent {
         .then((responseData) => console.log('sendToken :: Payload sent successfully', responseData));
   }
 
-  clearNotifications() {    
+  clearNotifications() {
     if (Platform.OS == 'ios') {
       firebase
         .notifications()
         .getBadge()
         .then((count) => {
           if (count > 0) {
-            console.log(`clearNotifications :: as badge count (${count}) > 0`);  
-            this.clearFirebaseNotifications();      
+            console.log(`clearNotifications :: as badge count (${count}) > 0`);
+            this.clearFirebaseNotifications();
           }
         });
     } else {
@@ -124,20 +121,19 @@ class PushNotificationManager extends PureComponent {
   }
 
   clearFirebaseNotifications() {
-      // Reset badge and clear notifications on device
-      if (this.props.currentUserId) {          
-        new PepoApi(`/users/${this.props.currentUserId}/reset-badge`)
-          .post()
-          .then((responseData) => console.log('reset-badge :: responseData', responseData));
-      }
-      firebase
-        .notifications()
-        .removeAllDeliveredNotifications()
-        .then((res) => {
-          firebase.notifications().setBadge(0);
-        })
-        .catch((error) => console.log('Error occured while removing notifications ', error));
-    
+    // Reset badge and clear notifications on device
+    if (this.props.currentUserId) {
+      new PepoApi(`/users/${this.props.currentUserId}/reset-badge`)
+        .post()
+        .then((responseData) => console.log('reset-badge :: responseData', responseData));
+    }
+    firebase
+      .notifications()
+      .removeAllDeliveredNotifications()
+      .then((res) => {
+        firebase.notifications().setBadge(0);
+      })
+      .catch((error) => console.log('Error occured while removing notifications ', error));
   }
 
   render() {

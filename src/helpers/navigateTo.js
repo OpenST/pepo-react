@@ -1,16 +1,16 @@
-import deepGet from "lodash/get";
+import deepGet from 'lodash/get';
 import CurrentUser from '../models/CurrentUser';
 import NavigationService from '../services/NavigationService';
 
 class NavigateTo {
-  constructor(  ) {
+  constructor() {
     this.navigation = null;
     this.goTo = null;
   }
 
-  navigate(goToObject, navigation, payload ) {
+  navigate(goToObject, navigation, payload) {
     goToObject = goToObject || {};
-    if( navigation ){
+    if (navigation) {
       this.navigation = navigation;
     }
     if (goToObject && goToObject.pn == 'p') {
@@ -47,67 +47,71 @@ class NavigateTo {
     }
   };
 
-  handleGoTo(res, navigation ,  payload) {
-    if(!res) return;
+  handleGoTo(res, navigation, payload) {
+    if (!res) return;
     let isGoto = !!deepGet(res, 'data.go_to.pn');
     if (isGoto) {
       //Just to avoid goback conflict, excequte last.
       setTimeout(() => {
-        this.navigate(res.data.go_to , navigation , payload);
+        this.navigate(res.data.go_to, navigation, payload);
       }, 0);
       return true;
     }
     return false;
-  };
+  }
 
   navigationDecision(noFallBack) {
     if (CurrentUser.getUser() && !CurrentUser.isActiveUser()) {
-      this.__navigate("UserActivatingScreen");
-    }else if(this.__isGoto()){
+      this.__navigate('UserActivatingScreen');
+      return;
+    }
+    this.goToNavigationDecision(noFallBack);
+  }
+
+  goToNavigationDecision(noFallBack) {
+    if (this.__isGoto()) {
       this.navigate(this.getGoTo());
       this.clearGoTo();
-    }
-    else {
-      !noFallBack && this.__navigate("HomeScreen");
+    } else {
+      !noFallBack && this.__navigate('HomeScreen');
     }
   }
 
-  __navigate(screenName ,  payload ){
-    if(!screenName) return ;
-    if(this.navigation){
+  __navigate(screenName, payload) {
+    if (!screenName) return;
+    if (this.navigation) {
       this.navigation.navigate(screenName, { payload: payload });
-    }else{
+    } else {
       NavigationService.navigate(screenName, { payload: payload });
     }
   }
 
-  __push(screenName , payload){
-    if(!screenName) return ;
-    if(this.navigation){
+  __push(screenName, payload) {
+    if (!screenName) return;
+    if (this.navigation) {
       this.navigation.navigate(screenName, { payload: payload });
-    }else{
+    } else {
       NavigationService.push(screenName, { payload: payload });
     }
   }
 
-  setGoTo( goTo ){
-    this.goTo =  goTo;
+  setGoTo(goTo) {
+    this.goTo = goTo;
   }
 
-  getGoTo(){
-    return this.goTo ;
+  getGoTo() {
+    return this.goTo;
   }
 
-  clearGoTo(){
+  clearGoTo() {
     this.goTo = null;
   }
 
-  __isGoto(){
-    return this.goTo && Object.keys( this.goTo ).length > 0 ;
+  __isGoto() {
+    return this.goTo && Object.keys(this.goTo).length > 0;
   }
-
 }
 
 const navigateTo = new NavigateTo();
 
-export { navigateTo }
+export { navigateTo };
