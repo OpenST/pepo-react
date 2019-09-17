@@ -20,7 +20,7 @@ class NavigateTo {
     } else if (goToObject && goToObject.pn == 'v') {
       this.goToVideo(goToObject.v.vid, payload);
     } else if (goToObject && goToObject.pn == 'f') {
-      this.__navigate('Home', payload );
+      this.__navigate('Home', payload);
     } else if (goToObject && goToObject.pn == 'nc') {
       this.__navigate('Notification', payload );
     } else if (goToObject.pn == 'e') {
@@ -92,9 +92,9 @@ class NavigateTo {
   __push(screenName, payload) {
     if (!screenName) return;
     if (this.navigation) {
-      this.navigation.navigate(screenName, { payload: payload });
+      this.navigation.navigate(screenName, payload );
     } else {
-      NavigationService.push(screenName, { payload: payload });
+      NavigationService.push(screenName, payload );
     }
   }
 
