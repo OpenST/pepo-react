@@ -63,7 +63,7 @@ class ReduxGetters {
     return deepGet(state, `user_entities.id_${id}.ost_status`);
   }
 
-  isCreatorApproved(id, state){
+  isCreatorApproved(id, state) {
     state = state || Store.getState();
     return deepGet(state, `user_entities.id_${id}.approved_creator`);
   }
@@ -71,6 +71,11 @@ class ReduxGetters {
   getBio(id, state) {
     state = state || Store.getState();
     return unescape(deepGet(state, `user_profile_entities.id_${id}.bio.text`));
+  }
+
+  getEmail(id, state) {
+    state = state || Store.getState();
+    return deepGet(state, `user_profile_entities.id_${id}.email.text`);
   }
 
   getVideoSupporters(id, state) {
@@ -120,7 +125,7 @@ class ReduxGetters {
     return deepGet(state, `user_stat_entities.id_${id}.total_contributed_by`);
   }
 
-  getVideoSupporters(id, state){
+  getVideoSupporters(id, state) {
     state = state || Store.getState();
     return deepGet(state, `video_stat_entities.id_${id}.total_contributed_by`);
   }
@@ -342,7 +347,7 @@ class ReduxGetters {
     state = state || Store.getState();
     return deepGet(state, `user_notifications.id_${notificationId}.goto`);
   }
-  getPushNotification( state) {
+  getPushNotification(state) {
     state = state || Store.getState();
     return deepGet(state, `push_notification`);
   }

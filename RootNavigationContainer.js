@@ -52,6 +52,7 @@ import Invites from './src/components/Invites';
 import InviteCodeScreen from './src/components/InviteCode';
 import AddEmailScreen from './src/components/AddEmail';
 import InviteCodeWorker from './src/services/InviteCodeWorker';
+import EmailScreen from './src/components/Email';
 
 const customTabHiddenRoutes = ['CaptureVideo', 'FanVideoDetails', 'InviteCodeScreen', 'AddEmailScreen'];
 
@@ -167,6 +168,7 @@ const ProfilePushStack = createStackNavigator(
     UsersProfileScreen: UsersProfileScreen,
     ProfileEdit: ProfileEdit,
     BioScreen: BioScreen,
+    EmailScreen: EmailScreen,
     ReferAndEarn: ReferAndEarn,
     Invites: Invites,
     WalletSettingScreen: WalletSettingScreen

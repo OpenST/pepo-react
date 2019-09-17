@@ -14,6 +14,7 @@ import { ostErrors } from '../../services/OstErrors';
 import Colors from '../../theme/styles/Colors';
 import CurrentUser from '../../models/CurrentUser';
 import { navigateTo } from '../../helpers/navigateTo';
+import Utilities from '../../services/Utilities';
 
 const bottomSpace = getBottomSpace([true]),
   extraPadding = 10,
@@ -71,16 +72,8 @@ class AddEmailScreen extends React.Component {
     this.keyboardDidHideListener.remove();
   }
 
-  isValidEmail = () => {
-    let validPattern = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-    if (validPattern.test(this.state.email)) {
-      return true;
-    }
-    return false;
-  };
-
   onEmailSubmit = () => {
-    if (!this.isValidEmail()) {
+    if (!Utilities.isValidEmail(this.state.email)) {
       //TODO @preshita the validation should happen by FormInput itself but if not do it manually
       this.setState({
         email_error: ostErrors.getUIErrorMessage('email_error')
@@ -91,7 +84,8 @@ class AddEmailScreen extends React.Component {
     this.setState({
       isSubmitting: true,
       btnSubmitText: 'Processing...',
-      email_error: null
+      email_error: null,
+      general_error: null
     });
 
     new PepoApi(`/users/${CurrentUser.getUserId()}/save-email`)

@@ -89,7 +89,7 @@ class InviteCodeScreen extends React.Component {
       return;
     }
 
-    this.setState({ isSubmitting: true, submitText: 'Processing...', invite_code_error: null });
+    this.setState({ isSubmitting: true, submitText: 'Processing...', invite_code_error: null, general_error: null });
 
     let twitterAccessToken = TwitterAuth.getCachedTwitterResponse();
     twitterAccessToken['invite_code'] = this.state.inviteCode;

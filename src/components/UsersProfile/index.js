@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, TouchableOpacity, Image } from 'react-native';
+import { Text, TouchableOpacity, Image, View } from 'react-native';
 import reduxGetter from '../../services/ReduxGetters';
 import BackArrow from '../CommonComponents/BackArrow';
 
@@ -8,11 +8,13 @@ import CurrentUser from '../../models/CurrentUser';
 import UserProfileFlatList from '../../components/CommonComponents/UserProfileFlatList';
 import multipleClickHandler from '../../services/MultipleClickHandler';
 import tx_icon from '../../assets/tx_icon.png';
+import user_not_exist from '../../assets/user-not-exist.png';
+import video_not_available from '../../assets/video-not-available.png';
 
 import { fetchUser } from '../../helpers/helpers';
-import Colors from '../../theme/styles/Colors';
 import utilities from '../../services/Utilities';
 import BalanceHeader from "../Profile/BalanceHeader";
+import inlineStyles from './styles';
 
 export default class UsersProfile extends Component {
   static navigationOptions = ({ navigation }) => {
@@ -20,7 +22,7 @@ export default class UsersProfile extends Component {
       title: reduxGetter.getName(navigation.getParam('userId')),
       headerBackTitle: null,
       headerStyle: {
-        backgroundColor: Colors.white,
+        backgroundColor: '#ffffff',
         borderBottomWidth: 0,
         shadowColor: '#000',
         shadowOffset: {
@@ -75,6 +77,17 @@ export default class UsersProfile extends Component {
         >
           <Image style={{ height: 57, width: 57 }} source={tx_icon} />
         </TouchableOpacity>
+
+        {/*<View style={inlineStyles.container}>*/}
+          {/*<Image style={inlineStyles.imgSize} source={user_not_exist} />*/}
+          {/*<Text style={inlineStyles.desc}>The user you were looking for does not exist!</Text>*/}
+        {/*</View>*/}
+
+        {/*<View style={inlineStyles.container}>*/}
+          {/*<Image style={inlineStyles.imgSize} source={video_not_available} />*/}
+          {/*<Text style={inlineStyles.desc}>Looks like the Video you were looking for isn’t available and might have been deleted by the creator!</Text>*/}
+        {/*</View>*/}
+
       </React.Fragment>
     );
   }

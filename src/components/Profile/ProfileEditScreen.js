@@ -3,6 +3,8 @@ import { View, Text, Image, TouchableOpacity, BackHandler, Platform, Alert, Keyb
 import { connect } from 'react-redux';
 import { withNavigation } from 'react-navigation';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
+import deepGet from 'lodash/get';
 
 import inlineStyles from './styles';
 import Theme from '../../theme/styles';
@@ -29,7 +31,8 @@ import CameraIcon from '../../assets/camera_icon.png';
 import multipleClickHandler from '../../services/MultipleClickHandler';
 import BackArrow from '../CommonComponents/BackArrow';
 import LinearGradient from 'react-native-linear-gradient';
-import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
+import pendingConfirmEmail from '../../assets/verify_email_error.png';
+import confirmedEmail from '../../assets/verify_email_success.png';
 
 const BUTTONS = ['Take Photo', 'Choose from Library', 'Cancel'];
 const OPEN_CAMERA = 0;
@@ -41,6 +44,7 @@ const mapStateToProps = (state, ownProps) => {
     user_name: reduxGetter.getUserName(CurrentUser.getUserId(), state) || '',
     name: reduxGetter.getName(CurrentUser.getUserId(), state) || '',
     bio: reduxGetter.getBio(CurrentUser.getUserId(), state) || '',
+    email: reduxGetter.getBio(CurrentUser.getUserId(), state) || '',
     link: reduxGetter.getLink(reduxGetter.getUserLinkId(CurrentUser.getUserId(), state), state) || '',
     profilePicture: reduxGetter.getImage(reduxGetter.getProfileImageId(CurrentUser.getUserId(), state), state)
   };
@@ -88,8 +92,7 @@ class ProfileEdit extends React.PureComponent {
     this.tabIndex = {
       name: 1,
       username: 2,
-      link: 3,
-      bio: 4
+      link: 3
     };
 
     this.defaults = {
@@ -104,20 +107,48 @@ class ProfileEdit extends React.PureComponent {
       name: this.props.name,
       user_name: this.props.user_name,
       bio: this.props.bio,
+      emailAddress: '',
+      isVerifiedEmail: false,
       link: this.props.link,
-      current_formField: 0,
       showGalleryAccessModal: false,
       showCameraAccessModal: false,
       ...this.defaults
     };
+
+    this.current_formField = 0;
   }
 
   componentDidMount() {
     this.props.navigation.setParams({
       onCancel: this.onCancel
     });
+    this.setEmail();
     BackHandler.addEventListener('hardwareBackPress', this.onCancel);
   }
+
+  setEmail() {
+    new PepoApi(`/users/email`)
+      .get()
+      .then((res) => {
+        if (res && res.success) {
+          this.onEmailSuccess(res);
+        } else {
+          this.onEmailError(res);
+        }
+      })
+      .catch((error) => {
+        this.onEmailError(error);
+      });
+  }
+
+  onEmailSuccess(res) {
+    this.setState({
+      emailAddress: deepGet(res, 'data.email.address'),
+      isVerifiedEmail: deepGet(res, 'data.email.verified')
+    });
+  }
+
+  onEmailError(error) {}
 
   componentWillUnmount() {
     BackHandler.removeEventListener('hardwareBackPress', this.onCancel);
@@ -138,9 +169,7 @@ class ProfileEdit extends React.PureComponent {
   };
 
   onSubmitEditing(currentIndex) {
-    this.setState({
-      current_formField: currentIndex + 1
-    });
+    this.current_formField = currentIndex + 1;
   }
 
   validateProfileInput() {
@@ -266,12 +295,22 @@ class ProfileEdit extends React.PureComponent {
   };
 
   onBioFocus = () => {
-    this.setState({
-      current_formField: 0
-    });
+    Keyboard.dismiss();
     this.props.navigation.push('BioScreen', {
       onChangeTextDelegate: this.onBioChangeDelegate,
       initialValue: this.state.bio
+    });
+  };
+
+  onEmailChangeDelegate = (val) => {
+    this.setState({ emailAddress: val });
+  };
+
+  onEmailFocus = () => {
+    Keyboard.dismiss();
+    this.props.navigation.push('EmailScreen', {
+      onChangeTextDelegate: this.onEmailChangeDelegate,
+      initialValue: this.state.emailAddress
     });
   };
 
@@ -352,9 +391,9 @@ class ProfileEdit extends React.PureComponent {
           returnKeyLabel="Next"
           placeholderTextColor="#ababab"
           blurOnSubmit={false}
-          isFocus={this.state.current_formField == this.tabIndex.name}
+          isFocus={this.current_formField == this.tabIndex.name}
           onFocus={() => {
-            this.state.current_formField = this.tabIndex.name;
+            this.current_formField = this.tabIndex.name;
           }}
           onSubmitEditing={() => {
             this.onSubmitEditing(this.tabIndex.name);
@@ -380,13 +419,64 @@ class ProfileEdit extends React.PureComponent {
           onSubmitEditing={() => {
             this.onSubmitEditing(this.tabIndex.username);
           }}
-          isFocus={this.state.current_formField == this.tabIndex.username}
+          isFocus={this.current_formField == this.tabIndex.username}
           onFocus={() => {
-            this.state.current_formField = this.tabIndex.username;
+            this.current_formField = this.tabIndex.username;
           }}
           value={this.state.user_name}
           errorMsg={this.state.user_name_error}
           serverErrors={this.state.server_errors}
+        />
+
+        <Text style={[Theme.TextInput.labelStyle]}>Email Address</Text>
+        <View style={{ position: 'relative' }}>
+          <FormInput
+            editable={!this.state.isVerifiedEmail}
+            fieldName="email"
+            textContentType="none"
+            style={[
+              Theme.TextInput.textInputStyle,
+              !this.state.isVerifiedEmail
+                ? { borderColor: Colors.wildWatermelon2 }
+                : { backgroundColor: Colors.whiteSmoke }
+            ]}
+            placeholder="Email"
+            returnKeyType="next"
+            returnKeyLabel="Next"
+            placeholderTextColor="#ababab"
+            blurOnSubmit={false}
+            value={this.state.emailAddress}
+            serverErrors={this.state.server_errors}
+            autoCapitalize={'none'}
+            onFocus={multipleClickHandler(() => this.onEmailFocus())}
+          />
+          <Image
+            source={!this.state.isVerifiedEmail ? pendingConfirmEmail : confirmedEmail}
+            style={{
+              width: 30,
+              height: 30,
+              position: 'absolute',
+              right: 10,
+              top: 13
+            }}
+          />
+        </View>
+
+        <Text style={[Theme.TextInput.labelStyle]}>Bio</Text>
+        <FormInput
+          editable={true}
+          fieldName="bio"
+          textContentType="none"
+          style={[Theme.TextInput.textInputStyle, { height: 75, paddingVertical: 15 }]}
+          placeholder="Bio"
+          returnKeyType="next"
+          returnKeyLabel="Next"
+          placeholderTextColor="#ababab"
+          blurOnSubmit={false}
+          maxLength={100}
+          value={this.state.bio}
+          serverErrors={this.state.server_errors}
+          onFocus={multipleClickHandler(() => this.onBioFocus())}
         />
 
         <Text style={[Theme.TextInput.labelStyle]}>Link</Text>
@@ -406,30 +496,12 @@ class ProfileEdit extends React.PureComponent {
             this.onSubmitEditing(-1);
             Keyboard.dismiss();
           }}
-          isFocus={this.state.current_formField == this.tabIndex.link}
+          isFocus={this.current_formField == this.tabIndex.link}
           onFocus={() => {
-            this.state.current_formField = this.tabIndex.link;
+            this.current_formField = this.tabIndex.link;
           }}
           value={this.state.link}
           serverErrors={this.state.server_errors}
-        />
-
-        <Text style={[Theme.TextInput.labelStyle]}>Bio</Text>
-        <FormInput
-          editable={true}
-          fieldName="bio"
-          textContentType="none"
-          style={[Theme.TextInput.textInputStyle, { height: 75, paddingVertical: 15 }]}
-          placeholder="Bio"
-          returnKeyType="next"
-          returnKeyLabel="Next"
-          placeholderTextColor="#ababab"
-          blurOnSubmit={false}
-          maxLength={100}
-          isFocus={this.state.current_formField == this.tabIndex.bio}
-          value={this.state.bio}
-          serverErrors={this.state.server_errors}
-          onFocus={multipleClickHandler(() => this.onBioFocus())}
         />
 
         <LinearGradient

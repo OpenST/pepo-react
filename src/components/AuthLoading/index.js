@@ -4,7 +4,7 @@ import { View, StatusBar, Alert, Platform, Linking } from 'react-native';
 import Toast from '../../theme/components/NotificationToast';
 import styles from './styles';
 import CurrentUser from '../../models/CurrentUser';
-import {OstWalletSdk, OstWalletSdkEvents, OstWalletSdkUI} from '@ostdotcom/ost-wallet-sdk-react-native';
+import { OstWalletSdk, OstWalletSdkEvents, OstWalletSdkUI } from '@ostdotcom/ost-wallet-sdk-react-native';
 import { PLATFORM_API_ENDPOINT } from '../../constants';
 import { ostErrors } from '../../services/OstErrors';
 import { LoadingModal } from '../../theme/components/LoadingModalCover';
@@ -23,7 +23,7 @@ export default class AuthLoading extends Component {
 
   componentDidMount() {
     if (Platform.OS === 'android') {
-      Linking.getInitialURL().then(url => {
+      Linking.getInitialURL().then((url) => {
         //console.log('_handleOpenURL url', url);
         this.url = url;
       });
@@ -65,7 +65,7 @@ export default class AuthLoading extends Component {
     CurrentUser.initialize()
       .then((user) => {
         LoadingModal.hide();
-        this.props.navigation.navigate("HomeScreen");
+        this.props.navigation.navigate('HomeScreen');
       })
       .catch(() => {
         Alert.alert('', ostErrors.getUIErrorMessage('general_error'));
