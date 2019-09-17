@@ -13,7 +13,7 @@ import Toast from '../theme/components/NotificationToast';
 import CameraPermissionsApi from '../services/CameraPermissionsApi';
 import { allowAcessModalEventEmitter } from '../components/AllowAccessModalScreen';
 import NavigationService from '../services/NavigationService';
-import {NavigateTo} from '../helpers/navigateTo';
+import { NavigateTo } from '../helpers/navigateTo';
 
 let recursiveMaxCount = 0;
 
@@ -153,5 +153,13 @@ export default {
       .split('/')
       .map((item, index) => (index < 3 ? item.toLowerCase() : item))
       .join('/');
+  },
+
+  isValidEmail(email) {
+    let validPattern = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+    if (validPattern.test(email)) {
+      return true;
+    }
+    return false;
   }
 };
