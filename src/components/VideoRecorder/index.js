@@ -58,6 +58,12 @@ class VideoRecorder extends Component {
         setTimeout(function() {
           oThis.showActionSheet();
         }, 100);
+      } else {
+        Store.dispatch(
+          upsertRecordedVideo({
+            do_discard: true
+          })
+        );        
       }
     }
   }
