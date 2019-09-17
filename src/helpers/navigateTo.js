@@ -20,30 +20,33 @@ class NavigateTo {
     } else if (goToObject && goToObject.pn == 'v') {
       this.goToVideo(goToObject.v.vid, payload);
     } else if (goToObject && goToObject.pn == 'f') {
-      this.__navigate('Home', { payload: payload });
+      this.__navigate('Home', payload );
     } else if (goToObject && goToObject.pn == 'nc') {
-      this.__navigate('Notification', { payload: payload });
+      this.__navigate('Notification', payload );
     } else if (goToObject.pn == 'e') {
-      this.__push('AddEmailScreen', { payload: payload });
+      this.__push('AddEmailScreen', payload );
     }
   }
 
   goToVideo = (vId, payload) => {
-    this.__push('VideoPlayer', {
-      videoId: vId,
-      payload: payload
-    });
+    payload =  payload || {}
+    payload['videoId'] = vId ;
+    this.__push('VideoPlayer',payload);
   };
 
   goToSupporters = (profileId, payload) => {
-    this.__push('SupportersListScreen', { userId: profileId, payload: payload });
+    payload =  payload || {}
+    payload['userId'] = profileId ;
+    this.__push('SupportersListScreen', payload );
   };
 
   goToProfilePage = (id, payload) => {
     if (id == CurrentUser.getUserId()) {
-      this.__navigate('ProfileScreen', { payload: payload });
+      this.__navigate('ProfileScreen',  payload );
     } else {
-      this.__push('UsersProfileScreen', { userId: id, payload: payload });
+      payload =  payload || {}
+      payload['userId'] = id ;
+      this.__push('UsersProfileScreen', payload);
     }
   };
 
@@ -75,9 +78,9 @@ class NavigateTo {
   __navigate(screenName ,  payload ){
     if(!screenName) return ;
     if(this.navigation){
-      this.navigation.navigate(screenName, { payload: payload });
+      this.navigation.navigate(screenName, payload);
     }else{
-      NavigationService.navigate(screenName, { payload: payload });
+      NavigationService.navigate(screenName, payload );
     }
   }
 
