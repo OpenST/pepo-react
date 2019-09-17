@@ -40,7 +40,7 @@ export default class ConfirmPin extends Component {
 
   onRequestAcknowledge() {
     LoadingModal.hide();
-    navigateTo.goToNavigationDecision();
+    navigateTo.goToNavigationDecision(true);
   }
 
   onFlowInterrupt(ostWorkflowContext, error) {
