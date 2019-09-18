@@ -90,8 +90,7 @@ class ProfileEdit extends React.PureComponent {
 
     this.tabIndex = {
       name: 1,
-      username: 2,
-      link: 3
+      username: 2
     };
 
     this.defaults = {
@@ -270,7 +269,9 @@ class ProfileEdit extends React.PureComponent {
   };
 
   onBioFocus = () => {
-    Keyboard.dismiss();
+    this.setState({
+      current_formField: 0
+    });
     this.props.navigation.push('BioScreen', {
       onChangeTextDelegate: this.onBioChangeDelegate,
       initialValue: this.state.bio
@@ -282,7 +283,9 @@ class ProfileEdit extends React.PureComponent {
   };
 
   onEmailFocus = () => {
-    Keyboard.dismiss();
+    this.setState({
+      current_formField: 0
+    });
     this.props.navigation.push('EmailScreen', {
       onChangeTextDelegate: this.onEmailChangeDelegate,
       initialValue: this.state.emailAddress
@@ -394,6 +397,7 @@ class ProfileEdit extends React.PureComponent {
           placeholderTextColor="#ababab"
           blurOnSubmit={false}
           onSubmitEditing={() => {
+            Keyboard.dismiss();
             this.onSubmitEditing(this.tabIndex.username);
           }}
           isFocus={this.state.current_formField == this.tabIndex.username}
@@ -427,6 +431,7 @@ class ProfileEdit extends React.PureComponent {
             value={this.state.emailAddress}
             serverErrors={this.state.server_errors}
             autoCapitalize={'none'}
+            isFocus={false}
             onFocus={multipleClickHandler(() => this.onEmailFocus())}
           />
           <Image
@@ -455,6 +460,7 @@ class ProfileEdit extends React.PureComponent {
           maxLength={100}
           value={this.state.bio}
           serverErrors={this.state.server_errors}
+          isFocus={false}
           onFocus={multipleClickHandler(() => this.onBioFocus())}
         />
 
@@ -472,14 +478,7 @@ class ProfileEdit extends React.PureComponent {
           placeholderTextColor="#ababab"
           blurOnSubmit={false}
           onSubmitEditing={() => {
-            this.onSubmitEditing(this.tabIndex.link);
             Keyboard.dismiss();
-          }}
-          isFocus={this.state.current_formField == this.tabIndex.link}
-          onFocus={() => {
-            this.setState({
-              current_formField: this.tabIndex.link
-            });
           }}
           value={this.state.link}
           serverErrors={this.state.server_errors}
