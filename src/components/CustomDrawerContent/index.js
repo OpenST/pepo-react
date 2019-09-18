@@ -3,7 +3,6 @@ import { StyleSheet, ScrollView, TouchableOpacity, Text, View, Image, Dimensions
 import { SafeAreaView, NavigationEvents } from 'react-navigation';
 import { OstWalletSdk, OstWalletSdkUI, OstJsonApi } from '@ostdotcom/ost-wallet-sdk-react-native';
 import DeviceInfo from 'react-native-device-info';
-import { OstWalletSdk } from '@ostdotcom/ost-wallet-sdk-react-native';
 
 import CurrentUser from '../../models/CurrentUser';
 import reduxGetter from '../../services/ReduxGetters';
@@ -23,7 +22,7 @@ import OstWalletSdkHelper from '../../helpers/OstWalletSdkHelper';
 class CustomDrawerContent extends Component {
   constructor(props) {
     super(props);
-    this.userName = "";
+    this.userName = '';
     this.state = {
       disableButtons: false,
       showWalletSettings: false
@@ -44,24 +43,23 @@ class CustomDrawerContent extends Component {
   };
 
   updateUserName = () => {
-    this.userName = reduxGetter.getName(CurrentUser.getUserId()) || "";
+    this.userName = reduxGetter.getName(CurrentUser.getUserId()) || '';
   };
 
   updateWalletSettings = () => {
     if (CurrentUser.getOstUserId()) {
       OstWalletSdk.getCurrentDeviceForUserId(CurrentUser.getOstUserId(), (localDevice) => {
-
-        if (localDevice && OstWalletSdkHelper.canDeviceMakeApiCall( localDevice ) && CurrentUser.isUserActivated() ) {
-          if ( !this.state.showWalletSettings ) {
+        if (localDevice && OstWalletSdkHelper.canDeviceMakeApiCall(localDevice) && CurrentUser.isUserActivated()) {
+          if (!this.state.showWalletSettings) {
             this.setState({
               showWalletSettings: true
             });
           }
         } else {
-          if ( this.state.showWalletSettings ) {
+          if (this.state.showWalletSettings) {
             this.setState({
               showWalletSettings: false
-            })
+            });
           }
         }
       });
@@ -140,48 +138,50 @@ class CustomDrawerContent extends Component {
     this.props.navigation.push('ReferAndEarn');
   };
 
-  render(){
+  render() {
     return (
-      <SafeAreaView forceInset={{ top: 'always' }} style={[styles.container, {justifyContent: 'space-between'}]}>
+      <SafeAreaView forceInset={{ top: 'always' }} style={[styles.container, { justifyContent: 'space-between' }]}>
         <View>
           <View style={styles.header}>
-              <TouchableOpacity
-                  onPress={this.props.navigation.closeDrawer}
-                  style={{ height: 30, width: 30, alignItems: 'center', justifyContent: 'center' }}
-              >
-                <Image style={{ width: 10, height: 18 }} source={BackArrow} />
-              </TouchableOpacity>
-              <Text style={styles.headerText}>{this.userName}</Text>
-            </View>
-            <TouchableOpacity onPress={this.twitterDisconnect} disabled={this.state.disableButtons}>
-              <View style={styles.itemParent}>
-                <Image style={{ height: 24, width: 25.3 }} source={twitterDisconnectIcon} />
-                <Text style={styles.item}>Twitter Disconnect</Text>
-              </View>
-            </TouchableOpacity>
             <TouchableOpacity
-                onPress={multipleClickHandler(() => {
-                    this.referAndEarn();
-                })}
-                disabled={this.state.disableButtons}
+              onPress={this.props.navigation.closeDrawer}
+              style={{ height: 30, width: 30, alignItems: 'center', justifyContent: 'center' }}
             >
-                <View style={styles.itemParent}>
-                    <Image style={{ height: 24, width: 29 }} source={referAndEarn} />
-                    <Text style={styles.item}>Refer and Earn</Text>
-                </View>
+              <Image style={{ width: 10, height: 18 }} source={BackArrow} />
             </TouchableOpacity>
-            {this.renderWalletSetting()}
+            <Text style={styles.headerText}>{this.userName}</Text>
+          </View>
+          <TouchableOpacity onPress={this.twitterDisconnect} disabled={this.state.disableButtons}>
+            <View style={styles.itemParent}>
+              <Image style={{ height: 24, width: 25.3 }} source={twitterDisconnectIcon} />
+              <Text style={styles.item}>Twitter Disconnect</Text>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={multipleClickHandler(() => {
+              this.referAndEarn();
+            })}
+            disabled={this.state.disableButtons}
+          >
+            <View style={styles.itemParent}>
+              <Image style={{ height: 24, width: 29 }} source={referAndEarn} />
+              <Text style={styles.item}>Refer and Earn</Text>
+            </View>
+          </TouchableOpacity>
+          {this.renderWalletSetting()}
 
-            <TouchableOpacity onPress={this.CurrentUserLogout} disabled={this.state.disableButtons}>
-              <View style={styles.itemParent}>
-                <Image style={{ height: 24, width: 25.3 }} source={loggedOutIcon} />
-                <Text style={styles.item}>Log out</Text>
-              </View>
-            </TouchableOpacity>
-          </View>
-          <View style={{ alignItems: 'center', paddingVertical: 12 }}>
-            <Text style={{ fontSize: 12 }}>Pepo v{DeviceInfo.getVersion()} ({DeviceInfo.getBuildNumber()})</Text>
-          </View>
+          <TouchableOpacity onPress={this.CurrentUserLogout} disabled={this.state.disableButtons}>
+            <View style={styles.itemParent}>
+              <Image style={{ height: 24, width: 25.3 }} source={loggedOutIcon} />
+              <Text style={styles.item}>Log out</Text>
+            </View>
+          </TouchableOpacity>
+        </View>
+        <View style={{ alignItems: 'center', paddingVertical: 12 }}>
+          <Text style={{ fontSize: 12 }}>
+            Pepo v{DeviceInfo.getVersion()} ({DeviceInfo.getBuildNumber()})
+          </Text>
+        </View>
       </SafeAreaView>
     );
   }
