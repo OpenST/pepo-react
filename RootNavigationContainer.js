@@ -42,7 +42,7 @@ import AllowAccessModalScreen from './src/components/AllowAccessModalScreen';
 import VideoPlayer from './src/components/CommonComponents/VideoPlayer';
 import utilities from './src/services/Utilities';
 import { NotificationToastComponent } from './src/theme/components/NotificationToast';
-import SocketManager from './src/components/SocketManager';
+import SocketManager from './src/services/SocketManager';
 import SearchScreen from './src/components/Search';
 import FanVideoDetails from './src/components/FanVideoDetails';
 import WalletSettingScreen from './src/components/WalletSetting';
@@ -53,6 +53,7 @@ import InviteCodeScreen from './src/components/InviteCode';
 import AddEmailScreen from './src/components/AddEmail';
 import InviteCodeWorker from './src/services/InviteCodeWorker';
 import EmailScreen from './src/components/Email';
+import UniversalLinksManager from './src/services/UniversalLinksManager';
 
 const customTabHiddenRoutes = ['CaptureVideo', 'FanVideoDetails', 'InviteCodeScreen', 'AddEmailScreen'];
 
@@ -313,6 +314,7 @@ const RootNavigationContainer = () => (
     <SocketManager />
     <PushNotificationManager />
     <InviteCodeWorker />
+    <UniversalLinksManager />
   </Root>
 );
 

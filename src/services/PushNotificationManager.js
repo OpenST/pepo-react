@@ -22,10 +22,14 @@ class PushNotificationManager extends PureComponent {
     AppState.addEventListener('change', this._handleAppStateChange);
 
     this.onTokenRefreshListener = firebase.messaging().onTokenRefresh((fcmToken) => this.sendToken(fcmToken));
+
+    // getInitialNotification when app is closed and is being launched by clicking on push notification
     firebase
       .notifications()
       .getInitialNotification()
       .then((notificationData) => notificationData && this.handleGoto(notificationData.notification.data));
+
+    // onNotificationOpened when app is in background and launched by clicking on push notification
     this.removeNotificationOpenedListener = firebase.notifications().onNotificationOpened((notificationData) => {
       this.handleGoto(notificationData.notification.data);
       this.clearNotifications();
