@@ -47,17 +47,17 @@ class HomeScreen extends Component {
     });
     navigateTo.navigationDecision();
 
-    this._handleAppStateChange = (nextAppState) => {
-      clearTimeout(this.activeStateTimeout);
-      this.activeStateTimeout = setTimeout(() => {
-        let appState = nextAppState.toLowerCase();
-         if ('active' === appState) {
-            navigateTo.goToNavigationDecision();
-         }
-      }, 100);
-    };
-
-    AppState.addEventListener('change', this._handleAppStateChange);
+    // this._handleAppStateChange = (nextAppState) => {
+    //   clearTimeout(this.activeStateTimeout);
+    //   this.activeStateTimeout = setTimeout(() => {
+    //     let appState = nextAppState.toLowerCase();
+    //      if ('active' === appState) {
+    //         navigateTo.goToNavigationDecision();
+    //      }
+    //   }, 100);
+    // };
+    //
+    // AppState.addEventListener('change', this._handleAppStateChange);
   };
 
   componentWillUpdate(nextProps) {
@@ -70,7 +70,7 @@ class HomeScreen extends Component {
     videoUploaderComponent.removeListener('show');
     videoUploaderComponent.removeListener('hide');
     NavigationEmitter.removeListener('onRefresh');
-    AppState.removeListener('change', this._handleAppStateChange);
+   // AppState.removeListener('change', this._handleAppStateChange);
   };
 
   showVideoUploader = () => {

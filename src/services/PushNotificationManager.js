@@ -38,22 +38,6 @@ class PushNotificationManager extends PureComponent {
           .then((responseData) => console.log('reset-badge :: responseData', responseData));
       }
     });
-
-    firebase
-      .messaging()
-      .hasPermission()
-      .then((enabled) => {
-        if (!enabled) {
-          firebase
-            .messaging()
-            .requestPermission()
-            .then(() => {
-              firebase.messaging().registerForNotifications();
-            })
-            .catch((error) => console.log('Permission denied'));
-        }
-      })
-      .catch((error) => console.log('Cannot read permissions'));
   }
 
   componentWillUnmount() {
@@ -85,6 +69,26 @@ class PushNotificationManager extends PureComponent {
       .messaging()
       .getToken()
       .then((fcmToken) => fcmToken && this.sendToken(fcmToken));
+  }
+
+  askForPermission() {
+    if (this.props.currentUserId) {
+      firebase
+        .messaging()
+        .hasPermission()
+        .then((enabled) => {
+          if (!enabled) {
+            firebase
+              .messaging()
+              .requestPermission()
+              .then(() => {
+                firebase.messaging().registerForNotifications();
+              })
+              .catch((error) => console.log('Permission denied'));
+          }
+        })
+        .catch((error) => console.log('Cannot read permissions'));
+    }
   }
 
   sendToken(token) {
@@ -138,12 +142,13 @@ class PushNotificationManager extends PureComponent {
 
   render() {
     this.getToken();
+    this.askForPermission();
     return <React.Fragment />;
   }
 }
 
-const mapStateToProps = ({ current_user }) => {
-  return { currentUserId: current_user.id };
+const mapStateToProps = ({}) => {
+  return { currentUserId: CurrentUser.getUserId() };
 };
 
 export default connect(mapStateToProps)(PushNotificationManager);
