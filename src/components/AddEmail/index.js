@@ -20,8 +20,6 @@ const bottomSpace = getBottomSpace([true]),
   extraPadding = 10,
   safeAreaBottomSpace = isIphoneX() ? bottomSpace : extraPadding;
 
-//TODO @preshita block android hardware back and close modal if submitting invite code in process.
-
 class AddEmailScreen extends React.Component {
   constructor(props) {
     super(props);
@@ -57,7 +55,7 @@ class AddEmailScreen extends React.Component {
     });
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.keyboardWillShowListener = Keyboard.addListener('keyboardWillShow', this._keyboardShown.bind(this));
     this.keyboardWillHideListener = Keyboard.addListener('keyboardWillHide', this._keyboardHidden.bind(this));
 
@@ -70,11 +68,14 @@ class AddEmailScreen extends React.Component {
     this.keyboardWillHideListener.remove();
     this.keyboardDidShowListener.remove();
     this.keyboardDidHideListener.remove();
+    this.onEmailSubmit = () => {};
+    this.onSuccess = () => {};
+    this.onError = () => {};
+    this.onChangeText = () => {};
   }
 
   onEmailSubmit = () => {
-    if (!Utilities.isValidEmail(this.state.email)) {
-      //TODO @preshita the validation should happen by FormInput itself but if not do it manually
+    if (!this.state.email) {
       this.setState({
         email_error: ostErrors.getUIErrorMessage('email_error')
       });
@@ -116,14 +117,12 @@ class AddEmailScreen extends React.Component {
   }
 
   onError(error) {
-    //TODO show error, honor backend error. You should pass the response to  FormInput it will manage the display error , Check AuthScreen for refrences how to manage feild specific error and general error
     this.setState({
       server_errors: error,
       general_error: ostErrors.getErrorMessage(error)
     });
   }
 
-  //@TODO @preshita use this function on close modal and android hardware back
   closeModal = () => {
     if (!this.state.isSubmitting) {
       this.props.navigation.goBack(null);
@@ -158,6 +157,9 @@ class AddEmailScreen extends React.Component {
           placeholderTextColor={Colors.darkGray}
           autoCapitalize={'none'}
           serverErrors={this.state.server_errors}
+          returnKeyType="done"
+          returnKeyLabel="Done"
+          onSubmitEditing={this.onEmailSubmit}
         />
         <LinearGradient
           colors={['#ff7499', '#ff7499', '#ff5566']}

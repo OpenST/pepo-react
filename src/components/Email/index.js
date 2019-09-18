@@ -42,7 +42,7 @@ class EmailScreen extends PureComponent {
       email_error: '',
       isSubmitting: false,
       isEditing: false,
-      btnSubmitText: 'Resend Email',
+      btnSubmitText: this.initialValue ? 'Resend Email' : 'Send Email',
       serverErrors: {},
       general_error: ''
     };
@@ -51,7 +51,7 @@ class EmailScreen extends PureComponent {
   onSubmitEditing = (value) => {
     Keyboard.dismiss();
 
-    if (!Utilities.isValidEmail(this.state.email)) {
+    if (!this.state.email) {
       this.setState({
         email_error: ostErrors.getUIErrorMessage('email_error')
       });
@@ -79,7 +79,7 @@ class EmailScreen extends PureComponent {
       .finally(() => {
         this.setState({
           isSubmitting: false,
-          btnSubmitText: 'Resend Email'
+          btnSubmitText: this.state.email ? 'Resend Email' : 'Send Email'
         });
       });
   };

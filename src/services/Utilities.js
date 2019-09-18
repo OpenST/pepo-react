@@ -153,13 +153,5 @@ export default {
       .split('/')
       .map((item, index) => (index < 3 ? item.toLowerCase() : item))
       .join('/');
-  },
-
-  isValidEmail(email) {
-    let validPattern = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-    if (validPattern.test(email)) {
-      return true;
-    }
-    return false;
   }
 };

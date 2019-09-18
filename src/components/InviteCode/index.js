@@ -19,8 +19,6 @@ const bottomSpace = getBottomSpace([true]),
   extraPadding = 10,
   safeAreaBottomSpace = isIphoneX() ? bottomSpace : extraPadding;
 
-//TODO @preshita this.state.isSubmitting block android hardware back and close modal if submitting invite code in process.
-
 class InviteCodeScreen extends React.Component {
   constructor(props) {
     super(props);
@@ -72,6 +70,9 @@ class InviteCodeScreen extends React.Component {
     this.keyboardDidShowListener.remove();
     this.keyboardDidHideListener.remove();
     BackHandler.removeEventListener('hardwareBackPress', this.handleBackButtonClick);
+    this.handleGoTo = () => {};
+    this.onInviteCodeSubmit = () => {};
+    this.onChangeText = () => {};
   }
 
   handleBackButtonClick = () => {
@@ -82,7 +83,6 @@ class InviteCodeScreen extends React.Component {
 
   onInviteCodeSubmit = () => {
     if (!this.state.inviteCode) {
-      //TODO @preshita the validation should happen by FormInput itself but if not do it manually
       this.setState({
         invite_code_error: ostErrors.getUIErrorMessage('invite_code_error')
       });
@@ -130,8 +130,6 @@ class InviteCodeScreen extends React.Component {
       this.props.navigation.goBack();
       return true;
     }
-    //TODO @preshita
-    //Is error and error for invite code , show inline errors, honor backend error. You should pass the response to  FormInput it will manage the display error. Check AuthScreen for refrences , how to manage feild specific error and general error
     //If access token error , show error below send button. Auto close after 2 second.--> ??
     if (res && deepGet(res, 'err.error_data')) {
       this.setState({
@@ -141,10 +139,8 @@ class InviteCodeScreen extends React.Component {
       return false;
     }
     return false;
-    //Dont forget to return true or false ,if handleGoTo has taken a decision return true or false
   }
 
-  //@TODO @preshita use this function on close modal and android hardware back
   closeModal = () => {
     if (!this.state.isSubmitting) {
       this.props.navigation.goBack();
@@ -180,6 +176,9 @@ class InviteCodeScreen extends React.Component {
                 serverErrors={this.state.server_errors}
                 maxLength={6}
                 autoCapitalize={'none'}
+                returnKeyType="done"
+                returnKeyLabel="Done"
+                onSubmitEditing={this.onInviteCodeSubmit}
               />
               <LinearGradient
                 colors={['#ff7499', '#ff7499', '#ff5566']}

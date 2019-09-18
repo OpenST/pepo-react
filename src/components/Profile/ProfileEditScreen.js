@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import { withNavigation } from 'react-navigation';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
-import deepGet from 'lodash/get';
 
 import inlineStyles from './styles';
 import Theme from '../../theme/styles';
@@ -107,48 +106,22 @@ class ProfileEdit extends React.PureComponent {
       name: this.props.name,
       user_name: this.props.user_name,
       bio: this.props.bio,
-      emailAddress: '',
-      isVerifiedEmail: false,
+      emailAddress: this.props.navigation.getParam('email'),
+      isVerifiedEmail: this.props.navigation.getParam('isVerifiedEmail'),
       link: this.props.link,
       showGalleryAccessModal: false,
       showCameraAccessModal: false,
+      current_formField: 0,
       ...this.defaults
     };
-
-    this.current_formField = 0;
   }
 
   componentDidMount() {
     this.props.navigation.setParams({
       onCancel: this.onCancel
     });
-    this.setEmail();
     BackHandler.addEventListener('hardwareBackPress', this.onCancel);
   }
-
-  setEmail() {
-    new PepoApi(`/users/email`)
-      .get()
-      .then((res) => {
-        if (res && res.success) {
-          this.onEmailSuccess(res);
-        } else {
-          this.onEmailError(res);
-        }
-      })
-      .catch((error) => {
-        this.onEmailError(error);
-      });
-  }
-
-  onEmailSuccess(res) {
-    this.setState({
-      emailAddress: deepGet(res, 'data.email.address'),
-      isVerifiedEmail: deepGet(res, 'data.email.verified')
-    });
-  }
-
-  onEmailError(error) {}
 
   componentWillUnmount() {
     BackHandler.removeEventListener('hardwareBackPress', this.onCancel);
@@ -169,7 +142,9 @@ class ProfileEdit extends React.PureComponent {
   };
 
   onSubmitEditing(currentIndex) {
-    this.current_formField = currentIndex + 1;
+    this.setState({
+      current_formField: currentIndex + 1
+    });
   }
 
   validateProfileInput() {
@@ -391,9 +366,11 @@ class ProfileEdit extends React.PureComponent {
           returnKeyLabel="Next"
           placeholderTextColor="#ababab"
           blurOnSubmit={false}
-          isFocus={this.current_formField == this.tabIndex.name}
+          isFocus={this.state.current_formField == this.tabIndex.name}
           onFocus={() => {
-            this.current_formField = this.tabIndex.name;
+            this.setState({
+              current_formField: this.tabIndex.name
+            });
           }}
           onSubmitEditing={() => {
             this.onSubmitEditing(this.tabIndex.name);
@@ -419,9 +396,11 @@ class ProfileEdit extends React.PureComponent {
           onSubmitEditing={() => {
             this.onSubmitEditing(this.tabIndex.username);
           }}
-          isFocus={this.current_formField == this.tabIndex.username}
+          isFocus={this.state.current_formField == this.tabIndex.username}
           onFocus={() => {
-            this.current_formField = this.tabIndex.username;
+            this.setState({
+              current_formField: this.tabIndex.username
+            });
           }}
           value={this.state.user_name}
           errorMsg={this.state.user_name_error}
@@ -493,12 +472,14 @@ class ProfileEdit extends React.PureComponent {
           placeholderTextColor="#ababab"
           blurOnSubmit={false}
           onSubmitEditing={() => {
-            this.onSubmitEditing(-1);
+            this.onSubmitEditing(this.tabIndex.link);
             Keyboard.dismiss();
           }}
-          isFocus={this.current_formField == this.tabIndex.link}
+          isFocus={this.state.current_formField == this.tabIndex.link}
           onFocus={() => {
-            this.current_formField = this.tabIndex.link;
+            this.setState({
+              current_formField: this.tabIndex.link
+            });
           }}
           value={this.state.link}
           serverErrors={this.state.server_errors}

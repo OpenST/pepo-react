@@ -19,8 +19,6 @@ const mapStateToProps = ({ login_popover }) => ({
 const btnPreText = 'Connect with Twitter';
 const btnPostText = 'Connecting...';
 
-//TODO @preshita While isTwitterConnecting, Check if android hardware back close the modal if not do nothing, if yes block android hardware back .
-
 class loginPopover extends React.Component {
   constructor(props) {
     super(props);
@@ -28,13 +26,13 @@ class loginPopover extends React.Component {
       disableLoginBtn: false,
       btnText: btnPreText
     };
-    this.isTwitterConnecting =  false;
+    this.isTwitterConnecting = false;
   }
 
-  componentWillUnmount(){
-    this.state.disableLoginBtn =  false ;
-    this.state.btnText =  btnPreText; 
-    this.isTwitterConnecting =  false;
+  componentWillUnmount() {
+    this.state.disableLoginBtn = false;
+    this.state.btnText = btnPreText;
+    this.isTwitterConnecting = false;
   }
 
   componentDidUpdate(prevProps) {
@@ -45,17 +43,17 @@ class loginPopover extends React.Component {
 
   onSignUp = () => {
     this.setState({ disableLoginBtn: true, btnText: btnPostText });
-    this.isTwitterConnecting =  true ;
+    this.isTwitterConnecting = true;
     TwitterAuthService.signUp();
   };
 
   //Use this function if needed to handle hardware back handling for android.
   closeModal = () => {
-    if( !this.isTwitterConnecting ){
+    if (!this.isTwitterConnecting) {
       Store.dispatch(hideLoginPopover());
     }
     return true;
-  }
+  };
 
   render() {
     return (
@@ -69,9 +67,7 @@ class loginPopover extends React.Component {
             hasBackdrop={true}
             onRequestClose={() => console.log('onRequestClose')}
           >
-            <TouchableWithoutFeedback
-              onPressIn={this.closeModal}
-            >
+            <TouchableWithoutFeedback onPressIn={this.closeModal}>
               <View style={inlineStyles.parent}>
                 <TouchableWithoutFeedback>
                   <View style={inlineStyles.container}>
