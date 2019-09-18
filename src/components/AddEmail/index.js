@@ -56,18 +56,18 @@ class AddEmailScreen extends React.Component {
   }
 
   componentDidMount() {
-    this.keyboardWillShowListener = Keyboard.addListener('keyboardWillShow', this._keyboardShown.bind(this));
-    this.keyboardWillHideListener = Keyboard.addListener('keyboardWillHide', this._keyboardHidden.bind(this));
+    Keyboard.addListener('keyboardWillShow', this._keyboardShown.bind(this));
+    Keyboard.addListener('keyboardWillHide', this._keyboardHidden.bind(this));
 
-    this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardShown.bind(this));
-    this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardHidden.bind(this));
+    Keyboard.addListener('keyboardDidShow', this._keyboardShown.bind(this));
+    Keyboard.addListener('keyboardDidHide', this._keyboardHidden.bind(this));
   }
 
   componentWillUnmount() {
-    this.keyboardWillShowListener.remove();
-    this.keyboardWillHideListener.remove();
-    this.keyboardDidShowListener.remove();
-    this.keyboardDidHideListener.remove();
+    Keyboard.removeListener('keyboardWillShow');
+    Keyboard.removeListener('keyboardWillHide');
+    Keyboard.removeListener('keyboardDidShow');
+    Keyboard.removeListener('keyboardDidHide');
     this.onEmailSubmit = () => {};
     this.onSuccess = () => {};
     this.onError = () => {};
