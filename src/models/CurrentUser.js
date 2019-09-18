@@ -7,9 +7,9 @@ import NavigationService from '../services/NavigationService';
 import appConfig from '../constants/AppConfig';
 import reduxGetter from '../services/ReduxGetters';
 import InitWalletSdk from '../services/InitWalletSdk';
-import Toast from "../theme/components/NotificationToast";
+import Toast from '../theme/components/NotificationToast';
 import { PushNotificationMethods } from '../services/PushNotificationManager';
-import OstWorkflowDelegate from "../helpers/OstWorkflowDelegate";
+import OstWorkflowDelegate from '../helpers/OstWorkflowDelegate';
 
 // Used require to support all platforms
 const RCTNetworking = require('RCTNetworking');
@@ -64,6 +64,21 @@ class CurrentUser {
 
   getUser() {
     return reduxGetter.getUser(this.userId);
+  }
+
+  updateActivatingStatus() {
+    return new PepoApi('/users/activation-initiate')
+      .post()
+      .then((apiResponse) => {
+        return this._saveCurrentUser(apiResponse)
+          .catch()
+          .then(() => {
+            return apiResponse;
+          });
+      })
+      .catch((err) => {
+        console.log('updateActivatingStatus', err);
+      });
   }
 
   sync(userId, setupDevice) {

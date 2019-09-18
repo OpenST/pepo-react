@@ -41,7 +41,7 @@ export default class ConfirmPin extends Component {
   };
 
   onRequestAcknowledge() {
-    CurrentUser.sync()
+    CurrentUser.updateActivatingStatus()
       .catch(() => {})
       .finally(() => {
         LoadingModal.hide();

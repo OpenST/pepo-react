@@ -10,7 +10,6 @@ import FormInput from '../../theme/components/FormInput';
 import LinearGradient from 'react-native-linear-gradient';
 import TwitterAuth from '../../services/ExternalLogin/TwitterAuth';
 import CurrentUser from '../../models/CurrentUser';
-import Utilities from '../../services/Utilities';
 import { ostErrors } from '../../services/OstErrors';
 import Colors from '../../theme/styles/Colors';
 import { navigateTo } from '../../helpers/navigateTo';
