@@ -28,7 +28,7 @@ class HomeScreen extends Component {
     };
   };
 
-  constructor(props) {    
+  constructor(props) {
     super(props);
     navigateTo.setTopLevelNavigation(this.props.navigation);
     this.state = {
@@ -66,7 +66,7 @@ class HomeScreen extends Component {
     }
   }
 
-  componentWillUnmount = () => {    
+  componentWillUnmount = () => {
     videoUploaderComponent.removeListener('show');
     videoUploaderComponent.removeListener('hide');
     NavigationEmitter.removeListener('onRefresh');
