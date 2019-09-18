@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Text, TouchableOpacity, Image, View } from 'react-native';
+
 import reduxGetter from '../../services/ReduxGetters';
 import BackArrow from '../CommonComponents/BackArrow';
 
@@ -9,12 +10,12 @@ import UserProfileFlatList from '../../components/CommonComponents/UserProfileFl
 import multipleClickHandler from '../../services/MultipleClickHandler';
 import tx_icon from '../../assets/tx_icon.png';
 import user_not_exist from '../../assets/user-not-exist.png';
-import video_not_available from '../../assets/video-not-available.png';
+
 
 import { fetchUser } from '../../helpers/helpers';
 import utilities from '../../services/Utilities';
-import BalanceHeader from "../Profile/BalanceHeader";
 import inlineStyles from './styles';
+import Utilities from '../../services/Utilities';
 
 export default class UsersProfile extends Component {
   static navigationOptions = ({ navigation }) => {
@@ -39,6 +40,13 @@ export default class UsersProfile extends Component {
   constructor(props) {
     super(props);
     this.userId = this.props.navigation.getParam('userId');
+    this.state = {
+      isDeleted : false
+    }
+  }
+
+  componentWillUnmount(){
+    this.onUserResponse = () => {};
   }
 
   navigateToTransactionScreen = () => {
@@ -51,8 +59,14 @@ export default class UsersProfile extends Component {
   };
 
   fetchUser = () => {
-    fetchUser(this.userId);
+    fetchUser(this.userId , this.onUserResponse );
   };
+
+  onUserResponse = ( res ) => {
+    if(Utilities.isEntityDeleted(res)){
+      this.setState({isDeleted: true});
+    }
+  }
 
   _headerComponent() {
     return <UserInfo userId={this.userId}/>;
@@ -63,32 +77,31 @@ export default class UsersProfile extends Component {
   }
 
   render() {
-    return (
-      <React.Fragment>
-        <UserProfileFlatList
-          listHeaderComponent={this._headerComponent()}
-          listHeaderSubComponent={this._subHeader()}
-          userId={this.userId}
-        />
-        <TouchableOpacity
-          pointerEvents={'auto'}
-          onPress={multipleClickHandler(() => this.navigateToTransactionScreen())}
-          style={{ position: 'absolute', right: 20, bottom: 30 }}
-        >
-          <Image style={{ height: 57, width: 57 }} source={tx_icon} />
-        </TouchableOpacity>
-
-        {/*<View style={inlineStyles.container}>*/}
-          {/*<Image style={inlineStyles.imgSize} source={user_not_exist} />*/}
-          {/*<Text style={inlineStyles.desc}>The user you were looking for does not exist!</Text>*/}
-        {/*</View>*/}
-
-        {/*<View style={inlineStyles.container}>*/}
-          {/*<Image style={inlineStyles.imgSize} source={video_not_available} />*/}
-          {/*<Text style={inlineStyles.desc}>Looks like the Video you were looking for isn’t available and might have been deleted by the creator!</Text>*/}
-        {/*</View>*/}
-
-      </React.Fragment>
-    );
+    if(this.state.isDeleted){
+      return (
+          <View style={inlineStyles.container}>
+            <Image style={inlineStyles.imgSize} source={user_not_exist} />
+            <Text style={inlineStyles.desc}>The user you were looking for does not exist!</Text>
+         </View>
+      )
+    }else{
+      return (
+        <React.Fragment>
+          <UserProfileFlatList
+            listHeaderComponent={this._headerComponent()}
+            listHeaderSubComponent={this._subHeader()}
+            userId={this.userId}
+          />
+          <TouchableOpacity
+            pointerEvents={'auto'}
+            onPress={multipleClickHandler(() => this.navigateToTransactionScreen())}
+            style={{ position: 'absolute', right: 20, bottom: 30 }}
+          >
+            <Image style={{ height: 57, width: 57 }} source={tx_icon} />
+          </TouchableOpacity>
+        </React.Fragment>
+      );
+    }
   }
+
 }

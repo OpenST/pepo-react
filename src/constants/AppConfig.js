@@ -17,6 +17,11 @@ const PROFILE_TX_SEND_SUCCESS = 'PROFILE_TX_SEND_SUCCESS',
   AIRDROP_DONE = 'AIRDROP_DONE';
 
 export default {
+
+  beKnownErrorCodeMaps : {
+    entityDeleted: "not_found"
+  },
+
   userStatusMap: {
     activated: 'activated',
     activating: 'activating'

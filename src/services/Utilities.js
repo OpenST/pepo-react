@@ -14,6 +14,7 @@ import CameraPermissionsApi from '../services/CameraPermissionsApi';
 import { allowAcessModalEventEmitter } from '../components/AllowAccessModalScreen';
 import NavigationService from '../services/NavigationService';
 import { NavigateTo } from '../helpers/navigateTo';
+import AppConfig from '../constants/AppConfig';
 
 let recursiveMaxCount = 0;
 
@@ -153,5 +154,9 @@ export default {
       .split('/')
       .map((item, index) => (index < 3 ? item.toLowerCase() : item))
       .join('/');
+  },
+
+  isEntityDeleted (res){
+    return deepGet(res ,  "err.code") == AppConfig.beKnownErrorCodeMaps.entityDeleted ;
   }
 };
