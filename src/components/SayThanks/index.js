@@ -14,7 +14,6 @@ import {
 import { connect } from 'react-redux';
 import { getBottomSpace, isIphoneX } from 'react-native-iphone-x-helper';
 import reduxGetter from '../../services/ReduxGetters';
-import CurrentUser from '../../models/CurrentUser';
 import deepGet from 'lodash/get';
 import inlineStyles from './Style';
 import ProfilePicture from '../ProfilePicture';
@@ -140,7 +139,7 @@ class SayThanks extends Component {
               this.tweeterHandle = twitterInfo && twitterInfo.handle;
               if (this.tweeterHandle){
                 this.setState({thanksMessage: `@${this.tweeterHandle} ${this.state.thanksMessage}`})
-              }              
+              }
               if (response.data.logged_in_user.twitter_auth_expired === 1) {
                 console.log('tweeter auth expired');
                 TwitterAuth.signIn().then((res) => {

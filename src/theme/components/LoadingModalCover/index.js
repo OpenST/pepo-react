@@ -50,21 +50,26 @@ class loadingModalCover extends React.Component {
   };
 
   onButtonTap = () => {
-    if (this.props.alertData.onTap) {
-      this.props.alertData.onTap(true);
+    let alertData =  this.props.alertData;
+    if (alertData && alertData.onTap) {
+      if (typeof alertData.onTap === "function") {
+        alertData.onTap(true);
+      }
     }
     LoadingModal.hide()
   };
 
   onViewTap = () => {
-    if (this.props.alertData.onTap) {
-      this.props.alertData.onTap(false);
+    let alertData =  this.props.alertData;
+    if (alertData && alertData.onTap) {
+      if (typeof alertData.onTap  === "function") {
+        alertData.onTap(false);
+      }
     }
     LoadingModal.hide()
   };
 
   render() {
-    this.props.show ? this.getAnimation().start() : this.getAnimation().stop();
     return (
       <React.Fragment>
           <Modal
@@ -152,6 +157,8 @@ class loadingModalCover extends React.Component {
         {rotate: rotateData}
       ],
     };
+
+    this.props.show ? this.getAnimation().start() : this.getAnimation().stop();
 
     //progress indicator view
     return (

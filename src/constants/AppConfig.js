@@ -62,7 +62,7 @@ export default {
     activity: 'downsized'
   },
 
-  maxBtAllowedInSingleTransfer: 10,
+  maxBtAllowedInSingleTransfer: 50,
 
   fileUploadTypes: {
     video: 'videos',

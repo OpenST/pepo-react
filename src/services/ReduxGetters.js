@@ -55,7 +55,7 @@ class ReduxGetters {
 
   getName(id, state) {
     state = state || Store.getState();
-    return deepGet(state, `user_entities.id_${id}.name`);
+    return unescape(deepGet(state, `user_entities.id_${id}.name`));
   }
 
   getUserActivationStatus(id, state) {
@@ -215,7 +215,7 @@ class ReduxGetters {
 
   getLink(id, state) {
     state = state || Store.getState();
-    return deepGet(state, `link_entities.id_${id}.url`);
+    return unescape(deepGet(state, `link_entities.id_${id}.url`));
   }
 
   getVideoTimeStamp(id, state) {

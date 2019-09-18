@@ -1,6 +1,11 @@
-
+import deepGet from 'lodash/get';
+import {IS_PRODUCTION, IS_SANDBOX} from '../constants';
+import PepoApi from "./PepoApi";
+//NEVER COMMIT WITH developerMode true.
 const developerMode = false;
+const logErrorMessage = !IS_PRODUCTION;
 const DEFAULT_ERROR_MSG = "Something went wrong";
+const WORKFLOW_CANCELLED_MSG = "WORKFLOW_CANCELLED";
 const DEFAULT_CONTEXT = "_default";
 /**
  * OstSdkErrors
@@ -12,11 +17,41 @@ class OstSdkErrors {
     }
 
     getErrorMessage(ostWorkflowContext, ostError) {
+      let errMsg = this._getErrorMessage(ostWorkflowContext, ostError);
+      if ( logErrorMessage ) {
+        if ( WORKFLOW_CANCELLED_MSG != errMsg ) {
+          try {
+            this._postErrorDetails(ostWorkflowContext, ostError, errMsg);
+          } catch(e) {
+            //ignore.
+          }
+        }
+      }
+      return errMsg;
+    }
 
+    _getErrorMessage(ostWorkflowContext, ostError) {
+      let errMsg;
       // Parameter validation
       if (!ostError) {
         return DEFAULT_ERROR_MSG;
       }
+
+      if ( ostError.isApiError() ) {
+        let errData = ostError.getApiErrorData();
+        if (errData && errData.length > 0) {
+          let firstErrMsg = errData[0];
+          errMsg = firstErrMsg.msg || DEFAULT_ERROR_MSG;
+        }else {
+          errMsg = ostError.getApiErrorMessage();
+        }
+
+        if ( developerMode ) {
+          errMsg = errMsg + "\n\n(" + ostError.getApiInternalId() + ")"
+        }
+        return errMsg;
+      }
+
       let errorCode = ostError.getErrorCode();
       if ( !errorCode ) {
         return DEFAULT_ERROR_MSG;
@@ -26,7 +61,7 @@ class OstSdkErrors {
       let workflowType = ostWorkflowContext ? ostWorkflowContext.WORKFLOW_TYPE : null;
       workflowType = workflowType || DEFAULT_CONTEXT;
 
-      let errMsg;
+
       if ( allErrors[workflowType] ) {
         errMsg = allErrors[workflowType][ errorCode ];
       }
@@ -35,8 +70,32 @@ class OstSdkErrors {
         errMsg = allErrors[DEFAULT_CONTEXT][ errorCode ];
       }
 
-      return errMsg || DEFAULT_ERROR_MSG;
+      if ( developerMode && errorCode) {
+        if ( !errMsg ) {
+          errMsg = errMsg || DEFAULT_ERROR_MSG;
+        }
 
+        errMsg = errMsg + "\n\n (" + errorCode + "," + ostError.getInternalErrorCode() + ")";
+      }
+
+      return errMsg || DEFAULT_ERROR_MSG;
+    }
+
+    _postErrorDetails(ostWorkflowContext, ostError, errorMessage) {
+      const errorType = ostError.isApiError() ? "wallet-sdk-platform-api" : "wallet-sdk-internal";
+      const errorKind = ostWorkflowContext.WORKFLOW_TYPE;
+      const errData = ostError.error || { "_somekey_": "ostError.error missing. Something unexpected happened!"};
+      errData.displayed_error = errorMessage;
+
+      new PepoApi(`/report-issue`)
+        .post({
+          "app_name": errorType,
+          "kind": errorKind,
+          "error_data": errData
+        })
+        .catch((error) => {
+          //I_D_K
+        })
     }
 }
 
@@ -82,6 +141,9 @@ const allErrors = {
   },
   "UPDATE_BIOMETRIC_PREFERENCE": {
 
+  },
+  "EXECUTE_TRANSACTION": {
+
   }
 };
 
@@ -109,6 +171,8 @@ const BaseErrorMessages = {
 
   RECOVERY_KEY_GENERATION_FAILED: "Failed to generate Recovery key. Inspect if a correct input values required are being sent and re-submit the request. ",
 
+  OUT_OF_MEMORY_ERROR: "Device is running low on memory. Reduce the number of App running on your device and re-enter the pin",
+
   WORKFLOW_FAILED:
     "Something went wrong, please try again",
 
@@ -118,6 +182,9 @@ const BaseErrorMessages = {
 
   DEVICE_CAN_NOT_BE_REVOKED:
     "Cannot complete the revoke device operation. Only an authorized device can be revoked. Please ensure you are trying to revoke a valid device and re-submit the request.",
+
+  WORKFLOW_CANCELED: WORKFLOW_CANCELLED_MSG,
+  WORKFLOW_CANCELLED: WORKFLOW_CANCELLED_MSG
 };
 
 const DeveloperErrorMessages = {
@@ -199,4 +266,4 @@ const DeveloperErrorMessages = {
 
 const ostSdkErrors = new OstSdkErrors();
 
-export {ostSdkErrors};
+export {ostSdkErrors, DEFAULT_CONTEXT, WORKFLOW_CANCELLED_MSG};

@@ -7,9 +7,9 @@ import NavigationService from '../services/NavigationService';
 import appConfig from '../constants/AppConfig';
 import reduxGetter from '../services/ReduxGetters';
 import InitWalletSdk from '../services/InitWalletSdk';
-import Toast from '../theme/components/NotificationToast';
+import Toast from "../theme/components/NotificationToast";
 import { PushNotificationMethods } from '../services/PushNotificationManager';
-import OstWorkflowDelegate from '../helpers/OstWorkflowDelegate';
+import OstWorkflowDelegate from "../helpers/OstWorkflowDelegate";
 
 // Used require to support all platforms
 const RCTNetworking = require('RCTNetworking');
@@ -276,13 +276,13 @@ const _getPassphrase = (currentUserModel, workflowDelegate, passphrasePrefixAcce
 
         if (!passphrasePrefixString) {
           passphrasePrefixAccept.cancelFlow();
-          workflowDelegate.saltFetchFailed();
+          workflowDelegate.saltFetchFailed(res);
           return;
         }
 
         passphrasePrefixAccept.setPassphrase(passphrasePrefixString, currentUserModel.getOstUserId(), () => {
           passphrasePrefixAccept.cancelFlow();
-          workflowDelegate.saltFetchFailed();
+          workflowDelegate.saltFetchFailed(res);
         });
       }
     })

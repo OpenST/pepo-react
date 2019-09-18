@@ -48,7 +48,7 @@ class PreviewRecordedVideo extends Component {
   componentWillUnmount() {
     BackHandler.removeEventListener('hardwareBackPress', this.handleBackButtonClick);
     AppState.removeEventListener('change', this._handleAppStateChange);
-    this.didFocus.remove();
+    this.didFocus && this.didFocus.remove && this.didFocus.remove();
     this.willBlur.remove();
   }
 
