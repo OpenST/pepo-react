@@ -40,6 +40,7 @@ class loginPopover extends React.Component {
   componentDidUpdate(prevProps) {
     if (this.props.show && this.props.show !== prevProps.show) {
       this.setState({ disableLoginBtn: false, btnText: btnPreText });
+      this.isTwitterConnecting = false;
     }
   }
 

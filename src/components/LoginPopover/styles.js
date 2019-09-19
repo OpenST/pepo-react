@@ -14,7 +14,8 @@ export default StyleSheet.create({
     // }),
     // height: Dimensions.get('window').height * 0.75,
     minHeight: Dimensions.get('window').height / 2,
-    paddingVertical: 50,
+    paddingTop: 50,
+    paddingBottom: 30,
     position: 'absolute',
     width: '100%',
     borderTopRightRadius: 20,
@@ -43,9 +44,9 @@ export default StyleSheet.create({
   tocPp: {
     width: '85%',
     marginTop: 10,
-    flexWrap:'wrap',
-    flexDirection:'row',
-    justifyContent: 'center',
+    flexWrap: 'wrap',
+    flexDirection: 'row',
+    justifyContent: 'center'
   },
   termsTextBlack: {
     lineHeight: 24,
