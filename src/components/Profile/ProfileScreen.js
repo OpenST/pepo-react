@@ -139,7 +139,7 @@ class ProfileScreen extends PureComponent {
   // }
 
   render() {
-    return (
+    return this.props.userId && (
       <UserProfileFlatList
         refreshEvent={this.refreshEvent}
         ref={(ref) => {
