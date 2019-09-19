@@ -80,6 +80,7 @@
 		4BAE885323335DE400F164D5 /* com.pepo.v2.production.GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4BAE884F23335DE400F164D5 /* com.pepo.v2.production.GoogleService-Info.plist */; };
 		4BAE885423335DE400F164D5 /* com.pepo.sandbox.GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4BAE885023335DE400F164D5 /* com.pepo.sandbox.GoogleService-Info.plist */; };
 		4BAE885523335DE400F164D5 /* com.pepo.staging.GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4BAE885123335DE400F164D5 /* com.pepo.staging.GoogleService-Info.plist */; };
+		4BAE88FC23335FE200F164D5 /* com.pepo.sandbox-info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4BAE88FB23335FE200F164D5 /* com.pepo.sandbox-info.plist */; };
 		4BDACD0B23018F0100CF8294 /* libRNTwitterSignIn.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 776EEED922E1F1F400BE1922 /* libRNTwitterSignIn.a */; };
 		4BDACD6323019EE600CF8294 /* libRCTImageResizer.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 005F9BA822E1CA9600A4B00D /* libRCTImageResizer.a */; };
 		4BDACD6423019EF500CF8294 /* libReactNativePermissions.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 003C73F122E880BD00FE1B04 /* libReactNativePermissions.a */; };
@@ -674,6 +675,7 @@
 		4BAE884F23335DE400F164D5 /* com.pepo.v2.production.GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "com.pepo.v2.production.GoogleService-Info.plist"; sourceTree = "<group>"; };
 		4BAE885023335DE400F164D5 /* com.pepo.sandbox.GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "com.pepo.sandbox.GoogleService-Info.plist"; sourceTree = "<group>"; };
 		4BAE885123335DE400F164D5 /* com.pepo.staging.GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "com.pepo.staging.GoogleService-Info.plist"; sourceTree = "<group>"; };
+		4BAE88FB23335FE200F164D5 /* com.pepo.sandbox-info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "com.pepo.sandbox-info.plist"; sourceTree = "<group>"; };
 		4BFFD401232D3D930033959D /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		5E7E0A527AF64DDB95B586B0 /* SMXCrashlytics.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = SMXCrashlytics.xcodeproj; path = "../node_modules/react-native-fabric/ios/SMXCrashlytics.xcodeproj"; sourceTree = "<group>"; };
 		5E91572D1DD0AC6500FF2AA8 /* RCTAnimation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTAnimation.xcodeproj; path = "../node_modules/react-native/Libraries/NativeAnimation/RCTAnimation.xcodeproj"; sourceTree = "<group>"; };
@@ -1042,7 +1044,6 @@
 			children = (
 				4BAE885023335DE400F164D5 /* com.pepo.sandbox.GoogleService-Info.plist */,
 				4BAE885123335DE400F164D5 /* com.pepo.staging.GoogleService-Info.plist */,
-				4BAE880F23335DE400F164D5 /* com.pepo.v2.production-info.plist */,
 				4BAE884F23335DE400F164D5 /* com.pepo.v2.production.GoogleService-Info.plist */,
 				4BFFD401232D3D930033959D /* GoogleService-Info.plist */,
 				00DDF0AA231818DA00F7D30D /* Pepo2.entitlements */,
@@ -1059,6 +1060,8 @@
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
+				4BAE88FB23335FE200F164D5 /* com.pepo.sandbox-info.plist */,
+				4BAE880F23335DE400F164D5 /* com.pepo.v2.production-info.plist */,
 				13B07FB11A68108700A75B9A /* LaunchScreen.xib */,
 				13B07FB71A68108700A75B9A /* main.m */,
 			);
@@ -2004,6 +2007,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4BAE88FC23335FE200F164D5 /* com.pepo.sandbox-info.plist in Resources */,
 				13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */,
 				BE42726A63944FCB9B8AEBF7 /* Lato-Black.ttf in Resources */,
 				4B983AB722BD153800B9E6D4 /* Images.xcassets in Resources */,
