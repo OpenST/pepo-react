@@ -42,7 +42,7 @@ export default StyleSheet.create({
   },
   tocPp: {
     width: '85%',
-    marginTop: 20,
+    marginTop: 10,
     flexWrap:'wrap',
     flexDirection:'row',
     justifyContent: 'center',
