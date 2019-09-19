@@ -13,7 +13,6 @@ import {
 import { getBottomSpace, isIphoneX } from 'react-native-iphone-x-helper';
 import BigNumber from 'bignumber.js';
 import clone from 'lodash/clone';
-import unescape from 'lodash/unescape';
 
 import FormInput from '../../theme/components/FormInput';
 import Theme from '../../theme/styles';
@@ -74,6 +73,7 @@ class TransactionScreen extends Component {
       showSuccess: false
     };
     this.toUser = reduxGetter.getUser(this.props.navigation.getParam('toUserId'));
+    this.userName = reduxGetter.getName(this.props.navigation.getParam('toUserId'));
     //Imp : Make sure if transaction is mappning againts Profile dont send video Id
     this.videoId = this.props.navigation.getParam('videoId');
     this.requestAcknowledgeDelegate = this.props.navigation.getParam('requestAcknowledgeDelegate');
@@ -510,7 +510,7 @@ class TransactionScreen extends Component {
                 >
                   <Image source={tx_success} style={{ width: 164.6, height: 160, marginBottom: 20 }}></Image>
                   <Text style={{ textAlign: 'center', fontFamily: 'AvenirNext-Regular', fontSize: 16 }}>
-                    Success, you have sent {unescape(this.toUser.name)} {this.state.btAmount} Pepos
+                    Success, you have sent {this.userName} {this.state.btAmount} Pepos
                   </Text>
                 </View>
               )}
