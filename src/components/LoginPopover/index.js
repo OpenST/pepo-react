@@ -127,7 +127,7 @@ class loginPopover extends React.Component {
                       <TouchableOpacity
                         onPress={multipleClickHandler(() => {
                           InAppBrowser.openBrowser(
-                            'https://www.dropbox.com/s/v9e7hsdx9yc3eg7/Pepo%20Terms%20of%20Service.pdf?dl=0'
+                            'https://pepo.com/terms'
                           );
                         })}
                       >
@@ -137,7 +137,7 @@ class loginPopover extends React.Component {
                       <TouchableOpacity
                         onPress={multipleClickHandler(() => {
                           InAppBrowser.openBrowser(
-                            'https://www.dropbox.com/s/yg4zq9z4cz2zynb/Pepo%20Privacy%20Policy.pdf?dl=0'
+                            'https://pepo.com/privacy'
                           );
                         })}
                       >
