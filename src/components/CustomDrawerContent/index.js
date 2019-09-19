@@ -66,7 +66,7 @@ class CustomDrawerContent extends Component {
     }
   };
 
-  twitterDisconnect() {
+  twitterDisconnect = () => {
     this.setState(
       {
         disableButtons: true
@@ -94,7 +94,7 @@ class CustomDrawerContent extends Component {
           });
       }
     );
-  }
+  };
 
   CurrentUserLogout = () => {
     let params = {

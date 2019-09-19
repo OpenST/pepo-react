@@ -88,10 +88,19 @@ class loginPopover extends React.Component {
                       <Image source={modalCross} style={{ width: 19.5, height: 19 }} />
                     </TouchableOpacity>
                     <Image source={loggedOutLogo} style={{ width: 261, height: 70, marginBottom: 20 }} />
-                    <Text style={inlineStyles.desc}>
-                      Pepo is a place to discover and support your favorite creators.
+                    <Text
+                      style={[
+                        inlineStyles.desc,
+                        {
+                          fontWeight: '500'
+                        }
+                      ]}
+                    >
+                      Pepo is a place to discover and support creators.
                     </Text>
-                    <Text style={inlineStyles.desc}>Please create a account to continue</Text>
+                    <Text style={inlineStyles.desc}>
+                      Pepo is currently invite only, connect with Twitter to know if your account is whitelisted!
+                    </Text>
                     <TouchableButton
                       TouchableStyles={[
                         Theme.Button.btnSoftBlue,
@@ -113,9 +122,7 @@ class loginPopover extends React.Component {
                       disabled={this.state.disableLoginBtn}
                     />
                     <View style={inlineStyles.tocPp}>
-                      <Text style={inlineStyles.termsTextBlack}>
-                        By signing up, you confirm that you agree to our{' '}
-                      </Text>
+                      <Text style={inlineStyles.termsTextBlack}>By signing up, you confirm that you agree to our </Text>
                       <TouchableOpacity
                         onPress={multipleClickHandler(() => {
                           InAppBrowser.openBrowser(
@@ -123,9 +130,9 @@ class loginPopover extends React.Component {
                           );
                         })}
                       >
-                        <Text style={inlineStyles.termsTextBlue}>Terms of use{' '}</Text>
+                        <Text style={inlineStyles.termsTextBlue}>Terms of use </Text>
                       </TouchableOpacity>
-                      <Text style={inlineStyles.termsTextBlack}>and have read and agree to our{' '}</Text>
+                      <Text style={inlineStyles.termsTextBlack}>and have read and agree to our </Text>
                       <TouchableOpacity
                         onPress={multipleClickHandler(() => {
                           InAppBrowser.openBrowser(
@@ -137,7 +144,6 @@ class loginPopover extends React.Component {
                       </TouchableOpacity>
                     </View>
                   </View>
-
                 </TouchableWithoutFeedback>
               </View>
             </TouchableWithoutFeedback>

@@ -17,8 +17,8 @@ export default StyleSheet.create({
     paddingVertical: 50,
     position: 'absolute',
     width: '100%',
-    borderTopRightRadius: 15,
-    borderTopLeftRadius: 15,
+    borderTopRightRadius: 20,
+    borderTopLeftRadius: 20,
     // ...ifIphoneX(
     //   {
     //     bottom: getBottomSpace([true])
