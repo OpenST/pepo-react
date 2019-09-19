@@ -18,6 +18,8 @@ import multipleClickHandler from '../../services/MultipleClickHandler';
 import BackArrow from '../../assets/back-arrow.png';
 import { connect } from 'react-redux';
 import OstWalletSdkHelper from '../../helpers/OstWalletSdkHelper';
+import {ostErrors} from "../../services/OstErrors";
+import InAppBrowser from '../../services/InAppBrowser';
 
 class CustomDrawerContent extends Component {
   constructor(props) {
@@ -66,7 +68,7 @@ class CustomDrawerContent extends Component {
     }
   };
 
-  twitterDisconnect() {
+  twitterDisconnect = () => {
     this.setState(
       {
         disableButtons: true
@@ -94,7 +96,7 @@ class CustomDrawerContent extends Component {
           });
       }
     );
-  }
+  };
 
   CurrentUserLogout = () => {
     let params = {
@@ -138,6 +140,40 @@ class CustomDrawerContent extends Component {
     this.props.navigation.push('ReferAndEarn');
   };
 
+  onGetSupport = () => {
+    // 1. Disable the button.
+    this.setState({ disableButtons: true }, () => {
+      //2. Make Api call.
+      new PepoApi('/support/info')
+        .get()
+        .then((response) => {
+          if ( !response || !response.success || !response.data || !response.data.result_type ) {
+            // Throw the response to display error.
+            throw res;
+          }
+          let result_type = response.data.result_type;
+          let payload = response.data[ result_type ];
+          if ( !payload || !payload.url ) {
+            throw new Error("Unexpected server response");
+          }
+
+          // 3.t Enable the button.
+          this.setState({ disableButtons: false }, () => {
+            //4. Open the web-view
+            InAppBrowser.openBrowser( payload.url );
+          });
+        })
+        .catch((response) => {
+          // 3.f Enable the button.
+          this.setState({ disableButtons: false }, () => {
+            //4. Show error message.
+            let errorMessage = ostErrors.getErrorMessage(response);
+            LoadingModal.showFailureAlert(errorMessage, null, "Dismiss");
+          });
+        });
+      });
+  }
+
   render() {
     return (
       <SafeAreaView forceInset={{ top: 'always' }} style={[styles.container, { justifyContent: 'space-between' }]}>
@@ -169,6 +205,13 @@ class CustomDrawerContent extends Component {
             </View>
           </TouchableOpacity>
           {this.renderWalletSetting()}
+
+          <TouchableOpacity onPress={this.onGetSupport} disabled={this.state.disableButtons}>
+            <View style={styles.itemParent}>
+              <Image style={{ height: 24, width: 25.3 }} source={loggedOutIcon} />
+              <Text style={styles.item}>Support</Text>
+            </View>
+          </TouchableOpacity>
 
           <TouchableOpacity onPress={this.CurrentUserLogout} disabled={this.state.disableButtons}>
             <View style={styles.itemParent}>

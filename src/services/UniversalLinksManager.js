@@ -1,7 +1,10 @@
 import React, { PureComponent } from 'react';
 import { Linking } from 'react-native';
+import  deepGet from "lodash/get";
 import CurrentUser from '../models/CurrentUser';
 import {connect} from "react-redux";
+import PepoApi from "./PepoApi";
+import {navigateTo} from "../helpers/navigateTo";
 
 class UniversalLinksManager extends PureComponent {
 
@@ -15,7 +18,7 @@ class UniversalLinksManager extends PureComponent {
 
         // getInitialURL when app is closed and is being launched by universal link
         Linking.getInitialURL().then((url) => {
-            this._processURL(url);
+            url && this._processURL(url);
         });
 
         // addEventListener on 'url' when app is in background and launched by universal link
@@ -31,7 +34,18 @@ class UniversalLinksManager extends PureComponent {
     }
 
     _processURL(url) {
-        console.log('UniversalLinksManager _processURL: ', url);
+        new PepoApi(`/fetch-goto`)
+            .get({url})
+            .then((res) => {
+                const resultType = deepGet(res, "data.result_type"),
+                        goTo = deepGet( res , `data.${resultType}`)
+                ;
+                navigateTo.setGoTo(goTo);
+                if(CurrentUser.isActiveUser()) {
+                    navigateTo.navigationDecision();
+                }
+            })
+            .catch((error) => {});
     }
 
     render() {

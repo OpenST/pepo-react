@@ -30,7 +30,7 @@ class VideoPlayer extends Component {
     }
 
     componentWillUnmount(){
-      onRefetchVideo = () => {};
+      this.onRefetchVideo = () => {};
     }
 
     refetchVideo = () => {
@@ -46,12 +46,12 @@ class VideoPlayer extends Component {
         return;
       }
       const users = deepGet(res , "data.users") || {} ,
-            userKeys =  Object.keys(users) || [] ; 
-      userId = userKeys[0] || null;
+            userKeys =  Object.keys(users) || [] ,
+            userId = userKeys[0] || null;
       if(userId){
         this.setState({ userId : userId});
       }
-    }
+    };
 
     render() {
         if(this.state.isDeleted){
