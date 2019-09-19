@@ -160,7 +160,6 @@ class CustomDrawerContent extends Component {
           // 3.t Enable the button.
           this.setState({ disableButtons: false }, () => {
             //4. Open the web-view
-            let url = payload.url;
             InAppBrowser.openBrowser( payload.url );
           });
         })
