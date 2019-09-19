@@ -14,11 +14,12 @@ export default StyleSheet.create({
     // }),
     // height: Dimensions.get('window').height * 0.75,
     minHeight: Dimensions.get('window').height / 2,
-    paddingVertical: 50,
+    paddingTop: 50,
+    paddingBottom: 30,
     position: 'absolute',
     width: '100%',
-    borderTopRightRadius: 15,
-    borderTopLeftRadius: 15,
+    borderTopRightRadius: 20,
+    borderTopLeftRadius: 20,
     // ...ifIphoneX(
     //   {
     //     bottom: getBottomSpace([true])
@@ -39,5 +40,20 @@ export default StyleSheet.create({
     fontSize: 18,
     lineHeight: 26,
     textAlign: 'center'
+  },
+  tocPp: {
+    width: '85%',
+    marginTop: 10,
+    flexWrap: 'wrap',
+    flexDirection: 'row',
+    justifyContent: 'center'
+  },
+  termsTextBlack: {
+    lineHeight: 24,
+    color: Colors.dark
+  },
+  termsTextBlue: {
+    lineHeight: 24,
+    color: Colors.softBlue
   }
 });
