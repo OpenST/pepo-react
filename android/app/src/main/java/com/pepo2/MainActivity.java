@@ -9,9 +9,6 @@ import com.facebook.react.modules.network.OkHttpClientProvider;
 import com.helpers.OkHttpCertificatePin;
 import com.swmansion.gesturehandler.react.RNGestureHandlerEnabledRootView;
 
-import okhttp3.OkHttpClient;
-
-
 public class MainActivity extends ReactActivity {
 
     /**

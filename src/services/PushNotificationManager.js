@@ -7,6 +7,7 @@ import PepoApi from './PepoApi';
 import { navigateTo } from '../helpers/navigateTo';
 import CurrentUser from '../models/CurrentUser';
 
+// Not to be used for now
 function deleteToken() {
   firebase
     .messaging()

@@ -7,7 +7,6 @@ import appConfig from '../constants/AppConfig';
 import reduxGetter from '../services/ReduxGetters';
 import InitWalletSdk from '../services/InitWalletSdk';
 import Toast from '../theme/components/NotificationToast';
-import { PushNotificationMethods } from '../services/PushNotificationManager';
 import OstWorkflowDelegate from '../helpers/OstWorkflowDelegate';
 import EventEmitter from "eventemitter3";
 import {navigateTo} from "../helpers/navigateTo";
@@ -155,7 +154,7 @@ class CurrentUser {
     try {
       userId = userId || this.userId;
       this.userId = null;
-      //TODO add await 
+      //TODO add await
       Store.dispatch(logoutUser());
       await utilities.removeItem(this._getCurrentUserIdKey());
       await utilities.removeItem(this._getASKey(userId));
@@ -189,7 +188,6 @@ class CurrentUser {
        this.getEvent().emit("onUserLogout");
        navigateTo.resetAllNavigationStack();
        await this.clearCurrentUser();
-       PushNotificationMethods.deleteToken();
        NavigationService.navigate('HomeScreen' , params);
     });
   }
