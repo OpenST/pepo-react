@@ -12,6 +12,7 @@ import loggedOutIcon from '../../assets/drawer-logout-icon.png';
 import twitterDisconnectIcon from '../../assets/drawer-twitter-icon.png';
 import referAndEarn from '../../assets/refer-and-earn.png';
 import pepoAmountWallet from '../../assets/pepo-amount-wallet.png';
+import helpIcon from  '../../assets/help.png'
 import Toast from '../../theme/components/NotificationToast';
 import multipleClickHandler from '../../services/MultipleClickHandler';
 
@@ -208,7 +209,7 @@ class CustomDrawerContent extends Component {
 
           <TouchableOpacity onPress={this.onGetSupport} disabled={this.state.disableButtons}>
             <View style={styles.itemParent}>
-              <Image style={{ height: 24, width: 25.3 }} source={loggedOutIcon} />
+              <Image style={{ height: 24, width: 25.3 }} source={helpIcon} />
               <Text style={styles.item}>Support</Text>
             </View>
           </TouchableOpacity>
