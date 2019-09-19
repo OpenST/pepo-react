@@ -75,7 +75,7 @@ class UserInfo extends React.PureComponent {
 
   render() {
     return (
-      <View style={{ alignItems: 'center', paddingTop: 30 }}>
+      <View style={{ alignItems: 'center', paddingTop: 30}}>
         <NavigationEvents onDidFocus={this.onDidFocus} />
         {this.props.header}
         <ProfilePicture
@@ -132,7 +132,8 @@ class UserInfo extends React.PureComponent {
           </Text>
         )}
         {this.props.approvedCreater === 0  && this.props.isOwnProfile && (
-          <View  style={{ backgroundColor: '#ff5566', textAlign: 'center', width: '100%', paddingVertical: 10, marginTop: 10, marginBottom:-16, alignItems: 'center', justifyContent: 'center' }}>
+          
+          <View  style={{ backgroundColor: '#ff5566', textAlign: 'center', width: '100%', paddingVertical: 10, marginTop: 10, alignItems: 'center', justifyContent: 'center' }}>
             <View style= {{flexDirection: 'row'}}>
             <Image source={infoIcon} style={{height:20, width:20}}/>
             <Text
@@ -141,8 +142,11 @@ class UserInfo extends React.PureComponent {
               Your profile is in review
             </Text>
             </View>
-          </View>
-        )}      
+          </View>          
+        )}
+        { (! this.props.isOwnProfile  || this.props.approvedCreater === 1) && <View style={{height:15}}>
+        </View>} 
+
       </View>
     );
   }
