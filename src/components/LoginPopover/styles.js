@@ -39,5 +39,20 @@ export default StyleSheet.create({
     fontSize: 18,
     lineHeight: 26,
     textAlign: 'center'
+  },
+  tocPp: {
+    width: '85%',
+    marginTop: 20,
+    flexWrap:'wrap',
+    flexDirection:'row',
+    justifyContent: 'center',
+  },
+  termsTextBlack: {
+    lineHeight: 24,
+    color: Colors.dark
+  },
+  termsTextBlue: {
+    lineHeight: 24,
+    color: Colors.softBlue
   }
 });

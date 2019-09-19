@@ -11,6 +11,8 @@ import TwitterAuthService from '../../services/TwitterAuthService';
 import loggedOutLogo from '../../assets/logged-out-logo.png';
 import twitterBird from '../../assets/twitter-bird.png';
 import modalCross from '../../assets/modal-cross-icon.png';
+import multipleClickHandler from '../../services/MultipleClickHandler';
+import InAppBrowser from '../../services/InAppBrowser';
 
 const mapStateToProps = ({ login_popover }) => ({
   show: login_popover.show
@@ -99,7 +101,7 @@ class loginPopover extends React.Component {
                           height: 55,
                           alignItems: 'center',
                           justifyContent: 'center',
-                          width: '80%'
+                          width: '85%'
                         },
                         this.state.disableLoginBtn ? Theme.Button.disabled : null
                       ]}
@@ -110,7 +112,32 @@ class loginPopover extends React.Component {
                       imgDimension={{ width: 28, height: 22.5, marginRight: 8 }}
                       disabled={this.state.disableLoginBtn}
                     />
+                    <View style={inlineStyles.tocPp}>
+                      <Text style={inlineStyles.termsTextBlack}>
+                        By signing up, you confirm that you agree to our{' '}
+                      </Text>
+                      <TouchableOpacity
+                        onPress={multipleClickHandler(() => {
+                          InAppBrowser.openBrowser(
+                            'https://www.dropbox.com/s/v9e7hsdx9yc3eg7/Pepo%20Terms%20of%20Service.pdf?dl=0'
+                          );
+                        })}
+                      >
+                        <Text style={inlineStyles.termsTextBlue}>Terms of use{' '}</Text>
+                      </TouchableOpacity>
+                      <Text style={inlineStyles.termsTextBlack}>and have read and agree to our{' '}</Text>
+                      <TouchableOpacity
+                        onPress={multipleClickHandler(() => {
+                          InAppBrowser.openBrowser(
+                            'https://www.dropbox.com/s/yg4zq9z4cz2zynb/Pepo%20Privacy%20Policy.pdf?dl=0'
+                          );
+                        })}
+                      >
+                        <Text style={inlineStyles.termsTextBlue}>Privacy Policy</Text>
+                      </TouchableOpacity>
+                    </View>
                   </View>
+
                 </TouchableWithoutFeedback>
               </View>
             </TouchableWithoutFeedback>
