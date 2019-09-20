@@ -37,6 +37,9 @@ class TwitterAuthService {
             })
             .catch((err) => {
               this.onServerError(err);
+            })
+            .finally(() => {
+              LoginPopoverActions.hide();
             });
         } else {
           console.log('No user data!');
@@ -44,9 +47,6 @@ class TwitterAuthService {
       })
       .catch((error) => {
         this.onServerError(error);
-      })
-      .finally(() => {
-        LoginPopoverActions.hide();
       });
   }
 
