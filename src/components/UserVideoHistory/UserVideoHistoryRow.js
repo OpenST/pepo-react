@@ -75,7 +75,7 @@ class UserVideoHistoryRow extends PureComponent {
                     <Image style={{ height: 57, width: 57 }} source={tx_icon} />
                   </TouchableOpacity>
 
-                  <TouchableOpacity pointerEvents={'auto'} style={inlineStyles.txElem} onPress={this.shareVideo}>
+                  <TouchableOpacity pointerEvents={'auto'} style={inlineStyles.txElem} onPress={multipleClickHandler(() => this.shareVideo())}>
                     <Image style={{ height: 48, width: 48 }} source={share_icon} />
                   </TouchableOpacity>
                 </View>
@@ -83,7 +83,7 @@ class UserVideoHistoryRow extends PureComponent {
 
               {this.isCurrentUser() && (
                 <View style={{ minWidth: '20%', alignItems: 'center', alignSelf: 'flex-end' }}>
-                  <TouchableOpacity pointerEvents={'auto'} style={inlineStyles.txElem} onPress={this.shareVideo}>
+                  <TouchableOpacity pointerEvents={'auto'} style={inlineStyles.txElem} onPress={multipleClickHandler(() => this.shareVideo())}>
                     <Image style={{ height: 48, width: 48 }} source={share_icon} />
                   </TouchableOpacity>
                 </View>
