@@ -62,6 +62,7 @@ function loginInFlow(navigation, tab) {
     navigation.dispatch(StackActions.popToTop());
     tabBeforeCaptureVideo = null;   
   } else if (previousTabIndex !== currentTabIndex) {
+    tab.rootStack == 'Notification' && refreshActivity(tab.rootStack);    
     navigation.navigate(tab.rootStack);
   } else if (utilities.getLastChildRoutename(navigation.state) !== tab.childStack) {
     try {
@@ -76,6 +77,18 @@ function loginInFlow(navigation, tab) {
     }, 300);
   }
 }
+
+
+function refreshActivity(screenName){
+  let unreadNotification = reduxGetter.getNotificationUnreadFlag();
+  if (unreadNotification){
+    clearTimeout(refreshTimeOut);
+    refreshTimeOut = setTimeout(() => {
+    NavigationEmitter.emit('onRefresh', { screenName });
+  }, 300);  
+  }  
+}
+
 
 function logoutFlow(navigation, tab) {
   if (tab.navigationIndex == appConfig.tabConfig.tab1.navigationIndex) {

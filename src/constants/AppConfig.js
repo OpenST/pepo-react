@@ -17,11 +17,10 @@ const PROFILE_TX_SEND_SUCCESS = 'PROFILE_TX_SEND_SUCCESS',
   AIRDROP_DONE = 'AIRDROP_DONE';
 
 export default {
+  logoutTimeOut: 2000,
 
-  logoutTimeOut : 2000,
-
-  beKnownErrorCodeMaps : {
-    entityDeleted: "not_found"
+  beKnownErrorCodeMaps: {
+    entityDeleted: 'not_found'
   },
 
   userStatusMap: {
@@ -132,6 +131,8 @@ export default {
     videoAddKind: VIDEO_ADD,
     AppreciationKind: CONTRIBUTION_THANKS,
     systemNotification: SYSTEM_NOTIFICATION,
+    airDropNotification: AIRDROP_DONE,
+    topupNotification: TOPUP_DONE,
     showCoinComponentArray: [
       PROFILE_TX_SEND_SUCCESS,
       PROFILE_TX_RECEIVE_SUCCESS,
@@ -141,7 +142,6 @@ export default {
       VIDEO_TX_SEND_FAILURE,
       AIRDROP_DONE,
       TOPUP_DONE
-
     ],
     whitelistedNotificationKinds: [
       PROFILE_TX_SEND_SUCCESS,
@@ -155,7 +155,6 @@ export default {
       VIDEO_TX_SEND_FAILURE
     ]
   },
-
   tabConfig: {
     tab1: {
       rootStack: 'Home',
@@ -202,7 +201,7 @@ export default {
     }
   },
 
-  appInstallInviteCodeASKey : "app_install_invite_code",
+  appInstallInviteCodeASKey: 'app_install_invite_code',
 
   searchConfig: {
     MIN_SEARCH_CHAR: 2

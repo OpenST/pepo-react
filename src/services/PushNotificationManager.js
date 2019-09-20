@@ -6,7 +6,10 @@ import { connect } from 'react-redux';
 import PepoApi from './PepoApi';
 import { navigateTo } from '../helpers/navigateTo';
 import CurrentUser from '../models/CurrentUser';
+import reduxGetter from '../services/ReduxGetters';
+import NavigationEmitter from '../helpers/TabNavigationEvent';
 
+let refreshTimeOut = null;
 function deleteToken() {
   firebase
     .messaging()
@@ -63,9 +66,19 @@ class PushNotificationManager extends PureComponent {
     let gotoObject = JSON.parse(notificationData.goto);
     if (Object.keys(gotoObject).length < 0) return;
     navigateTo.setGoTo(gotoObject);
-    if (CurrentUser.isActiveUser()) {
+    if (CurrentUser.isActiveUser()) {      
       navigateTo.goToNavigationDecision(true);
+      gotoObject.pn == 'nc' && this.refreshActivity('NotificationScreen');
     }
+  }
+
+
+
+  refreshActivity(screenName){
+    let unreadNotification = reduxGetter.getNotificationUnreadFlag();    
+    if (unreadNotification){      
+      NavigationEmitter.emit('onRefresh', { screenName });  
+    }  
   }
 
   getToken() {
