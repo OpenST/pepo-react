@@ -37,16 +37,18 @@ class TwitterAuthService {
             })
             .catch((err) => {
               this.onServerError(err);
+            })
+            .finally(() => {
+              LoginPopoverActions.hide();
             });
         } else {
+          LoginPopoverActions.hide();
           console.log('No user data!');
         }
       })
       .catch((error) => {
-        this.onServerError(error);
-      })
-      .finally(() => {
         LoginPopoverActions.hide();
+        this.onServerError(error);
       });
   }
 

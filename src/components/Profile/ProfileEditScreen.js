@@ -127,7 +127,6 @@ class ProfileEdit extends React.PureComponent {
   }
 
   getImageSrc = () => {
-    console.log(this.props.profilePicture, 'this.props.profilePicture');
     if (this.props.profilePicture) {
       return (
         <FastImage

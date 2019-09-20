@@ -9,7 +9,9 @@ import CurrentUser from '../models/CurrentUser';
 import reduxGetter from '../services/ReduxGetters';
 import NavigationEmitter from '../helpers/TabNavigationEvent';
 
+
 let refreshTimeOut = null;
+// Not to be used for now
 function deleteToken() {
   firebase
     .messaging()
