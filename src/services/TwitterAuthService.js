@@ -42,10 +42,12 @@ class TwitterAuthService {
               LoginPopoverActions.hide();
             });
         } else {
+          LoginPopoverActions.hide();
           console.log('No user data!');
         }
       })
       .catch((error) => {
+        LoginPopoverActions.hide();
         this.onServerError(error);
       });
   }
