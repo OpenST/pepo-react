@@ -4,11 +4,11 @@ import VideoRowComponent from "../../UserVideoHistory/UserVideoHistoryRow";
 import { withNavigation } from 'react-navigation';
 import deepGet from "lodash/get";
 import PepoApi from "../../../services/PepoApi";
-
 import inlineStyles from './styles'
 import historyBack from "../../../assets/user-video-history-back-icon.png";
 import video_not_available from '../../../assets/video-not-available.png';
 import Utilities from '../../../services/Utilities';
+import CurrentUser from '../../../models/CurrentUser';
 
 
 class VideoPlayer extends Component {
@@ -53,6 +53,18 @@ class VideoPlayer extends Component {
       }
     };
 
+    navigateToUserProfile = (e) => {
+      if (Utilities.checkActiveUser()) {
+        if (this.state.userId == CurrentUser.getUserId()) {
+          this.props.navigation.navigate('ProfileScreen');
+        } else {
+          this.props.navigation.push('UsersProfileScreen', { userId: this.state.userId });
+        }
+      }
+    };
+
+    
+
     render() {
         if(this.state.isDeleted){
          return <View style={inlineStyles.container}>
@@ -62,7 +74,7 @@ class VideoPlayer extends Component {
         }else{
           return (
             <React.Fragment>
-              <VideoRowComponent doRender={true} isActive={ true } videoId={this.videoId} userId={this.state.userId}/>
+              <VideoRowComponent doRender={true} isActive={ true } videoId={this.videoId} userId={this.state.userId} onWrapperClick={this.navigateToUserProfile}/>
               <TouchableOpacity onPressOut={()=>this.props.navigation.goBack()} style={inlineStyles.historyBackSkipFont}>
                 <Image style={{ width: 14.5, height: 22 }} source={historyBack} />
               </TouchableOpacity>
