@@ -5,7 +5,6 @@
 	};
 	objectVersion = 46;
 	objects = {
-
 /* Begin PBXBuildFile section */
 		00005AE02326A80700340966 /* BaseSdkInteract.m in Sources */ = {isa = PBXBuildFile; fileRef = 00005AC22326A80700340966 /* BaseSdkInteract.m */; };
 		00005AE12326A80700340966 /* OstPinAcceptWrap.m in Sources */ = {isa = PBXBuildFile; fileRef = 00005AC42326A80700340966 /* OstPinAcceptWrap.m */; };
