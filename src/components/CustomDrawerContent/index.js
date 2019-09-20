@@ -123,20 +123,6 @@ class CustomDrawerContent extends Component {
     this.props.navigation.navigate('WalletSettingScreen');
   };
 
-  renderWalletSetting = () => {
-    if (!this.state.showWalletSettings) {
-      return null;
-    }
-    return (
-      <TouchableOpacity onPress={this.initWallet}>
-        <View style={[styles.itemParent]}>
-          <Image style={{ height: 24, width: 25.3 }} source={pepoAmountWallet} />
-          <Text style={styles.item}>Wallet settings</Text>
-        </View>
-      </TouchableOpacity>
-    );
-  };
-
   referAndEarn = () => {
     this.props.navigation.push('ReferAndEarn');
   };
@@ -190,7 +176,7 @@ class CustomDrawerContent extends Component {
           </View>
           <TouchableOpacity onPress={this.twitterDisconnect} disabled={this.state.disableButtons}>
             <View style={styles.itemParent}>
-              <Image style={{ height: 24, width: 25.3 }} source={twitterDisconnectIcon} />
+              <Image style={{ height: 24, width: 25.3, resizeMode: 'contain' }} source={twitterDisconnectIcon} />
               <Text style={styles.item}>Twitter Disconnect</Text>
             </View>
           </TouchableOpacity>
@@ -201,7 +187,7 @@ class CustomDrawerContent extends Component {
             disabled={this.state.disableButtons}
           >
             <View style={styles.itemParent}>
-              <Image style={{ height: 24, width: 29 }} source={referAndEarn} />
+              <Image style={{ height: 24, width: 29, resizeMode: 'contain' }} source={referAndEarn} />
               <Text style={styles.item}>Refer and Earn</Text>
             </View>
           </TouchableOpacity>
@@ -209,14 +195,14 @@ class CustomDrawerContent extends Component {
 
           <TouchableOpacity onPress={this.onGetSupport} disabled={this.state.disableButtons}>
             <View style={styles.itemParent}>
-              <Image style={{ height: 24, width: 25.3 }} source={helpIcon} />
+              <Image style={{ height: 24, width: 25.3, resizeMode: 'contain' }} source={helpIcon} />
               <Text style={styles.item}>Support</Text>
             </View>
           </TouchableOpacity>
 
           <TouchableOpacity onPress={this.CurrentUserLogout} disabled={this.state.disableButtons}>
             <View style={styles.itemParent}>
-              <Image style={{ height: 24, width: 25.3 }} source={loggedOutIcon} />
+              <Image style={{ height: 24, width: 25.3, resizeMode: 'contain' }} source={loggedOutIcon} />
               <Text style={styles.item}>Log out</Text>
             </View>
           </TouchableOpacity>
@@ -229,6 +215,20 @@ class CustomDrawerContent extends Component {
       </SafeAreaView>
     );
   }
+
+  renderWalletSetting = () => {
+    if (!this.state.showWalletSettings) {
+      return null;
+    }
+    return (
+      <TouchableOpacity onPress={this.initWallet}>
+        <View style={[styles.itemParent]}>
+          <Image style={{ height: 24, width: 25.3, resizeMode: 'contain'  }} source={pepoAmountWallet} />
+          <Text style={styles.item}>Wallet settings</Text>
+        </View>
+      </TouchableOpacity>
+    );
+  };
 }
 
 const mapStateToProps = ({ current_user }) => ({ current_user });
@@ -267,6 +267,7 @@ const styles = StyleSheet.create({
   item: {
     fontSize: 16,
     marginLeft: 10,
+    marginTop: 3,
     fontFamily: 'AvenirNext-Regular'
   }
 });
