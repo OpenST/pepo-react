@@ -87,7 +87,7 @@ class WalletDetails extends PureComponent {
       this._onDeviceFetch(deviceApiResponse)
     }, ( error ) => {
       let ostError = OstWalletSdkHelper.jsonToOstRNError( error );
-      let errorMessage = ostSdkErrors.getErrorMessage( ostError );
+      let errorMessage = ostSdkErrors.getErrorMessage( null, ostError );
       LoadingModal.showFailureAlert(errorMessage, "", "OK", ()=> {
         // Close this view.
         this.props.navigation.goBack(null);
