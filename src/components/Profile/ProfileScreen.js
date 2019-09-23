@@ -18,8 +18,9 @@ import appConfig from '../../constants/AppConfig';
 import profileEditIcon from '../../assets/profile_edit_icon.png';
 import multipleClickHandler from '../../services/MultipleClickHandler';
 import PepoApi from '../../services/PepoApi';
+import ReviewStatusBanner from './ReviewStatusBanner';
 
-import infoIcon from '../../assets/information_icon.png';
+
 
 const mapStateToProps = (state, ownProps) => {
   return { userId: CurrentUser.getUserId() };
@@ -147,15 +148,9 @@ class ProfileScreen extends PureComponent {
   }
 
   videoInReviewHeader = () => {
-    return this.state.hasVideos && reduxGetter.isCreatorApproved(CurrentUser.getUserId()) == 0 &&
-     (<View  style={{ backgroundColor: '#ff5566', textAlign: 'center', width: '100%', paddingVertical: 10, marginTop: 10, alignItems: 'center', justifyContent: 'center' }}>
-        <View style= {{flexDirection: 'row'}}>
-          <Image source={infoIcon} style={{height:20, width:20}}/>
-          <Text style={[{ color: Colors.white, textAlign: 'center', marginLeft: 4 }]} >
-            Your profile is in review
-          </Text>
-        </View>
-     </View>  )    
+    if(this.state.hasVideos){
+      return <ReviewStatusBanner />
+    }
   }
 
   render() {
