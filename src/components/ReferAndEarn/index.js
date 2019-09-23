@@ -50,7 +50,7 @@ class ReferAndEarn extends Component {
   }
 
   componentDidMount() {
-    new PepoApi(`/users/get-invite-code`)
+    new PepoApi(`/invites/code`)
       .get()
       .then((res) => {
         this.onInit(res);

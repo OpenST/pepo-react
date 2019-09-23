@@ -119,7 +119,7 @@ class PushNotificationManager extends PureComponent {
       device_token: token
     };
     this.props.currentUserId &&
-      new PepoApi(`/users/${this.props.currentUserId}/device-token`)
+      new PepoApi(`/notifications/device-token`)
         .post(payload)
         .then((responseData) => console.log('sendToken :: Payload sent successfully', responseData));
   }

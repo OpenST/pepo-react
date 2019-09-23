@@ -130,7 +130,7 @@ class SayThanks extends Component {
   tweetSwitchChange = (value) => {
     if (value === true && !this.receivedTweetHandle) {
       this.setState({ gettingTweetInfo: true });
-      return new PepoApi(`/users/tweet-info`)
+      return new PepoApi(`/twitter/tweet-info`)
         .get({ receiver_user_id: this.props.navigation.getParam('userId') })
         .then((response) => {
           this.setState({ gettingTweetInfo: false });
@@ -142,7 +142,7 @@ class SayThanks extends Component {
               console.log('tweeter auth expired');
               TwitterAuth.signIn().then((res) => {
                 if (res) {
-                  return new PepoApi(`/auth/refresh-twitter-connect`)
+                  return new PepoApi(`/twitter/refresh-token`)
                     .post(res)
                     .then((resp) => {
                       if (resp && resp.success) {
