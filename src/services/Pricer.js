@@ -41,7 +41,7 @@ class Pricer {
       if( !OstWalletSdkHelper.canDeviceMakeApiCall( device ) ) {
         successCallback && successCallback(bal);
         return;
-      } 
+      }
       OstJsonApi.getBalanceForUserId(
         CurrentUser.getOstUserId(),
         (res) => {
@@ -50,10 +50,7 @@ class Pricer {
           successCallback && successCallback( bal , res);
         },
         (ostErrorJson) => {
-          let ostError = new OstWalletError( ostErrorJson );
-          if ( ostError.isApiError() ) {
-            ostError = new OstWalletApiError( ostErrorJson );
-          }
+          let ostError =  OstWalletSdkHelper.jsonToOstRNError(ostErrorJson);
           let errMsg = ostSdkErrors.getErrorMessage(DEFAULT_CONTEXT, ostError);
           errorCallback && errorCallback(ostError, DEFAULT_CONTEXT);
         }

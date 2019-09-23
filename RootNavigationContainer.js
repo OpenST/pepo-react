@@ -46,6 +46,7 @@ import SocketManager from './src/services/SocketManager';
 import SearchScreen from './src/components/Search';
 import FanVideoDetails from './src/components/FanVideoDetails';
 import WalletSettingScreen from './src/components/WalletSetting';
+import WalletDetails from './src/components/WalletSetting/WalletDetails';
 import PushNotificationManager from './src/services/PushNotificationManager';
 import ReferAndEarn from './src/components/ReferAndEarn';
 import Invites from './src/components/Invites';
@@ -172,7 +173,8 @@ const ProfilePushStack = createStackNavigator(
     EmailScreen: EmailScreen,
     ReferAndEarn: ReferAndEarn,
     Invites: Invites,
-    WalletSettingScreen: WalletSettingScreen
+    WalletSettingScreen: WalletSettingScreen,
+    WalletDetails: WalletDetails
   },
   {
     headerLayoutPreset: 'center'

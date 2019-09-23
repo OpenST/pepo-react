@@ -165,7 +165,10 @@ class WalletSettingList extends PureComponent {
   };
 
   async _processTappedOption(item) {
-    if (item.id === optionIds.authorizeWithQR) {
+    if ( optionIds.walletDetails === item.id ) {
+      this.props.navigation.navigate('WalletDetails');
+      return;
+    } else if (item.id === optionIds.authorizeWithQR) {
       let cameraResult = await CameraPermissionsApi.requestPermission('camera');
       if ((cameraResult == 'denied' || cameraResult == 'restricted')) {
         LoadingModal.showFailureAlert("Allow access to your camera to scan QR", '', 'Enable Camera Access', (isBtnTapped) => {

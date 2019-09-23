@@ -7,6 +7,7 @@ import OstWalletSdkHelper from '../../helpers/OstWalletSdkHelper'
 import { SESSION_KEY_EXPIRY_TIME, SPENDING_LIMIT } from '../../constants';
 
 const optionIds = {
+  walletDetails: 'walletDetails',
   recoverDevice: 'recoverDevice',
   abortRecovery: 'abortRecovery',
   resetPin: 'resetPin',
@@ -23,7 +24,7 @@ class WalletSettingController {
   constructor() {
     this._initialize();
     this.optionsOrdering = [
-      optionIds.addSession,
+      optionIds.walletDetails,
       optionIds.recoverDevice, optionIds.abortRecovery,
       optionIds.resetPin,
       optionIds.viewMnemonics, optionIds.authorizeWithMnemonics,
@@ -44,6 +45,7 @@ class WalletSettingController {
 
   _initializeOptions() {
     this._createOptionsData(optionIds.addSession, "Add Session", "Add Session to do transaction");
+    this._createOptionsData(optionIds.walletDetails, "Wallet Details", "View your wallet details");
     this._createOptionsData(optionIds.recoverDevice, "Recover Device", "Recover your device");
     this._createOptionsData(optionIds.abortRecovery, "Abort Device Recovery", "Abort Device Recovery");
     this._createOptionsData(optionIds.resetPin, "Reset Pin", "Reset your wallet pin");
@@ -110,11 +112,19 @@ class WalletSettingController {
       this._onDeviceFetch(device)
 
     }, ( error ) => {
-      this._onDeviceFetch(localDevice)
+      let ostError = OstWalletSdkHelper.jsonToOstRNError(error);
+      //ToDo: Show the error and close the wallet settings.
+      this._onDeviceFetch({
+        "local_device": localDevice,
+        "resut_type": "local_device"
+      });
     });
   }
 
   _onDeviceFetch(device) {
+    if ( null == device) {
+
+    }
     let resultType = device["result_type"]
       , data = device[resultType]
     ;
@@ -147,6 +157,7 @@ class WalletSettingController {
     this._resetOptions();
 
     if (userStatus == this.userStatusMap.activated) {
+      this._updateOptionsData(optionIds.walletDetails, false, true);
 
       if (deviceStatus == this.deviceStatusMap.authorized) {
         this._updateOptionsData(optionIds.addSession, false, true);

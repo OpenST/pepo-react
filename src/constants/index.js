@@ -60,3 +60,4 @@ export const TWITTER_CONSUMER_SECRET = BundleConstants[DeviceInfo.getBundleId()]
 
 export const IS_PRODUCTION = ( 'com.pepo.v2.production' === DeviceInfo.getBundleId() );
 export const IS_SANDBOX = ('com.pepo.sandbox' === DeviceInfo.getBundleId() );
+export const IS_STAGING = ('com.pepo.staging' === DeviceInfo.getBundleId() );
