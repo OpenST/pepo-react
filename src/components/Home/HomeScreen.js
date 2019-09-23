@@ -62,6 +62,7 @@ class HomeScreen extends Component {
 
   componentWillUpdate(nextProps) {
     if( !nextProps.userId && this.props.userId && this.props.userId !== nextProps.userId ){
+      //This code should be purely event based. Once redux starts getting resolved by promise, will change this. 
       setTimeout(()=> {
         this.refresh(true);
         LoadingModal.hide();

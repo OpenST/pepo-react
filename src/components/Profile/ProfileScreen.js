@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
-import { Image, Text, TouchableOpacity, View } from 'react-native';
+import { Image, TouchableOpacity } from 'react-native';
 import EventEmitter from 'eventemitter3';
 import deepGet from 'lodash/get';
 
@@ -97,7 +97,12 @@ class ProfileScreen extends PureComponent {
   componentDidUpdate(prevProps) {
     if (this.props.userId && this.props.userId != prevProps.userId) {
       this.props.navigation.setParams({ headerTitle: reduxGetter.getName(CurrentUser.getUserId()) });
-      this.refresh();
+      //Be careful before removing this function. It will stop loading the user videos.
+      //Ideally should have been in UserProfileFlatList, but sinces it commonly used 
+      //for User Profile and Current User profile not changing this code for now. 
+      //Will do it ref based later. 
+      //I should have never taken an event based approch for component to component interaction. My bad. 
+      this.refresh(); 
     }
   }
 

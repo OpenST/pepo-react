@@ -52,8 +52,6 @@ class UserProfileFlatList extends PureComponent {
             this.refresh();
           });
         }
-        //TODO: Ashutosh please check this.
-        // fetchUser(this.props.userId);
         this.videoHistoryPagination.initPagination();
     }
 
