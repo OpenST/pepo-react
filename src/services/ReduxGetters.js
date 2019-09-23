@@ -356,6 +356,11 @@ class ReduxGetters {
     state = state || Store.getState();
     return deepGet(state, `notification_unread.flag`);
   }
+
+  getBalance( state ){
+    state = state || Store.getState();
+    return deepGet(state, `balance`);
+  }
 }
 
 export default new ReduxGetters();

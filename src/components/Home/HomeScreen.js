@@ -14,8 +14,6 @@ import appConfig from '../../constants/AppConfig';
 import { ifIphoneX } from 'react-native-iphone-x-helper';
 import {navigateTo} from "../../helpers/navigateTo";
 import { LoadingModal } from '../../theme/components/LoadingModalCover';
-import AppConfig from '../../constants/AppConfig';
-
 
 const mapStateToProps = (state) => {
   return {
@@ -52,25 +50,20 @@ class HomeScreen extends Component {
     CurrentUser.getEvent().on("onUserLogout" , ()=> {
       this.onLogout();
     });
-    CurrentUser.getEvent().on("beforeUserLogout" , ()=> {
+    CurrentUser.getEvent().on("onBeforeUserLogout" , ()=> {
       LoadingModal.show("Logging out...");
     });
     CurrentUser.getEvent().on("onUserLogoutFailed" , ()=> {
       LoadingModal.hide();
     });
+    CurrentUser.getEvent().on("onUserLogoutComplete" , ()=> {
+      this.refresh(true);
+      LoadingModal.hide();
+    });
   };
 
   componentWillUpdate(nextProps) {
-    if( !nextProps.userId && this.props.userId && this.props.userId !== nextProps.userId ){
-      //This code should be purely event based. Once redux starts getting resolved by promise, will change this. 
-      setTimeout(()=> {
-        this.refresh(true);
-        LoadingModal.hide();
-      }, AppConfig.logoutTimeOut)
-      return;
-    }
-
-    if (this.props.userId !== nextProps.userId || this.props.navigation.state.refresh) {
+    if ( (nextProps.userId && this.props.userId !== nextProps.userId) || this.props.navigation.state.refresh) {
       this.refresh(true, 300);
     }
   }
@@ -79,9 +72,10 @@ class HomeScreen extends Component {
     videoUploaderComponent.removeListener('show');
     videoUploaderComponent.removeListener('hide');
     NavigationEmitter.removeListener('onRefresh');
+    CurrentUser.getEvent().removeListener("onBeforeUserLogout");
     CurrentUser.getEvent().removeListener("onUserLogout");
-    CurrentUser.getEvent().removeListener("beforeUserLogout");
     CurrentUser.getEvent().removeListener("onUserLogoutFailed");
+    CurrentUser.getEvent().removeListener("onUserLogoutComplete");
   };
 
   showVideoUploader = () => {

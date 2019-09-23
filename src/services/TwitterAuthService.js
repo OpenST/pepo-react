@@ -17,6 +17,7 @@ import Utilities from './Utilities';
 import AppConfig from '../constants/AppConfig';
 import NavigationService from './NavigationService';
 import { navigateTo } from '../helpers/navigateTo';
+import Pricer from './Pricer';
 
 class TwitterAuthService {
   signUp() {
@@ -53,6 +54,7 @@ class TwitterAuthService {
   }
 
   onSuccess(res) {
+    Pricer.getBalance();
     if (this.handleGoTo(res)) {
       return;
     }

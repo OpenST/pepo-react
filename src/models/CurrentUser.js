@@ -10,6 +10,7 @@ import Toast from '../theme/components/NotificationToast';
 import OstWorkflowDelegate from '../helpers/OstWorkflowDelegate';
 import EventEmitter from "eventemitter3";
 import {navigateTo} from "../helpers/navigateTo";
+import AppConfig from '../constants/AppConfig';
 
 // Used require to support all platforms
 const RCTNetworking = require('RCTNetworking');
@@ -168,7 +169,7 @@ class CurrentUser {
   }
 
   async logout(params) {
-    this.getEvent().emit("beforeUserLogout");
+    this.getEvent().emit("onBeforeUserLogout");
     await new PepoApi('/auth/logout')
       .post(params)
       .then((res) => {
@@ -188,7 +189,11 @@ class CurrentUser {
        this.getEvent().emit("onUserLogout");
        navigateTo.resetAllNavigationStack();
        await this.clearCurrentUser();
-       NavigationService.navigate('HomeScreen' , params);
+       //Remove this timeout once redux logout is promise based.
+      setTimeout(()=> {
+         NavigationService.navigate('HomeScreen' , params);
+         this.getEvent().emit("onUserLogoutComplete");
+       } , AppConfig.logoutTimeOut );
     });
   }
 

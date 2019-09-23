@@ -7,7 +7,7 @@ import inlineStyles from './styles';
 import reduxGetter from '../../services/ReduxGetters';
 import playIcon from '../../assets/play_icon.png';
 import PixelCall from '../../services/PixelCall';
-import BrowserEmitter from '../../helpers/BrowserEmitter';
+import {BrowserEmitter, VideoPlayPauseEmitter} from '../../helpers/Emitters';
 
 const mapStateToProps = (state, ownProps) => {
   return {
@@ -59,8 +59,18 @@ class VideoWrapper extends PureComponent {
     AppState.addEventListener('change', this._handleAppStateChange);
 
     BrowserEmitter.on('browserOpened', () => {
-      setTimeout(()=>{this.pauseVideo(true);}, 100);
+      setTimeout(()=>{this.pauseVideo(true);}, 100); //Dont refer this code, we do user pause here as true because i dont get browser close callback
 
+    });
+
+    VideoPlayPauseEmitter.on('play', () => {
+      if (!this.isUserPaused ) {
+        this.playVideo();
+      }
+    });
+
+    VideoPlayPauseEmitter.on('pause', () => {
+      this.pauseVideo();
     });
   }
 
