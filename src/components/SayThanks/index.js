@@ -137,7 +137,7 @@ class SayThanks extends Component {
           if (response && response.success) {
             let twitterInfo =
               response.data.twitter_users && response.data.twitter_users[this.props.navigation.getParam('userId')];
-            this.tweeterHandle = twitterInfo && twitterInfo.handle;            
+            this.tweeterHandle = twitterInfo &&  twitterInfo.handle != 'null' && twitterInfo.handle; 
             if (response.data.logged_in_user.twitter_auth_expired === 1) {
               console.log('tweeter auth expired');
               TwitterAuth.signIn().then((res) => {
@@ -149,7 +149,7 @@ class SayThanks extends Component {
                         this.receivedTweetHandle = true;
                         this.setState({
                           tweetOn: value,
-                          thanksMessage: `@${this.tweeterHandle} ${this.state.thanksMessage}`
+                          thanksMessage: this.tweeterHandle ? `@${this.tweeterHandle} ${this.state.thanksMessage}`: this.state.thanksMessage
                         });                        
                       } else {
                         //TODO: show error
@@ -166,7 +166,7 @@ class SayThanks extends Component {
               this.receivedTweetHandle = true;
               this.setState({
                 tweetOn: value,
-                thanksMessage: `@${this.tweeterHandle} ${this.state.thanksMessage}`
+                thanksMessage:  this.tweeterHandle ? `@${this.tweeterHandle} ${this.state.thanksMessage}` : this.state.thanksMessage
               });
             }
           } else {
