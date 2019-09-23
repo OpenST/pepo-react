@@ -61,8 +61,8 @@ function loginInFlow(navigation, tab) {
     navigation.dispatch(StackActions.popToTop());
     navigation.dispatch(StackActions.popToTop());
     tabBeforeCaptureVideo = null;   
-  } else if (previousTabIndex !== currentTabIndex) {
-    tab.rootStack == 'Notification' && refreshActivity(tab.rootStack);    
+  } else if (previousTabIndex !== currentTabIndex) {       
+    tab.rootStack == 'Notification' && refreshActivity(tab.childStack);
     navigation.navigate(tab.rootStack);
   } else if (utilities.getLastChildRoutename(navigation.state) !== tab.childStack) {
     try {

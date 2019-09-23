@@ -76,11 +76,8 @@ class PushNotificationManager extends PureComponent {
 
 
 
-  refreshActivity(screenName){
-    let unreadNotification = reduxGetter.getNotificationUnreadFlag();    
-    if (unreadNotification){      
-      NavigationEmitter.emit('onRefresh', { screenName });  
-    }  
+  refreshActivity(screenName){    
+      NavigationEmitter.emit('onRefresh', { screenName });      
   }
 
   getToken() {
