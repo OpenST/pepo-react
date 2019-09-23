@@ -43,8 +43,8 @@ class OstWalletSdkHelper {
     return false
   }
 
-  static canDeviceMakeApiCall(device ) {
-    if ( null === device ) {
+  static canDeviceMakeApiCall(device) {
+    if (!device) {
       return false;
     }
     switch( device.status ) {

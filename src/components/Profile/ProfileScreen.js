@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
-import { Image, TouchableOpacity } from 'react-native';
+import { Image, TouchableOpacity , View , Text } from 'react-native';
 import EventEmitter from 'eventemitter3';
 import deepGet from 'lodash/get';
 
@@ -18,6 +18,8 @@ import appConfig from '../../constants/AppConfig';
 import profileEditIcon from '../../assets/profile_edit_icon.png';
 import multipleClickHandler from '../../services/MultipleClickHandler';
 import PepoApi from '../../services/PepoApi';
+
+import infoIcon from '../../assets/information_icon.png';
 
 const mapStateToProps = (state, ownProps) => {
   return { userId: CurrentUser.getUserId() };
@@ -49,7 +51,8 @@ class ProfileScreen extends PureComponent {
     this.refreshEvent = new EventEmitter();
     this.state = {
       emailAddress: '',
-      isVerifiedEmail: false
+      isVerifiedEmail: false,
+      hasVideos: false
     };
   }
 
@@ -134,14 +137,26 @@ class ProfileScreen extends PureComponent {
             <Image style={{ width: 13, height: 13 }} source={profileEditIcon}></Image>
           </TouchableOpacity>
         }
-        isOwnProfile={true}
+        videoInReviewHeader={this.videoInReviewHeader()}
       />
     );
   }
 
-  // _subHeader() {
-  //   return <Text style={{ color: 'transparent' }}>Videos</Text>;
-  // }
+  onRefresh =(list , res) => {
+    this.setState({ hasVideos : !!list.length });
+  }
+
+  videoInReviewHeader = () => {
+    return this.state.hasVideos && reduxGetter.isCreatorApproved(CurrentUser.getUserId()) == 0 &&
+     (<View  style={{ backgroundColor: '#ff5566', textAlign: 'center', width: '100%', paddingVertical: 10, marginTop: 10, alignItems: 'center', justifyContent: 'center' }}>
+        <View style= {{flexDirection: 'row'}}>
+          <Image source={infoIcon} style={{height:20, width:20}}/>
+          <Text style={[{ color: Colors.white, textAlign: 'center', marginLeft: 4 }]} >
+            Your profile is in review
+          </Text>
+        </View>
+     </View>  )    
+  }
 
   render() {
     return this.props.userId && (
@@ -151,8 +166,8 @@ class ProfileScreen extends PureComponent {
           this.flatlistRef = ref;
         }}
         listHeaderComponent={this._headerComponent()}
-        // listHeaderSubComponent={this._subHeader()}
         beforeRefresh={this.fetchBalance}
+        onRefresh={this.onRefresh}
         userId={this.props.userId}
       />
     );
