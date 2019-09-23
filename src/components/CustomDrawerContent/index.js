@@ -174,12 +174,6 @@ class CustomDrawerContent extends Component {
             </TouchableOpacity>
             <Text style={styles.headerText}>{this.userName}</Text>
           </View>
-          <TouchableOpacity onPress={this.twitterDisconnect} disabled={this.state.disableButtons}>
-            <View style={styles.itemParent}>
-              <Image style={{ height: 24, width: 25.3, resizeMode: 'contain' }} source={twitterDisconnectIcon} />
-              <Text style={styles.item}>Twitter Disconnect</Text>
-            </View>
-          </TouchableOpacity>
           <TouchableOpacity
             onPress={multipleClickHandler(() => {
               this.referAndEarn();
@@ -197,6 +191,13 @@ class CustomDrawerContent extends Component {
             <View style={styles.itemParent}>
               <Image style={{ height: 24, width: 25.3, resizeMode: 'contain' }} source={helpIcon} />
               <Text style={styles.item}>Support</Text>
+            </View>
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={this.twitterDisconnect} disabled={this.state.disableButtons}>
+            <View style={styles.itemParent}>
+              <Image style={{ height: 24, width: 25.3, resizeMode: 'contain' }} source={twitterDisconnectIcon} />
+              <Text style={styles.item}>Twitter Disconnect</Text>
             </View>
           </TouchableOpacity>
 
