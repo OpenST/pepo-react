@@ -21,6 +21,7 @@ function reset(navigation) {
    navigation.dispatch(StackActions.popToTop("Notification"));
    navigation.dispatch(StackActions.popToTop("Search")); 
    navigation.dispatch(StackActions.popToTop("Home"));
+   navigation.dispatch(StackActions.popToTop("Profile"));
 }
 
 export default {

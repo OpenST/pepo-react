@@ -52,7 +52,7 @@ class HomeScreen extends Component {
     CurrentUser.getEvent().on("onUserLogout" , ()=> {
       this.onLogout();
     });
-    CurrentUser.getEvent().on("beforeUserLogout" , ()=> {
+    CurrentUser.getEvent().on("onBeforeUserLogout" , ()=> {
       LoadingModal.show("Logging out...");
     });
     CurrentUser.getEvent().on("onUserLogoutFailed" , ()=> {
@@ -74,7 +74,7 @@ class HomeScreen extends Component {
     videoUploaderComponent.removeListener('show');
     videoUploaderComponent.removeListener('hide');
     NavigationEmitter.removeListener('onRefresh');
-    CurrentUser.getEvent().removeListener("beforeUserLogout");
+    CurrentUser.getEvent().removeListener("onBeforeUserLogout");
     CurrentUser.getEvent().removeListener("onUserLogout");
     CurrentUser.getEvent().removeListener("onUserLogoutFailed");
     CurrentUser.getEvent().removeListener("onUserLogoutComplete");
