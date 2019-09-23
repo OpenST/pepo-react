@@ -1,14 +1,23 @@
 import React, {PureComponent} from 'react';
-import {Alert, FlatList, Linking, Platform, Text, TouchableWithoutFeedback, View} from 'react-native';
-import inlineStyle from './styles';
+import {Alert, FlatList, Linking, Platform, Text, TouchableWithoutFeedback, View, Image, Clipboard} from 'react-native';
+import inlineStyle from './walletDetailsStyles';
 import {LoadingModal} from '../../theme/components/LoadingModalCover';
 import Colors from "../../theme/styles/Colors";
 import BackArrow from '../CommonComponents/BackArrow';
+
+import iconCopy from '../../assets/icon-copy.png';
+import viewIcon from '../../assets/open-view.png';
+
 import { OstWalletSdk, OstWalletSdkUI, OstJsonApi} from '@ostdotcom/ost-wallet-sdk-react-native';
 import OstWalletSdkHelper from "../../helpers/OstWalletSdkHelper";
 import {ostSdkErrors} from "../../services/OstSdkErrors";
 import CurrentUser from "../../models/CurrentUser";
 import {IS_STAGING, TOKEN_ID} from "../../constants";
+
+import InAppBrowser from '../../services/InAppBrowser';
+import Toast from '../../theme/components/NotificationToast';
+
+
 
 class WalletDetails extends PureComponent {
   static navigationOptions = (options) => {
@@ -194,35 +203,16 @@ class WalletDetails extends PureComponent {
     };
   }
 
-  _keyExtractor = (item, index) => `id_${item.heading}_${item.text}`;
+  onCopyCellTapped = async (item) => {
+    await Clipboard.setString(item.text);
+    Toast.show({text: "Copied to Clipboard", icon:'success'});
 
-  _renderItem = ({ item, index }) => {
-    switch ( item.cellType ) {
-      case "text":
-        return this._renderTextCell({item, index});
-      default:
-        return this._renderTextCell({item, index});
-    }
+    console.log("copied Text: ", await Clipboard.getString());
   };
 
-  _renderTextCell = ({item, index}) => {
-    return (<View style={inlineStyle.listComponent}>
-      <Text style={inlineStyle.title}>{item.heading}</Text>
-      <Text style={inlineStyle.subtitle}>{item.text}</Text>
-    </View>);
+  onLinkCellTapped = (item) => {
+    InAppBrowser.openBrowser("https://google.com");
   };
-
-  // _renderCopyCell = ({item, index}) => {
-  //
-  // };
-  //
-  // _renderLinkCell = ({item, index}) => {
-  //
-  // }
-  //
-  // _renderStatusCell = ({item, index}) => {
-  //
-  // }
 
   render() {
     return (
@@ -237,6 +227,73 @@ class WalletDetails extends PureComponent {
       </View>
     );
   }
+
+  _keyExtractor = (item, index) => `id_${item.heading}_${item.text}`;
+
+  _renderItem = ({ item, index }) => {
+    switch ( item.cellType ) {
+      case "text":
+        return this._renderTextCell({item, index});
+      case "status":
+        return this._renderStatusCell({item, index});
+      case "copy":
+        return this._renderCopyCell({item, index});
+      case "link":
+        return this._renderLinkCell({item, index});
+      default:
+        return this._renderTextCell({item, index});
+    }
+  };
+
+  _renderTextCell = ({item, index}) => {
+    return (
+      <View style={inlineStyle.listComponent}>
+        <Text style={inlineStyle.title}>{item.heading}</Text>
+        <Text style={inlineStyle.text}>{item.text}</Text>
+      </View>
+    );
+  };
+
+  _renderStatusCell = ({item, index}) => {
+    return (
+      <View style={inlineStyle.listComponent}>
+        <Text style={inlineStyle.title}>{item.heading}</Text>
+        <Text style={inlineStyle.statusText}>{item.text}</Text>
+      </View>
+    );
+  };
+
+  _renderCopyCell = ({item, index}) => {
+    return (
+      <TouchableWithoutFeedback onPress={() => this.onCopyCellTapped(item)}>
+        <View style={inlineStyle.listComponent}>
+          <Text style={inlineStyle.title}>{item.heading}</Text>
+          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+            <View style={[inlineStyle.linkView, {marginRight: 10}]}>
+              <Text style={inlineStyle.text}>{item.text}</Text>
+            </View>
+            <Image style={{ height: 22, width: 22 }} source={iconCopy} />
+          </View>
+        </View>
+      </TouchableWithoutFeedback>
+    );
+  };
+
+  _renderLinkCell = ({item, index}) => {
+    return (
+      <TouchableWithoutFeedback onPress={() => this.onLinkCellTapped(item)}>
+        <View style={inlineStyle.listComponent}>
+          <Text style={inlineStyle.title}>{item.heading}</Text>
+          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+            <View style={[inlineStyle.linkView, {marginRight: 10}]}>
+              <Text style={inlineStyle.linkText}>{item.text}</Text>
+            </View>
+            <Image style={{ height: 16, width: 24}} source={viewIcon} />
+          </View>
+        </View>
+      </TouchableWithoutFeedback>
+    );
+  };
 }
 
 export default WalletDetails;
