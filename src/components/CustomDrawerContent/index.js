@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { StyleSheet, ScrollView, TouchableOpacity, Text, View, Image, Dimensions } from 'react-native';
-import { SafeAreaView, NavigationEvents } from 'react-navigation';
-import { OstWalletSdk, OstWalletSdkUI, OstJsonApi } from '@ostdotcom/ost-wallet-sdk-react-native';
+import { StyleSheet, TouchableOpacity, Text, View, Image } from 'react-native';
+import { SafeAreaView } from 'react-navigation';
+import { OstWalletSdk} from '@ostdotcom/ost-wallet-sdk-react-native';
 import DeviceInfo from 'react-native-device-info';
 
 import CurrentUser from '../../models/CurrentUser';

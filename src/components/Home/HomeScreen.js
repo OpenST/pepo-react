@@ -14,8 +14,6 @@ import appConfig from '../../constants/AppConfig';
 import { ifIphoneX } from 'react-native-iphone-x-helper';
 import {navigateTo} from "../../helpers/navigateTo";
 import { LoadingModal } from '../../theme/components/LoadingModalCover';
-import AppConfig from '../../constants/AppConfig';
-
 
 const mapStateToProps = (state) => {
   return {
@@ -65,7 +63,7 @@ class HomeScreen extends Component {
   };
 
   componentWillUpdate(nextProps) {
-    if (this.props.userId !== nextProps.userId || this.props.navigation.state.refresh) {
+    if ( (nextProps.userId && this.props.userId !== nextProps.userId) || this.props.navigation.state.refresh) {
       this.refresh(true, 300);
     }
   }
