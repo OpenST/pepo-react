@@ -1,6 +1,7 @@
 import deepGet from 'lodash/get';
 import CurrentUser from '../models/CurrentUser';
 import NavigationService from '../services/NavigationService';
+import InAppBrowser from '../services/InAppBrowser';
 
 class NavigateTo {
   constructor() {
@@ -34,11 +35,14 @@ class NavigateTo {
       this.goToSignUp(goToObject.v.ic, payload);
     } else if (goToObject && goToObject.pn == 'iu'){
       this.goToInvitedUsers(payload);
+    } else if (goToObject && goToObject.pn == 'wv'){
+      // Checks to be added to break recurssion
+      InAppBrowser.openBrowser(goToObject.v.wu)
     }
   }
 
   goToSignUp(){}
-  
+
   goToInvitedUsers = (payload)=> {
     this.__push('Invites', payload);
   }

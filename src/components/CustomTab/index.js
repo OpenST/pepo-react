@@ -106,19 +106,19 @@ const CustomTab = (props) => {
   previousTabIndex = navigation.state.index;
   return (
     <SafeAreaView forceInset={{ top: 'never' }} style={styles.container}>
-      <TouchableOpacity onPress={() => onTabPressed(navigation, appConfig.tabConfig.tab1)}>
+      <TouchableOpacity onPress={() => onTabPressed(navigation, appConfig.tabConfig.tab1)} style={styles.tapArea}>
         <Image
           style={[styles.tabElementSkipFont]}
           source={navigation.state.index === appConfig.tabConfig.tab1.navigationIndex ? homeSelected : homeNs}
         />
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => onTabPressed(navigation, appConfig.tabConfig.tab2)}>
+      <TouchableOpacity onPress={() => onTabPressed(navigation, appConfig.tabConfig.tab2)} style={styles.tapArea}>
         <Image
           style={[styles.tabElementSkipFont]}
           source={navigation.state.index === appConfig.tabConfig.tab2.navigationIndex ? searchSelected : searchNs}
         />
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => onTabPressed(navigation, appConfig.tabConfig.tab3)}>
+      <TouchableOpacity onPress={() => onTabPressed(navigation, appConfig.tabConfig.tab3)} style={styles.tapArea}>
         <Image style={[styles.tabElementSkipFont]} source={videoNs} />
       </TouchableOpacity>
       <TouchableOpacity
@@ -134,8 +134,7 @@ const CustomTab = (props) => {
                 width: 5,
                 height: 5,
                 backgroundColor: Colors.pinkRed,
-                borderRadius: 2.5,
-                marginTop: 10
+                borderRadius: 2.5
               }}
             />
           ) : (
@@ -147,7 +146,7 @@ const CustomTab = (props) => {
           />
         </React.Fragment>
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => onTabPressed(navigation, appConfig.tabConfig.tab5)}>
+      <TouchableOpacity onPress={() => onTabPressed(navigation, appConfig.tabConfig.tab5)} style={styles.tapArea}>
         <Image
           style={[styles.tabElementSkipFont]}
           source={navigation.state.index === appConfig.tabConfig.tab5.navigationIndex ? profileSelected : profileNs}
