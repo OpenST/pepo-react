@@ -36,6 +36,7 @@ class HomeScreen extends Component {
       videoUploaderVisible: false
     };
     this.listRef = null;
+    this.isActiveScreen = false;
   }
 
   componentDidMount = () => {
@@ -60,6 +61,14 @@ class HomeScreen extends Component {
       this.refresh(true);
       LoadingModal.hide();
     });
+
+    this.willFocusSubscription = this.props.navigation.addListener('willFocus', (payload) => {
+        this.isActiveScreen = true ;
+    });
+
+    this.willBlurSubscription = this.props.navigation.addListener('willBlur', (payload) => {
+      this.isActiveScreen =  false ;
+    });
   };
 
   componentWillUpdate(nextProps) {
@@ -76,6 +85,12 @@ class HomeScreen extends Component {
     CurrentUser.getEvent().removeListener("onUserLogout");
     CurrentUser.getEvent().removeListener("onUserLogoutFailed");
     CurrentUser.getEvent().removeListener("onUserLogoutComplete");
+    this.willFocusSubscription && this.willFocusSubscription.remove();
+    this.willBlurSubscription && this.willBlurSubscription.remove();
+  };
+
+  shouldPlay = () => {
+    return this.isActiveScreen;
   };
 
   showVideoUploader = () => {
@@ -152,6 +167,7 @@ class HomeScreen extends Component {
           }}
           fetchUrl={'/feeds'}
           beforeRefresh={this.beforeRefresh}
+          shouldPlay={this.shouldPlay}
         />
       </View>
     );
