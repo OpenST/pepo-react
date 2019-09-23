@@ -16,7 +16,7 @@ const BundleConstants = {
     TOKEN_ID: '1185',
     TWITTER_CONSUMER_KEY: 'NEo4gEXzdQZaoTsqzpZvepfKb',
     TWITTER_CONSUMER_SECRET: 'iM5UMt4px8rwoqEoRV9gJGrJGtEoMUxOYkaWXSges7t4bk564t',
-    VIEW_END_POINT: 'https://view.stagingost.com/testnet',
+    VIEW_END_POINT: 'https://view.stagingost.com/testnet/',
     DEFAULT_SPENDING_LIMIT: PStaging.toString( 10 ),
     MAX_SPENDING_LIMIT: PStaging.multipliedBy( 20 ).toString( 10 ),
     DEFAULT_SESSION_KEY_EXPIRY_TIME: 60 * 60 * 1, //1 hour + buffer from config 1 hr = 2 hr
@@ -30,7 +30,7 @@ const BundleConstants = {
     TOKEN_ID: '1506',
     TWITTER_CONSUMER_KEY: 'qqc45NF23dhKRuNbfsdnHGEkI',
     TWITTER_CONSUMER_SECRET: 'vgDWrMorXdvDOaMSkniRvjQqij4GUwIadWSg9kQnfEmjTDIPs0',
-    VIEW_END_POINT: '',
+    VIEW_END_POINT: 'https://view.ost.com/testnet/',
     DEFAULT_SPENDING_LIMIT: PSandbox.toString( 10 ),
     MAX_SPENDING_LIMIT: PSandbox.multipliedBy( 20 ).toString( 10 ),
     DEFAULT_SESSION_KEY_EXPIRY_TIME: 60 * 60 * 24 * 365, //1 year
@@ -44,7 +44,7 @@ const BundleConstants = {
     TOKEN_ID: '1009',
     TWITTER_CONSUMER_KEY: '53Q0hHEe4Hhartej9lFVWZX4C',
     TWITTER_CONSUMER_SECRET: 'L3jOhUfHr8drwrx8qT7GnvObFtPxTxZkFQbdCWGKawzo7l9avV',
-    VIEW_END_POINT: 'https://view.ost.com/',
+    VIEW_END_POINT: 'https://view.ost.com/mainnet/',
     DEFAULT_SPENDING_LIMIT: PProduction.toString( 10 ),
     MAX_SPENDING_LIMIT: PProduction.multipliedBy( 20 ).toString( 10 ),
     DEFAULT_SESSION_KEY_EXPIRY_TIME: 60 * 60 * 24 * 365, //1 year
