@@ -58,18 +58,13 @@ class HomeScreen extends Component {
     CurrentUser.getEvent().on("onUserLogoutFailed" , ()=> {
       LoadingModal.hide();
     });
+    CurrentUser.getEvent().on("onUserLogoutComplete" , ()=> {
+      this.refresh(true);
+      LoadingModal.hide();
+    });
   };
 
   componentWillUpdate(nextProps) {
-    if( !nextProps.userId && this.props.userId && this.props.userId !== nextProps.userId ){
-      //This code should be purely event based. Once redux starts getting resolved by promise, will change this. 
-      setTimeout(()=> {
-        this.refresh(true);
-        LoadingModal.hide();
-      }, AppConfig.logoutTimeOut)
-      return;
-    }
-
     if (this.props.userId !== nextProps.userId || this.props.navigation.state.refresh) {
       this.refresh(true, 300);
     }
@@ -79,9 +74,10 @@ class HomeScreen extends Component {
     videoUploaderComponent.removeListener('show');
     videoUploaderComponent.removeListener('hide');
     NavigationEmitter.removeListener('onRefresh');
-    CurrentUser.getEvent().removeListener("onUserLogout");
     CurrentUser.getEvent().removeListener("beforeUserLogout");
+    CurrentUser.getEvent().removeListener("onUserLogout");
     CurrentUser.getEvent().removeListener("onUserLogoutFailed");
+    CurrentUser.getEvent().removeListener("onUserLogoutComplete");
   };
 
   showVideoUploader = () => {

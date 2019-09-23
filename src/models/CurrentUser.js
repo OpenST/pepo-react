@@ -189,6 +189,10 @@ class CurrentUser {
        navigateTo.resetAllNavigationStack();
        await this.clearCurrentUser();
        NavigationService.navigate('HomeScreen' , params);
+       //Remove this timeout once redux logout is promise based.
+      setTimeout(()=> {
+         this.getEvent().emit("onUserLogoutComplete");
+       } , 2000 );
     });
   }
 
