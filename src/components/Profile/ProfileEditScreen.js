@@ -114,6 +114,8 @@ class ProfileEdit extends React.PureComponent {
       ...this.defaults
     };
 
+    this.onEmailSaveDelegate = this.props.navigation.getParam('onEmailSave');
+
     this.savedEmail= this.props.navigation.getParam('email');
   }
 
@@ -280,12 +282,14 @@ class ProfileEdit extends React.PureComponent {
     });
   };
 
-  onEmailChangeDelegate = (val) => {
-    this.setState({ emailAddress: val });
-  };
+  // onEmailChangeDelegate = (val) => {
+  //   this.setState({ emailAddress: val });
+  // };
 
   onEmailSentDelegate = (val) =>{
+    this.setState({ emailAddress: val }); 
     this.savedEmail = val;
+    this.onEmailSaveDelegate &&  this.onEmailSaveDelegate( val );
   }
 
   onEmailFocus = () => {
@@ -293,7 +297,7 @@ class ProfileEdit extends React.PureComponent {
       current_formField: 0
     });
     this.props.navigation.push('EmailScreen', {
-      onChangeTextDelegate: this.onEmailChangeDelegate,
+    //  onChangeTextDelegate: this.onEmailChangeDelegate,
       initialValue: this.state.emailAddress,
       savedEmail: this.savedEmail,
       onEmailSentDelegate: this.onEmailSentDelegate

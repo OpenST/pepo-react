@@ -100,6 +100,7 @@ class CustomDrawerContent extends Component {
   };
 
   CurrentUserLogout = () => {
+    this.props.navigation.closeDrawer();
     let params = {
       device_id: DeviceInfo.getUniqueID()
     };
@@ -187,21 +188,27 @@ class CustomDrawerContent extends Component {
           </TouchableOpacity>
           {this.renderWalletSetting()}
 
-          <TouchableOpacity onPress={this.onGetSupport} disabled={this.state.disableButtons}>
+          <TouchableOpacity   onPress={multipleClickHandler(() => {
+              this.onGetSupport();
+            })} disabled={this.state.disableButtons}>
             <View style={styles.itemParent}>
               <Image style={{ height: 24, width: 25.3, resizeMode: 'contain' }} source={helpIcon} />
               <Text style={styles.item}>Support</Text>
             </View>
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={this.twitterDisconnect} disabled={this.state.disableButtons}>
+          <TouchableOpacity   onPress={multipleClickHandler(() => {
+              this.twitterDisconnect();
+            })} disabled={this.state.disableButtons}>
             <View style={styles.itemParent}>
               <Image style={{ height: 24, width: 25.3, resizeMode: 'contain' }} source={twitterDisconnectIcon} />
               <Text style={styles.item}>Twitter Disconnect</Text>
             </View>
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={this.CurrentUserLogout} disabled={this.state.disableButtons}>
+          <TouchableOpacity   onPress={multipleClickHandler(() => {
+              this.CurrentUserLogout();
+            })} disabled={this.state.disableButtons}>
             <View style={styles.itemParent}>
               <Image style={{ height: 24, width: 25.3, resizeMode: 'contain' }} source={loggedOutIcon} />
               <Text style={styles.item}>Log out</Text>
