@@ -37,7 +37,7 @@ class VideoWrapper extends PureComponent {
       clearTimeout(this.loadingTimeOut);
       this.loadingTimeOut = setTimeout(() => {
         this.pausedOnNavigation = false;
-        if (!this.isUserPaused && this.props.ignoreScroll == undefined) {
+        if (!this.isUserPaused) {
           this.playVideo();
         }
       }, 300);
@@ -86,7 +86,7 @@ class VideoWrapper extends PureComponent {
   }
 
   isPaused() {
-    return !this.props.isActive || this.state.paused || this.props.loginPopover;
+    return !this.props.isActive || this.state.paused || this.props.loginPopover || !this.props.shouldPlay();
   }
 
   playVideo() {
@@ -193,5 +193,13 @@ class VideoWrapper extends PureComponent {
     );
   }
 }
+
+VideoWrapper.defaultProps = {
+  shouldPlay: function(){
+    return true;
+  },
+  doRender: true ,
+  isActive: true
+};
 
 export default connect(mapStateToProps)(withNavigation(VideoWrapper));
