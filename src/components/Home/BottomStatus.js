@@ -10,7 +10,7 @@ import reduxGetter from '../../services/ReduxGetters';
 import multipleClickHandler from '../../services/MultipleClickHandler';
 import { getSocialIcon } from '../../helpers/helpers';
 import InAppBrowser from '../../services/InAppBrowser';
-import BrowserEmitter from '../../helpers/BrowserEmitter';
+import {BrowserEmitter} from '../../helpers/Emitters';
 import Utilities from '../../services/Utilities';
 
 const mapStateToProps = (state, ownProps) => {

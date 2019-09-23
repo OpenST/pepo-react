@@ -7,6 +7,7 @@ import Toast from '../theme/components/NotificationToast';
 import {LoadingModal} from '../theme/components/LoadingModalCover';
 import {ostSdkErrors, WORKFLOW_CANCELLED_MSG} from '../services/OstSdkErrors';
 import {ostErrors} from "../services/OstErrors";
+import {VideoPlayPauseEmitter} from './Emitters'
 
 
 const ON_USER_CANCLLED_ERROR_MSG = WORKFLOW_CANCELLED_MSG;
@@ -47,6 +48,7 @@ const _onHasAuthoirizedDevice = (userId, btAmount, callback) => {
   }
 
   let workflowDelegate = _getWorkflowDelegate(callback);
+  VideoPlayPauseEmitter.emit('pause');
   OstWalletSdkUI.addSession(userId, sessionKeyExpiryTime, spendingLimit, workflowDelegate);
 };
 
