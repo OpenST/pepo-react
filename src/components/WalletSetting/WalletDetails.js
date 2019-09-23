@@ -12,7 +12,7 @@ import { OstWalletSdk, OstWalletSdkUI, OstJsonApi} from '@ostdotcom/ost-wallet-s
 import OstWalletSdkHelper from "../../helpers/OstWalletSdkHelper";
 import {ostSdkErrors} from "../../services/OstSdkErrors";
 import CurrentUser from "../../models/CurrentUser";
-import {IS_STAGING, TOKEN_ID} from "../../constants";
+import {IS_STAGING, TOKEN_ID, VIEW_END_POINT} from "../../constants";
 
 import InAppBrowser from '../../services/InAppBrowser';
 import Toast from '../../theme/components/NotificationToast';
@@ -50,7 +50,8 @@ class WalletDetails extends PureComponent {
   componentDidMount() {
     this.userId   = CurrentUser.getOstUserId();
     this.ostUser = null;
-    this.ostDevice =null;
+    this.ostDevice = null;
+    this.token = null;
     this.cells =
     this.onRefresh();
   }
@@ -63,7 +64,15 @@ class WalletDetails extends PureComponent {
     this.setState({
       refreshing: true
     });
-    this._fetchUser();
+    this._fetchToken();
+  }
+
+  _fetchToken() {
+    OstWalletSdk.getToken(TOKEN_ID, (token) => {
+      this.token = token;
+
+      this._fetchUser();
+    })
   }
 
   _fetchUser() {
@@ -125,6 +134,7 @@ class WalletDetails extends PureComponent {
     cells.push( this._buildDeviceManagerAddressData() );
     cells.push( this._buildRecoveryKeyAddressData() );
     cells.push( this._buildRecoveryOwnerAddressData() );
+
     this.setState({
       list: cells,
       refreshing: false
@@ -156,18 +166,22 @@ class WalletDetails extends PureComponent {
   }
 
   _buildTokenHolderAddressData() {
+    let link = VIEW_END_POINT + 'token/th-'+ this._getAuxChainId() + '-' + this._getUtilityBandedToken() + '-' + this.ostUser.token_holder_address;
     return {
       "cellType": "link",
       "heading": "Token Holder Address",
-      "text": this.ostUser.token_holder_address
+      "text": this.ostUser.token_holder_address,
+      "link": link
     };
   }
 
   _buildDeviceManagerAddressData() {
+    let link = VIEW_END_POINT + 'address/ad-'+ this._getAuxChainId() + '-' + this.ostUser.device_manager_address;
     return {
       "cellType": "link",
       "heading": "Device Manager Address",
-      "text": this.ostUser.device_manager_address
+      "text": this.ostUser.device_manager_address,
+      "link": link
     };
   }
 
@@ -180,10 +194,12 @@ class WalletDetails extends PureComponent {
   }
 
   _buildRecoveryOwnerAddressData() {
+    let link = VIEW_END_POINT + 'address/ad-'+ this._getAuxChainId() + '-' + this.ostUser.recovery_owner_address;
     return {
       "cellType": "link",
       "heading": "Recovery Owner Address",
-      "text": this.ostUser.recovery_owner_address
+      "text": this.ostUser.recovery_owner_address,
+      "link": link
     };
   }
 
@@ -203,15 +219,21 @@ class WalletDetails extends PureComponent {
     };
   }
 
+  _getUtilityBandedToken() {
+    return (this.token.auxiliary_chains[0]).utility_branded_token || '0x'
+  }
+
+  _getAuxChainId() {
+    return ((this.token.auxiliary_chains[0]).chain_id).toString(10) || '0'
+  }
+
   onCopyCellTapped = async (item) => {
     await Clipboard.setString(item.text);
     Toast.show({text: "Copied to Clipboard", icon:'success'});
-
-    console.log("copied Text: ", await Clipboard.getString());
   };
 
   onLinkCellTapped = (item) => {
-    InAppBrowser.openBrowser("https://google.com");
+    InAppBrowser.openBrowser(item.link);
   };
 
   render() {
