@@ -100,7 +100,7 @@ class CustomDrawerContent extends Component {
   };
 
   CurrentUserLogout = () => {
-    this.props.navigation.closeDrawer();
+    //this.props.navigation.closeDrawer();
     let params = {
       device_id: DeviceInfo.getUniqueID()
     };
