@@ -118,6 +118,7 @@ class SayThanks extends Component {
           this.closeModal();
           this.props.navigation.getParam('sendMessageSuccess')();
         } else {
+          Toast.show({ text: res.err.msg, icon: 'error' });
           this.setState({ server_errors: res });
         }
       })
@@ -129,26 +130,26 @@ class SayThanks extends Component {
   tweetSwitchChange = (value) => {
     if (value === true && !this.receivedTweetHandle) {
       this.setState({ gettingTweetInfo: true });
-      return new PepoApi(`/users/tweet-info`)
+      return new PepoApi(`/twitter/tweet-info`)
         .get({ receiver_user_id: this.props.navigation.getParam('userId') })
         .then((response) => {
           this.setState({ gettingTweetInfo: false });
           if (response && response.success) {
             let twitterInfo =
               response.data.twitter_users && response.data.twitter_users[this.props.navigation.getParam('userId')];
-            this.tweeterHandle = twitterInfo && twitterInfo.handle;            
+            this.tweeterHandle = twitterInfo &&  twitterInfo.handle != 'null' && twitterInfo.handle; 
             if (response.data.logged_in_user.twitter_auth_expired === 1) {
               console.log('tweeter auth expired');
               TwitterAuth.signIn().then((res) => {
                 if (res) {
-                  return new PepoApi(`/auth/refresh-twitter-connect`)
+                  return new PepoApi(`/twitter/refresh-token`)
                     .post(res)
                     .then((resp) => {
                       if (resp && resp.success) {
                         this.receivedTweetHandle = true;
                         this.setState({
                           tweetOn: value,
-                          thanksMessage: `@${this.tweeterHandle} ${this.state.thanksMessage}`
+                          thanksMessage: this.tweeterHandle ? `@${this.tweeterHandle} ${this.state.thanksMessage}`: this.state.thanksMessage
                         });                        
                       } else {
                         //TODO: show error
@@ -162,14 +163,15 @@ class SayThanks extends Component {
               });
             } else {
               console.log('tweeter auth not expired');
+              this.receivedTweetHandle = true;
               this.setState({
                 tweetOn: value,
-                thanksMessage: `@${this.tweeterHandle} ${this.state.thanksMessage}`
+                thanksMessage:  this.tweeterHandle ? `@${this.tweeterHandle} ${this.state.thanksMessage}` : this.state.thanksMessage
               });
-              this.receivedTweetHandle = true;
             }
           } else {
             // show toast
+            Toast.show({ text: response.err.msg, icon: 'error' });
           }
         })
         .catch((error) => {

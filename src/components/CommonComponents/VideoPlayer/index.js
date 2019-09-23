@@ -25,13 +25,30 @@ class VideoPlayer extends Component {
         this.state = {
           userId :  this.props.navigation.getParam('userId') || null,
           isDeleted : false
-        }
+        };
         this.refetchVideo();
+        this.isActiveScreen = true;
+    }
+
+    componentDidMount(){
+      this.willFocusSubscription = this.props.navigation.addListener('willFocus', (payload) => {
+        this.isActiveScreen = true ;
+      });
+
+      this.willBlurSubscription = this.props.navigation.addListener('willBlur', (payload) => {
+        this.isActiveScreen =  false ;
+      });
     }
 
     componentWillUnmount(){
       this.onRefetchVideo = () => {};
+      this.willFocusSubscription && this.willFocusSubscription.remove();
+      this.willBlurSubscription && this.willBlurSubscription.remove();
     }
+
+    shouldPlay = () => {
+      return this.isActiveScreen;
+    };
 
     refetchVideo = () => {
       new PepoApi(`/videos/${this.videoId}`)
@@ -63,7 +80,7 @@ class VideoPlayer extends Component {
       }
     };
 
-    
+
 
     render() {
         if(this.state.isDeleted){
@@ -74,7 +91,9 @@ class VideoPlayer extends Component {
         }else{
           return (
             <React.Fragment>
-              <VideoRowComponent doRender={true} isActive={ true } videoId={this.videoId} userId={this.state.userId} onWrapperClick={this.navigateToUserProfile}/>
+              <VideoRowComponent doRender={true} isActive={ true }  shouldPlay={this.shouldPlay}
+                                 videoId={this.videoId} userId={this.state.userId}
+                                 onWrapperClick={this.navigateToUserProfile}/>
               <TouchableOpacity onPressOut={()=>this.props.navigation.goBack()} style={inlineStyles.historyBackSkipFont}>
                 <Image style={{ width: 14.5, height: 22 }} source={historyBack} />
               </TouchableOpacity>

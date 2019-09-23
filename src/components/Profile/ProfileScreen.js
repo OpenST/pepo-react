@@ -18,8 +18,9 @@ import appConfig from '../../constants/AppConfig';
 import profileEditIcon from '../../assets/profile_edit_icon.png';
 import multipleClickHandler from '../../services/MultipleClickHandler';
 import PepoApi from '../../services/PepoApi';
+import ReviewStatusBanner from './ReviewStatusBanner';
 
-import infoIcon from '../../assets/information_icon.png';
+
 
 const mapStateToProps = (state, ownProps) => {
   return { userId: CurrentUser.getUserId() };
@@ -57,6 +58,7 @@ class ProfileScreen extends PureComponent {
   }
 
   componentDidMount() {
+    this.getEmail();
     NavigationEmitter.on('onRefresh', (screen) => {
       if (screen.screenName == appConfig.tabConfig.tab5.childStack) {
         this.refresh();
@@ -64,11 +66,10 @@ class ProfileScreen extends PureComponent {
     });
     this.didFocus = this.props.navigation.addListener('didFocus', (payload) => {
       this.props.navigation.setParams({ headerTitle: reduxGetter.getName(CurrentUser.getUserId()) });
-      this.setEmail();
     });
   }
 
-  setEmail() {
+  getEmail() {
     new PepoApi(`/users/email`)
       .get()
       .then((res) => {
@@ -84,10 +85,9 @@ class ProfileScreen extends PureComponent {
   }
 
   onEmailSuccess(res) {
-    this.setState({
-      emailAddress: deepGet(res, 'data.email.address'),
-      isVerifiedEmail: deepGet(res, 'data.email.verified')
-    });
+    //Silent update, not yet need on UI, once need do it via set state.
+    this.state["emailAddress"] = deepGet(res, 'data.email.address') ; 
+    this.state["isVerifiedEmail"] =deepGet(res, 'data.email.verified') ; 
   }
 
   onEmailError(error) {}
@@ -116,11 +116,18 @@ class ProfileScreen extends PureComponent {
   onEdit = () => {
     this.props.navigation.push('ProfileEdit', {
       email: this.state.emailAddress,
-      isVerifiedEmail: this.state.isVerifiedEmail
+      isVerifiedEmail: this.state.isVerifiedEmail ,
+      onEmailSave : this.onEmailSave
     });
   };
 
-  fetchBalance = () => {
+  onEmailSave = ( email ) => {
+    if(!email) return;
+    this.state.emailAddress = email;
+  }
+
+  beforeRefresh = () => {
+   // this.getEmail();
     Pricer.getBalance();
   };
 
@@ -147,30 +154,26 @@ class ProfileScreen extends PureComponent {
   }
 
   videoInReviewHeader = () => {
-    return this.state.hasVideos && reduxGetter.isCreatorApproved(CurrentUser.getUserId()) == 0 &&
-     (<View  style={{ backgroundColor: '#ff5566', textAlign: 'center', width: '100%', paddingVertical: 10, marginTop: 10, alignItems: 'center', justifyContent: 'center' }}>
-        <View style= {{flexDirection: 'row'}}>
-          <Image source={infoIcon} style={{height:20, width:20}}/>
-          <Text style={[{ color: Colors.white, textAlign: 'center', marginLeft: 4 }]} >
-            Your profile is in review
-          </Text>
-        </View>
-     </View>  )    
+    if(this.state.hasVideos){
+      return <ReviewStatusBanner />
+    }
   }
 
   render() {
-    return this.props.userId && (
-      <UserProfileFlatList
-        refreshEvent={this.refreshEvent}
-        ref={(ref) => {
-          this.flatlistRef = ref;
-        }}
-        listHeaderComponent={this._headerComponent()}
-        beforeRefresh={this.fetchBalance}
-        onRefresh={this.onRefresh}
-        userId={this.props.userId}
-      />
-    );
+    if(this.props.userId){
+      return <UserProfileFlatList
+              refreshEvent={this.refreshEvent}
+              ref={(ref) => {
+                this.flatlistRef = ref;
+              }}
+              listHeaderComponent={this._headerComponent()}
+              beforeRefresh={this.beforeRefresh}
+              onRefresh={this.onRefresh}
+              userId={this.props.userId}
+            />
+    }else{
+      return <View style={{flex: 1 , backgroundColor: Colors.black}} />
+    }
   }
 }
 

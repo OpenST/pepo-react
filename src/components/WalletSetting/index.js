@@ -9,7 +9,7 @@ import OstWalletSdkHelper from "../../helpers/OstWalletSdkHelper";
 import {ostSdkErrors} from "../../services/OstSdkErrors";
 import CurrentUser from "../../models/CurrentUser";
 import CameraPermissionsApi from "../../services/CameraPermissionsApi";
-
+import DeviceInfo from 'react-native-device-info';
 import AndroidOpenSettings from 'react-native-android-open-settings';
 
 class WalletSettingList extends PureComponent {
@@ -237,7 +237,9 @@ class WalletSettingList extends PureComponent {
 
   onUnauthorized = (ostWorkflowContext , ostError) => {
     LoadingModal.showFailureAlert("Device is not authorized. Please authorize device again.", null, "Logout", () => {
-      CurrentUser.logout();
+      CurrentUser.logout({
+        device_id: DeviceInfo.getUniqueID()
+      });
     })
   };
 
