@@ -75,9 +75,9 @@ class BottomStatus extends PureComponent {
             >
               <Image style={{ height: 20, width: 20 }} source={getSocialIcon(this.props.link, 'HOME_FEED')} />
               <Text
-                style={[{ fontSize: 14, paddingVertical: 8, paddingLeft: 8 }, inlineStyles.bottomBgTxt]}
-                ellipsizeMode={'tail'}
+                style={[{ fontSize: 14, paddingVertical: 8, paddingLeft: 8, flex:1 }, inlineStyles.bottomBgTxt]}
                 numberOfLines={1}
+                ellipsizeMode={'tail'}
               >
                 {this.props.link.replace(/^(?:https?:\/\/)?(?:www\.)?/i, '')}
               </Text>
