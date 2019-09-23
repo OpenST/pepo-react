@@ -4,7 +4,7 @@ import { OstWalletSdk, OstWalletSdkUI, OstJsonApi} from '@ostdotcom/ost-wallet-s
 import deepGet from "lodash/get";
 import appConfig from '../../constants/AppConfig';
 import OstWalletSdkHelper from '../../helpers/OstWalletSdkHelper'
-import { SESSION_KEY_EXPIRY_TIME, SPENDING_LIMIT } from '../../constants';
+import { DEFAULT_SESSION_KEY_EXPIRY_TIME, DEFAULT_SPENDING_LIMIT } from '../../constants';
 
 const optionIds = {
   recoverDevice: 'recoverDevice',
@@ -291,7 +291,7 @@ class WalletSettingController {
 
     switch( optionId ) {
       case optionIds.addSession:
-        workflowId = OstWalletSdkUI.addSession(userId, SESSION_KEY_EXPIRY_TIME, SPENDING_LIMIT, delegate);
+        workflowId = OstWalletSdkUI.addSession(userId, DEFAULT_SESSION_KEY_EXPIRY_TIME, DEFAULT_SPENDING_LIMIT, delegate);
         break;
 
       case optionIds.recoverDevice:
