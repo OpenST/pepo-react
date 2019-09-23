@@ -118,6 +118,7 @@ class SayThanks extends Component {
           this.closeModal();
           this.props.navigation.getParam('sendMessageSuccess')();
         } else {
+          Toast.show({ text: res.err.msg, icon: 'error' });
           this.setState({ server_errors: res });
         }
       })
@@ -162,14 +163,15 @@ class SayThanks extends Component {
               });
             } else {
               console.log('tweeter auth not expired');
+              this.receivedTweetHandle = true;
               this.setState({
                 tweetOn: value,
                 thanksMessage: `@${this.tweeterHandle} ${this.state.thanksMessage}`
               });
-              this.receivedTweetHandle = true;
             }
           } else {
             // show toast
+            Toast.show({ text: response.err.msg, icon: 'error' });
           }
         })
         .catch((error) => {
