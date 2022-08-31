@@ -27,7 +27,7 @@
     "lodash": "4.17.15",
     "lodash.merge": "4.6.2",
     "moment": "2.24.0",
-    "moment-timezone": "0.5.27",
+    "moment-timezone": "0.5.35",
     "native-base": "2.13.8",
     "numeral": "2.0.6",
     "qs": "6.9.1",
